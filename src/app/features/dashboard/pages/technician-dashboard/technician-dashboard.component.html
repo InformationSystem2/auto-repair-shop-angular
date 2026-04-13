@@ -1,0 +1,74 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Panel del Técnico</h1>
+    <p class="text-slate-600 dark:text-slate-400 text-sm mt-0.5">Gestión de reparaciones y tareas asignadas</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <app-stat-card
+      label="Tareas Pendientes"
+      value="8"
+      colorClass="bg-amber-500/10 group-hover:bg-amber-500/20"
+      [trend]="{ text: '3 urgentes', positive: false }" />
+
+    <app-stat-card
+      label="En Progreso"
+      value="2"
+      colorClass="bg-indigo-500/10 group-hover:bg-indigo-500/20" />
+
+    <app-stat-card
+      label="Completadas Hoy"
+      value="5"
+      colorClass="bg-emerald-500/10 group-hover:bg-emerald-500/20"
+      [trend]="{ text: 'Buen ritmo', positive: true }" />
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Lista de tareas asignadas -->
+    <div class="lg:col-span-2 bg-white/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/50 rounded-xl p-5 shadow-sm dark:shadow-none">
+      <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Tareas Asignadas recientemente</h3>
+      
+      <div class="space-y-4">
+        @for (i of [1,2,3]; track i) {
+          <div class="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/30 hover:border-indigo-500/50 transition-all cursor-pointer group">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-700/50 flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-indigo-500/20 group-hover:text-indigo-400 transition-colors">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-slate-900 dark:text-white">Reparación de motor - Toyota Hilux</p>
+                <p class="text-xs text-slate-500 dark:text-slate-500">Asignado hace 2 horas</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20">
+              Pendiente
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Info del técnico / Perfil rápido -->
+    <div class="bg-indigo-600/10 border border-indigo-500/20 rounded-xl p-5 flex flex-col items-center justify-center text-center">
+      <div class="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 p-1 mb-4">
+        <div class="w-full h-full rounded-full bg-white dark:bg-slate-900 flex items-center justify-center text-2xl font-bold text-slate-900 dark:text-white">
+          T1
+        </div>
+      </div>
+      <h4 class="text-lg font-bold text-slate-900 dark:text-white">Perfil Técnico</h4>
+      <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Especialista en Motores y Transmisión</p>
+      
+      <div class="mt-6 w-full space-y-3">
+        <div class="flex justify-between text-xs">
+          <span class="text-slate-500 dark:text-slate-500">Productividad</span>
+          <span class="text-indigo-400">85%</span>
+        </div>
+        <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5">
+          <div class="bg-indigo-500 h-1.5 rounded-full" style="width: 85%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

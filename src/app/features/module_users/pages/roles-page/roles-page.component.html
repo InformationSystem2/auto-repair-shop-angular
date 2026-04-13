@@ -1,0 +1,51 @@
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Roles</h1>
+      <p class="text-slate-500 dark:text-slate-400 text-sm mt-0.5">Gestión de roles y permisos</p>
+    </div>
+    <button appButton (click)="openCreate()">
+      <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      Nuevo rol
+    </button>
+  </div>
+
+  <!-- Table Container -->
+  <app-card class="min-h-[400px]">
+    @if (loading()) {
+      <div class="flex justify-center py-16">
+        <svg class="animate-spin w-7 h-7 text-indigo-400" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+        </svg>
+      </div>
+    }
+    @else if (roles().length > 0) {
+      <app-roles-table
+        [roles]="roles()"
+        (edit)="openEdit($event)"
+        (delete)="confirmDelete($event)"
+        (view)="onViewDetail($event)" />
+    }
+  </app-card>
+
+  <!-- Modal Form -->
+  @if (showModal()) {
+    <app-role-form
+      [editingRole]="editingRole()"
+      [allPermissions]="allPermissions()"
+      [saving]="saving()"
+      (save)="onSave($event)"
+      (close)="closeModal()" />
+  }
+
+  @if (selectedRoleForDetail()) {
+    <app-role-detail-modal
+      [roleId]="selectedRoleForDetail()?.id || null"
+      (close)="selectedRoleForDetail.set(null)" />
+  }
+</div>

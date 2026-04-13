@@ -1,0 +1,53 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Dashboard Administrativo</h1>
+    <p class="text-slate-600 dark:text-slate-400 text-sm mt-0.5">Visión global de la plataforma</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <app-stat-card
+      label="Talleres Activos"
+      value="124"
+      colorClass="bg-indigo-500/10 group-hover:bg-indigo-500/20"
+      [trend]="{ text: '+12% este mes', positive: true }" />
+
+    <app-stat-card
+      label="Usuarios Totales"
+      value="8,432"
+      colorClass="bg-cyan-500/10 group-hover:bg-cyan-500/20"
+      [trend]="{ text: '+5% este mes', positive: true }" />
+
+    <app-stat-card
+      label="Incidentes Hoy"
+      value="45"
+      colorClass="bg-amber-500/10 group-hover:bg-amber-500/20"
+      [trend]="{ text: 'Estable', positive: true }" />
+
+    <app-stat-card
+      label="Alertas Críticas"
+      value="2"
+      colorClass="bg-rose-500/10 group-hover:bg-rose-500/20" />
+  </div>
+
+  <!-- Placeholder content for charts/tables -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 bg-white/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/50 rounded-xl p-5 min-h-[360px] flex items-center justify-center shadow-sm dark:shadow-none">
+      <p class="text-slate-500 dark:text-slate-500 flex flex-col items-center gap-2 text-center px-4">
+            <svg class="w-8 h-8 opacity-50 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            <span class="font-medium">Gráfico de actividad</span>
+            <span class="text-xs text-slate-500 dark:text-slate-600 uppercase tracking-widest mt-1">Pendiente de API</span>
+        </p>
+    </div>
+        <div class="bg-white/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/50 rounded-xl p-5 min-h-[360px] flex items-center justify-center shadow-sm dark:shadow-none">
+          <p class="text-slate-500 dark:text-slate-500 flex flex-col items-center gap-2 text-center px-4">
+            <svg class="w-8 h-8 opacity-50 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="font-medium">Actividad reciente</span>
+            <span class="text-xs text-slate-500 dark:text-slate-600 uppercase tracking-widest mt-1">Pendiente de API</span>
+        </p>
+    </div>
+  </div>
+</div>
