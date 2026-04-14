@@ -19,7 +19,7 @@ export class DialogComponent {}
 export class DialogOverlayComponent {
   userClass = input<string>('', { alias: 'class' });
   classes = computed(() => cn(
-    'fixed inset-0 z-[70] bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+    'fixed inset-0 z-[70] bg-slate-950/60 backdrop-blur-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
     this.userClass()
   ));
 }
@@ -45,7 +45,7 @@ export class DialogContentComponent {
   @Output() close = new EventEmitter<void>();
   userClass = input<string>('', { alias: 'class' });
   classes = computed(() => cn(
-    'fixed left-[50%] top-[50%] z-[80] grid w-[calc(100%-2rem)] max-h-[calc(100vh-2rem)] max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 overflow-y-auto border border-slate-200 bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:w-full sm:rounded-lg dark:border-slate-800 dark:bg-slate-950',
+    'fixed left-[50%] top-[48%] z-[80] grid w-[calc(100%-2rem)] max-h-[calc(100vh-4rem)] max-w-lg translate-x-[-50%] translate-y-[-50%] overflow-y-auto duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 bg-white/90 dark:bg-slate-900/80 backdrop-blur-3xl rounded-[2rem] border border-white/60 dark:border-slate-700/80 shadow-2xl shadow-slate-900/50 dark:shadow-[0_0_50px_-15px_rgba(0,0,0,0.7)] p-6 sm:w-full custom-scrollbar',
     this.userClass()
   ));
 }

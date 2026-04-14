@@ -55,7 +55,7 @@ export class DropdownMenuContentComponent {
   align = input<'start' | 'center' | 'end'>('start');
 
   classes = computed(() => cn(
-    'absolute mt-2 z-[90] min-w-[10rem] overflow-hidden rounded-md border border-slate-200 bg-white p-1 text-slate-950 shadow-md animate-in fade-in-0 zoom-in-95 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50',
+    'absolute mt-2 z-[90] min-w-[12rem] py-1.5 px-1.5 overflow-hidden rounded-2xl border border-white/60 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl text-slate-950 shadow-xl shadow-slate-900/10 dark:shadow-[0_0_40px_-15px_rgba(0,0,0,0.5)] animate-in fade-in-0 zoom-in-95 dark:text-slate-50',
     {
       'top-full left-0': this.side() === 'bottom' && this.align() === 'start',
       'top-full right-0': this.side() === 'bottom' && this.align() === 'end',
@@ -82,7 +82,7 @@ export class DropdownMenuItemComponent {
   inset = input<boolean>(false);
 
   classes = computed(() => cn(
-    'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-slate-100 hover:text-slate-900 focus:bg-slate-100 focus:text-slate-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:hover:bg-slate-800 dark:hover:text-slate-50 dark:focus:bg-slate-800 dark:focus:text-slate-50',
+    'relative flex cursor-default select-none items-center rounded-xl px-3 py-2 text-[0.8rem] font-bold outline-none transition-colors hover:bg-slate-100 hover:text-slate-900 focus:bg-slate-100 focus:text-slate-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:hover:bg-slate-800/80 dark:hover:text-slate-50 dark:focus:bg-slate-800/80 dark:focus:text-slate-50 group',
     this.inset() && 'pl-8',
     this.userClass()
   ));

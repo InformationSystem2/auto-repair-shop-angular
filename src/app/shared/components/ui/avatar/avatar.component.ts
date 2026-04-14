@@ -43,5 +43,5 @@ export class AvatarImageDirective {
 })
 export class AvatarFallbackComponent {
   userClass = input<string>('', { alias: 'class' });
-  classes = computed(() => cn('flex h-full w-full items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-sm font-medium', this.userClass()));
+  classes = computed(() => cn('flex h-full w-full items-center justify-center rounded-full bg-slate-100/80 dark:bg-slate-800/80 text-sm font-bold uppercase tracking-wider', this.userClass()));
 }

@@ -16,7 +16,6 @@ export interface User {
 
 /** Payload for POST /users */
 export interface UserCreate {
-  username: string;
   name: string;
   last_name: string;
   email: string;

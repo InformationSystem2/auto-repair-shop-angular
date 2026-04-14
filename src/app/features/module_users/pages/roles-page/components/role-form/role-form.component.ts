@@ -4,13 +4,17 @@ import { RoleCreate, RoleDetail, RoleUpdate } from '@users/models/role.model';
 import { Permission } from '@users/models/permission.model';
 import { CheckboxComponent } from '@ui/checkbox/checkbox.component';
 import { groupPermissions } from '../../../../utils/permission-groups';
+import { InputDirective } from '@ui/input/input.component';
+import { TextareaDirective } from '@ui/textarea/textarea.component';
 
 @Component({
   selector: 'app-role-form',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    CheckboxComponent
+    CheckboxComponent,
+    InputDirective,
+    TextareaDirective
   ],
   templateUrl: './role-form.component.html',
 })

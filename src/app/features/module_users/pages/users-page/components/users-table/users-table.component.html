@@ -1,48 +1,54 @@
 <div class="overflow-x-auto">
   <table class="min-w-full border-separate border-spacing-0 text-sm">
     <thead>
-      <tr class="text-left text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
-        <th class="px-4 py-3 font-semibold">Usuario</th>
-        <th class="px-4 py-3 font-semibold">Email</th>
-        <th class="px-4 py-3 font-semibold">Roles</th>
-        <th class="px-4 py-3 font-semibold">Estado</th>
-        <th class="px-4 py-3 font-semibold">Creado</th>
-        <th class="px-4 py-3 font-semibold text-right">Acciones</th>
+      <tr class="text-left text-xs uppercase tracking-widest text-slate-400 dark:text-slate-500 bg-slate-50/50 dark:bg-slate-800/30">
+        <th class="px-6 py-4 font-black rounded-tl-2xl">Usuario</th>
+        <th class="px-6 py-4 font-black">Email</th>
+        <th class="px-6 py-4 font-black">Roles</th>
+        <th class="px-6 py-4 font-black">Estado</th>
+        <th class="px-6 py-4 font-black">Creado</th>
+        <th class="px-6 py-4 font-black text-right rounded-tr-2xl">Acciones</th>
       </tr>
     </thead>
-    <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+    <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50">
       @for (user of users(); track user.id) {
-        <tr class="align-middle transition-colors hover:bg-slate-50/80 dark:hover:bg-slate-800/40">
-          <td class="px-4 py-4">
-            <div class="flex items-center gap-3 min-w-0">
-              <app-avatar class="h-10 w-10 shrink-0">
-                <app-avatar-fallback class="bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800/50">
-                  {{ user.name[0] }}{{ user.last_name[0] }}
-                </app-avatar-fallback>
+        <tr class="align-middle transition-all duration-300 hover:bg-white dark:hover:bg-slate-800/80 group">
+          <td class="px-6 py-4">
+            <div class="flex items-center gap-4 min-w-0">
+              <app-avatar class="flex items-center justify-center w-11 h-11 shrink-0 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-black border border-indigo-100 dark:border-indigo-500/20 shadow-sm group-hover:scale-105 transition-transform duration-300">
+                <app-avatar-fallback class="uppercase bg-transparent text-inherit border-0">{{ user.name[0] }}{{ user.last_name[0] }}</app-avatar-fallback>
               </app-avatar>
               <div class="min-w-0">
-                <p class="font-semibold text-slate-900 dark:text-white truncate">{{ user.name }} {{ user.last_name }}</p>
-                <p class="text-xs text-slate-500 dark:text-slate-400 truncate">@{{ user.username }}</p>
+                <p class="font-bold text-slate-900 dark:text-white truncate text-[0.95rem]">{{ user.name }} {{ user.last_name }}</p>
+                <p class="text-xs font-semibold text-indigo-500 dark:text-indigo-400 truncate uppercase tracking-widest">@{{ user.username }}</p>
               </div>
             </div>
           </td>
-          <td class="px-4 py-4 text-slate-600 dark:text-slate-300 whitespace-nowrap">{{ user.email }}</td>
-          <td class="px-4 py-4">
-            <div class="flex flex-wrap gap-1.5">
+          <td class="px-6 py-4 font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">{{ user.email }}</td>
+          <td class="px-6 py-4">
+            <div class="flex flex-wrap gap-2">
               @for (role of user.roles; track role.id) {
-                <app-badge variant="secondary">{{ role.name }}</app-badge>
+                <app-badge variant="secondary" class="inline-flex items-center px-2.5 py-1 rounded-lg text-[0.65rem] font-bold uppercase tracking-widest bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                  {{ role.name }}
+                </app-badge>
               }
             </div>
           </td>
-          <td class="px-4 py-4 whitespace-nowrap">
-            <app-badge [variant]="user.is_active ? 'success' : 'secondary'">
+          <td class="px-6 py-4 whitespace-nowrap">
+            <app-badge [variant]="user.is_active ? 'success' : 'destructive'" [class]="user.is_active
+              ? 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20'
+              : 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-500/20'">
+              <span class="relative flex h-2 w-2">
+                <span [class]="user.is_active ? 'animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75' : 'hidden'"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2" [class]="user.is_active ? 'bg-emerald-500' : 'bg-red-500'"></span>
+              </span>
               {{ user.is_active ? 'Activo' : 'Inactivo' }}
             </app-badge>
           </td>
-          <td class="px-4 py-4 text-slate-500 dark:text-slate-400 whitespace-nowrap">
+          <td class="px-6 py-4 text-xs font-semibold text-slate-400 dark:text-slate-500 whitespace-nowrap uppercase tracking-widest">
             {{ user.created_at | date:'dd/MM/yyyy' }}
           </td>
-          <td class="px-4 py-4 text-right">
+          <td class="px-6 py-4 text-right">
             <app-table-row-actions
               viewTitle="Ver detalles"
               editTitle="Editar"
@@ -54,7 +60,15 @@
         </tr>
       } @empty {
         <tr>
-          <td colspan="6" class="px-4 py-12 text-center text-slate-500 dark:text-slate-400 italic">No hay usuarios registrados.</td>
+          <td colspan="6" class="px-6 py-16 text-center">
+            <div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
+              <svg class="w-12 h-12 mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              <p class="font-bold text-lg text-slate-600 dark:text-slate-300">No hay usuarios registrados</p>
+              <p class="text-sm mt-1">Ajusta los filtros o crea un nuevo usuario para empezar.</p>
+            </div>
+          </td>
         </tr>
       }
     </tbody>

@@ -9,5 +9,5 @@ import { cn } from '@lib/utils';
 })
 export class LabelComponent {
   userClass = input<string>('', { alias: 'class' });
-  classes = computed(() => cn('text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70', this.userClass()));
+  classes = computed(() => cn('text-[0.75rem] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider ml-1 transition-colors peer-disabled:cursor-not-allowed peer-disabled:opacity-70', this.userClass()));
 }

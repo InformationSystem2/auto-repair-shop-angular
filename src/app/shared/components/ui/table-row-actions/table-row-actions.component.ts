@@ -13,7 +13,7 @@ import { ButtonComponent } from '@ui/button/button.component';
           appButton
           variant="ghost"
           size="icon"
-          class="h-8 w-8 min-h-8 rounded-md px-0 border border-slate-300 text-slate-500 hover:border-indigo-400 hover:bg-indigo-50 hover:text-indigo-600 dark:border-slate-600 dark:text-slate-400 dark:hover:border-indigo-500/50 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-300"
+          class="h-9 w-9 min-h-9 rounded-xl px-0 border border-transparent shadow-sm text-slate-500 hover:border-indigo-400 hover:bg-indigo-50/80 hover:scale-110 hover:shadow-md hover:text-indigo-600 dark:text-slate-400 dark:hover:border-indigo-500/50 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-300 transition-all duration-300"
           [title]="viewTitle()"
           [attr.aria-label]="viewTitle()"
           (click)="view.emit()">
@@ -30,7 +30,7 @@ import { ButtonComponent } from '@ui/button/button.component';
           appButton
           variant="ghost"
           size="icon"
-          class="h-8 w-8 min-h-8 rounded-md px-0 border border-slate-300 text-slate-500 hover:border-indigo-400 hover:bg-indigo-50 hover:text-indigo-600 dark:border-slate-600 dark:text-slate-400 dark:hover:border-indigo-500/50 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-300"
+          class="h-9 w-9 min-h-9 rounded-xl px-0 border border-transparent shadow-sm text-slate-500 hover:border-indigo-400 hover:bg-indigo-50/80 hover:scale-110 hover:shadow-md hover:text-indigo-600 dark:text-slate-400 dark:hover:border-indigo-500/50 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-300 transition-all duration-300"
           [title]="editTitle()"
           [attr.aria-label]="editTitle()"
           (click)="edit.emit()">
@@ -47,7 +47,7 @@ import { ButtonComponent } from '@ui/button/button.component';
           appButton
           variant="ghost"
           size="icon"
-          class="h-8 w-8 min-h-8 rounded-md px-0 border border-slate-300 text-slate-500 hover:border-rose-400 hover:bg-rose-50 hover:text-rose-600 dark:border-slate-600 dark:text-slate-400 dark:hover:border-rose-500/50 dark:hover:bg-rose-500/10 dark:hover:text-rose-300"
+          class="h-9 w-9 min-h-9 rounded-xl px-0 border border-transparent shadow-sm text-slate-500 hover:border-rose-400 hover:bg-rose-50/80 hover:scale-110 hover:shadow-md hover:text-rose-600 dark:text-slate-400 dark:hover:border-rose-500/50 dark:hover:bg-rose-500/10 dark:hover:text-rose-300 transition-all duration-300"
           [title]="deleteTitle()"
           [attr.aria-label]="deleteTitle()"
           (click)="delete.emit()">

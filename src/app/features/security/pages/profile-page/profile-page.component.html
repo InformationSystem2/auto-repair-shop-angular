@@ -1,6 +1,8 @@
-<div class="max-w-2xl mx-auto space-y-6">
+<div class="max-w-4xl mx-auto space-y-10 py-6 animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out fill-mode-both">
 
-  <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Mi Perfil</h1>
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Mi Perfil</h1>
+  </div>
 
   @if (loading()) {
     <div class="flex justify-center py-12">
@@ -12,53 +14,14 @@
   }
 
   @if (user(); as u) {
-    <!-- Avatar card -->
-    <div class="bg-white/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/50 rounded-xl p-5 flex items-center gap-5 shadow-sm dark:shadow-none">
-      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-cyan-400
-                  flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-indigo-500/20">
-        {{ u.name[0] }}{{ u.last_name[0] }}
-      </div>
-      <div>
-        <h2 class="text-xl font-semibold text-slate-900 dark:text-white">{{ u.name }} {{ u.last_name }}</h2>
-        <p class="text-slate-600 dark:text-slate-400 text-sm">{{ '@' + u.username }}</p>
-        <span [class]="u.is_active
-          ? 'inline-flex mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-          : 'inline-flex mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-red-500/15 text-red-400 border border-red-500/30'">
-          {{ u.is_active ? 'Activo' : 'Inactivo' }}
-        </span>
-      </div>
-    </div>
+    <!-- Header stays always visible -->
+    <app-profile-header [user]="u" />
 
-    <!-- Detail grid -->
-    <div class="bg-white/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/50 rounded-xl p-5 grid grid-cols-1 sm:grid-cols-2 gap-5 shadow-sm dark:shadow-none">
-      <div>
-        <p class="text-xs text-slate-500 dark:text-slate-500 uppercase tracking-wider mb-1">Correo</p>
-        <p class="text-slate-900 dark:text-white text-sm">{{ u.email }}</p>
-      </div>
-      <div>
-        <p class="text-xs text-slate-500 dark:text-slate-500 uppercase tracking-wider mb-1">Teléfono</p>
-        <p class="text-slate-900 dark:text-white text-sm">{{ u.phone ?? '—' }}</p>
-      </div>
-      <div>
-        <p class="text-xs text-slate-500 dark:text-slate-500 uppercase tracking-wider mb-1">Miembro desde</p>
-        <p class="text-slate-900 dark:text-white text-sm">{{ u.created_at | date:'mediumDate' }}</p>
-      </div>
-      <div>
-        <p class="text-xs text-slate-500 dark:text-slate-500 uppercase tracking-wider mb-1">Última actualización</p>
-        <p class="text-slate-900 dark:text-white text-sm">{{ u.updated_at | date:'mediumDate' }}</p>
-      </div>
-    </div>
-
-    <!-- Roles -->
-    <div class="bg-white/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/50 rounded-xl p-5 shadow-sm dark:shadow-none">
-      <p class="text-xs text-slate-500 dark:text-slate-500 uppercase tracking-wider mb-3">Roles asignados</p>
-      <div class="flex flex-wrap gap-2">
-        @for (role of u.roles; track role.id) {
-          <span class="px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
-            {{ role.name }}
-          </span>
-        }
-      </div>
-    </div>
+    <!-- Edit Form -->
+    <app-profile-edit-form
+      [user]="u"
+      [saving]="saving()"
+      (save)="onSave($event)"
+    />
   }
 </div>

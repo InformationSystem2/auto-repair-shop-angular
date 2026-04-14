@@ -25,7 +25,7 @@ export class TableComponent {
 })
 export class TableHeaderComponent {
   userClass = input<string>('', { alias: 'class' });
-  classes = computed(() => cn('[&_tr]:border-b dark:border-slate-800', this.userClass()));
+  classes = computed(() => cn('bg-slate-50/50 dark:bg-slate-800/30', this.userClass()));
 }
 
 @Component({
@@ -47,7 +47,7 @@ export class TableBodyComponent {
 })
 export class TableRowComponent {
   userClass = input<string>('', { alias: 'class' });
-  classes = computed(() => cn('border-b border-slate-200 transition-colors hover:bg-slate-100/50 data-[state=selected]:bg-slate-100 dark:border-slate-800 dark:hover:bg-slate-800/50 dark:data-[state=selected]:bg-slate-800', this.userClass()));
+  classes = computed(() => cn('border-b border-slate-100 transition-all duration-300 hover:bg-white data-[state=selected]:bg-slate-50 dark:border-slate-800/50 dark:hover:bg-slate-800/80 dark:data-[state=selected]:bg-slate-800/80 align-middle group', this.userClass()));
 }
 
 @Component({
@@ -58,7 +58,7 @@ export class TableRowComponent {
 })
 export class TableHeadComponent {
   userClass = input<string>('', { alias: 'class' });
-  classes = computed(() => cn('h-10 px-4 text-left align-middle font-medium text-slate-500 [&:has([role=checkbox])]:pr-0 dark:text-slate-400', this.userClass()));
+  classes = computed(() => cn('h-12 px-6 text-left align-middle font-black uppercase tracking-widest text-[0.70rem] text-slate-400 [&:has([role=checkbox])]:pr-0 dark:text-slate-500', this.userClass()));
 }
 
 @Component({
