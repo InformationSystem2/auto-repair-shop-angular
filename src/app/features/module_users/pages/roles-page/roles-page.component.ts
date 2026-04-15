@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RoleService } from '@users/services/role.service';
 import { PermissionService } from '@users/services/permission.service';
 import { CommonModule } from '@angular/common';
@@ -9,23 +9,26 @@ import { RoleFormComponent } from './components/role-form/role-form.component';
 import { RoleDetailModalComponent } from './components/role-detail-modal/role-detail-modal.component';
 import { ButtonComponent } from '@ui/button/button.component';
 import { CardComponent } from '@ui/card/card.component';
+import { TranslationService } from '@core/services/translation.service';
 
 @Component({
   selector: 'app-roles-page',
   standalone: true,
   imports: [
-    CommonModule, 
-    RolesTableComponent, 
-    RoleFormComponent, 
+    CommonModule,
+    RolesTableComponent,
+    RoleFormComponent,
     RoleDetailModalComponent,
     ButtonComponent,
     CardComponent
   ],
   templateUrl: './roles-page.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RolesPageComponent implements OnInit {
   private readonly roleSvc = inject(RoleService);
   private readonly permSvc = inject(PermissionService);
+  readonly i18n = inject(TranslationService);
 
   readonly loading = signal(true);
   readonly saving = signal(false);
@@ -90,7 +93,7 @@ export class RolesPageComponent implements OnInit {
   }
 
   confirmDelete(role: RoleDetail): void {
-    if (!confirm(`¿Eliminar el rol ${role.name}?`)) return;
+    if (!confirm(this.i18n.translate('roles.delete_confirm', { name: role.name }))) return;
     this.roleSvc.delete(role.id).subscribe(() => this.loadRoles());
   }
 }

@@ -1,11 +1,11 @@
-import { Component, computed, inject, input, output, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, output, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
 import { RoleCreate, RoleDetail, RoleUpdate } from '@users/models/role.model';
 import { Permission } from '@users/models/permission.model';
 import { CheckboxComponent } from '@ui/checkbox/checkbox.component';
 import { groupPermissions } from '../../../../utils/permission-groups';
 import { InputDirective } from '@ui/input/input.component';
-import { TextareaDirective } from '@ui/textarea/textarea.component';
+import { TranslationService } from '@core/services/translation.service';
 
 @Component({
   selector: 'app-role-form',
@@ -14,12 +14,13 @@ import { TextareaDirective } from '@ui/textarea/textarea.component';
     ReactiveFormsModule,
     CheckboxComponent,
     InputDirective,
-    TextareaDirective
   ],
   templateUrl: './role-form.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoleFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
+  readonly i18n = inject(TranslationService);
 
   editingRole = input<RoleDetail | null>(null);
   allPermissions = input<Permission[]>([]);

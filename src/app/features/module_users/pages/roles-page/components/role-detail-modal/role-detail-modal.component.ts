@@ -1,20 +1,21 @@
-import { Component, computed, inject, input, output, signal, effect } from '@angular/core';
+import { Component, computed, inject, input, output, signal, effect, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RoleService } from '@users/services/role.service';
 import { RoleDetail } from '@users/models/role.model';
 import { BadgeComponent } from '@ui/badge/badge.component';
 import { ButtonComponent } from '@ui/button/button.component';
 import { groupPermissions } from '../../../../utils/permission-groups';
-
+import { TranslationService } from '@core/services/translation.service';
 @Component({
   selector: 'app-role-detail-modal',
-  standalone: true,
   imports: [DatePipe, BadgeComponent, ButtonComponent],
   templateUrl: './role-detail-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoleDetailModalComponent {
   private readonly roleService = inject(RoleService);
-  
+  readonly i18n = inject(TranslationService);
+
   roleId = input<number | null>(null);
   close = output<void>();
 

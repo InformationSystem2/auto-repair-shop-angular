@@ -1,19 +1,22 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/auth/auth.service';
 import { LoginResponse } from '@security/models/auth.model';
+import { TranslationService } from '@core/services/translation.service';
 
 @Component({
   selector: 'app-login-page',
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './login-page.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPageComponent {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  readonly i18n = inject(TranslationService);
 
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
@@ -46,7 +49,7 @@ export class LoginPageComponent {
       },
       error: () => {
         this.loading.set(false);
-        this.error.set('Usuario o contraseña incorrectos.');
+        this.error.set(this.i18n.translate('login.error_invalid'));
       },
     });
   }

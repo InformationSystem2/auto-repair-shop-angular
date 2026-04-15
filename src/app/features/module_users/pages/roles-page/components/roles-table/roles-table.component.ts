@@ -1,20 +1,21 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, inject, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RoleDetail } from '@users/models/role.model';
 import { BadgeComponent } from '@ui/badge/badge.component';
 import { TableRowActionsComponent } from '@ui/table-row-actions/table-row-actions.component';
-
+import { TranslationService } from '@core/services/translation.service';
 @Component({
   selector: 'app-roles-table',
-  standalone: true,
   imports: [
     DatePipe,
     BadgeComponent,
     TableRowActionsComponent
   ],
   templateUrl: './roles-table.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RolesTableComponent {
+  readonly i18n = inject(TranslationService);
   roles = input<RoleDetail[]>([]);
   edit = output<RoleDetail>();
   delete = output<RoleDetail>();

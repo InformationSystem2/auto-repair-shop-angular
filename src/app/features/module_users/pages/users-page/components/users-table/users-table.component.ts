@@ -1,9 +1,10 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, inject, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { User } from '@users/models/user.model';
 import { BadgeComponent } from '@ui/badge/badge.component';
 import { AvatarComponent, AvatarFallbackComponent } from '@ui/avatar/avatar.component';
 import { TableRowActionsComponent } from '@ui/table-row-actions/table-row-actions.component';
+import { TranslationService } from '@core/services/translation.service';
 
 @Component({
   selector: 'app-users-table',
@@ -16,8 +17,10 @@ import { TableRowActionsComponent } from '@ui/table-row-actions/table-row-action
     TableRowActionsComponent
   ],
   templateUrl: './users-table.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersTableComponent {
+  readonly i18n = inject(TranslationService);
   users = input<User[]>([]);
   edit = output<User>();
   delete = output<User>();

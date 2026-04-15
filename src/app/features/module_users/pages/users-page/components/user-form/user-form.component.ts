@@ -1,4 +1,4 @@
-import { Component, inject, input, output, OnInit, signal } from '@angular/core';
+import { Component, inject, input, output, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
 import { User, UserCreate, UserUpdate } from '@users/models/user.model';
 import { RoleDetail } from '@users/models/role.model';
@@ -6,21 +6,24 @@ import { AuthService } from '@core/auth/auth.service';
 import { CheckboxComponent } from '@ui/checkbox/checkbox.component';
 import { SwitchComponent } from '@ui/switch/switch.component';
 import { InputDirective } from '@ui/input/input.component';
+import { TranslationService } from '@core/services/translation.service';
 
 @Component({
   selector: 'app-user-form',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    CheckboxComponent, 
+    CheckboxComponent,
     SwitchComponent,
     InputDirective
   ],
   templateUrl: './user-form.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
+  readonly i18n = inject(TranslationService);
 
   editingUser = input<User | null>(null);
   availableRoles = input<RoleDetail[]>([]);

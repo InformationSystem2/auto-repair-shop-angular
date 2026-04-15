@@ -12,13 +12,13 @@ import { Permission } from '@users/models/permission.model';
 @Injectable({ providedIn: 'root' })
 export class PermissionService {
   private readonly http = inject(HttpClient);
-  private readonly base = `${environment.apiUrl}/permissions`;
+  private readonly collectionUrl = `${environment.apiUrl}/permissions/`;
 
   getAll(): Observable<Permission[]> {
-    return this.http.get<Permission[]>(this.base);
+    return this.http.get<Permission[]>(this.collectionUrl);
   }
 
   getById(id: number): Observable<Permission> {
-    return this.http.get<Permission>(`${this.base}/${id}`);
+    return this.http.get<Permission>(`${this.collectionUrl}${id}`);
   }
 }

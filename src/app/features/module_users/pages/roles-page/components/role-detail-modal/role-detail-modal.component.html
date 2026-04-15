@@ -1,6 +1,6 @@
 <div class="fixed inset-0 z-[80] bg-slate-950/60 backdrop-blur-xl transition-all" (click)="close.emit()"></div>
 
-<div class="fixed left-1/2 top-[48%] z-[90] w-[calc(100%-2rem)] max-w-2xl max-h-[calc(100vh-4rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto 
+<div class="fixed left-1/2 top-[48%] z-[90] w-[calc(100%-2rem)] max-w-2xl max-h-[calc(100vh-4rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto
             bg-white/90 dark:bg-slate-900/80 backdrop-blur-3xl rounded-[2rem] border border-white/60 dark:border-slate-700/80 shadow-2xl shadow-slate-900/50 dark:shadow-[0_0_50px_-15px_rgba(0,0,0,0.7)] animate-in zoom-in-95 duration-300 custom-scrollbar flex flex-col">
 
   <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-90"></div>
@@ -9,7 +9,7 @@
     type="button"
     (click)="close.emit()"
     class="absolute right-5 top-5 rounded-full p-2 text-slate-500 hover:text-slate-900 bg-slate-100/50 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-700 transition-all hover:rotate-90 hover:scale-110 z-10"
-    aria-label="Cerrar">
+    [attr.aria-label]="i18n.translate('common.close')">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
       <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
     </svg>
@@ -22,10 +22,10 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
         </svg>
       </span>
-      Detalles del Rol
+      {{ i18n.translate('roles.detail_title') }}
     </h2>
     <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-3 pl-1">
-      Información completa de los permisos asociados a este rol.
+      {{ i18n.translate('roles.detail_subtitle') }}
     </p>
   </div>
 
@@ -45,7 +45,7 @@
             </svg>
             {{ r.name }}
           </h3>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mt-1 leading-relaxed">{{ r.description || 'Sin descripción' }}</p>
+          <p class="text-slate-600 dark:text-slate-400 text-sm mt-1 leading-relaxed">{{ r.description || i18n.translate('roles.form.no_desc') }}</p>
         </div>
 
         <div class="bg-white/50 dark:bg-slate-950/40 backdrop-blur p-5 rounded-2xl border border-white/60 dark:border-slate-800/80 space-y-6 shadow-sm">
@@ -55,14 +55,14 @@
               <p class="mt-1 text-sm font-semibold text-slate-900 dark:text-white">{{ r.id }}</p>
             </div>
             <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-3">
-              <p class="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold">Permisos</p>
+              <p class="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold">{{ i18n.translate('roles.table.permissions') }}</p>
               <p class="mt-1 text-sm font-semibold text-slate-900 dark:text-white">{{ r.permissions.length }}</p>
             </div>
           </div>
 
           <!-- Permissions -->
           <div class="space-y-4">
-            <label class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-500 font-bold block">Listado de Permisos</label>
+            <label class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-500 font-bold block">{{ i18n.translate('roles.assigned_perms') }}</label>
             <div class="max-h-64 overflow-y-auto pr-1 flex flex-col gap-2">
               @for (group of permissionGroups(); track group.packageName) {
                 <div class="space-y-2">
@@ -78,7 +78,7 @@
                         </app-badge>
                         <div class="flex-1 min-w-0">
                           <p class="text-xs text-slate-900 dark:text-slate-100 font-semibold mb-0.5">{{ perm.name }}</p>
-                          <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">{{ perm.description || 'Sin descripción' }}</p>
+                          <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">{{ perm.description || i18n.translate('roles.form.no_desc') }}</p>
                           <p class="mt-1 text-[10px] text-slate-400 dark:text-slate-500">ID: {{ perm.id }} · Creado: {{ perm.created_at | date:'dd/MM/yyyy' }}</p>
                         </div>
                       </div>
@@ -86,7 +86,7 @@
                   </div>
                 </div>
               } @empty {
-                <p class="text-xs text-slate-500 dark:text-slate-400 italic py-4 text-center">No tiene permisos asignados.</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 italic py-4 text-center">{{ i18n.translate('roles.no_perms') }}</p>
               }
             </div>
           </div>
@@ -94,11 +94,11 @@
           <!-- Timestamps -->
           <div class="border-t border-slate-200 dark:border-slate-800 pt-4 mt-2 space-y-2">
             <div class="flex justify-between items-center text-xs">
-              <span class="text-slate-500 dark:text-slate-500">Fecha de creación</span>
+              <span class="text-slate-500 dark:text-slate-500">{{ i18n.translate('common.created_at') }}</span>
               <span class="text-slate-700 dark:text-slate-300 font-medium">{{ r.create_at | date:'dd MMM yyyy, HH:mm' }}</span>
             </div>
             <div class="flex justify-between items-center text-xs">
-              <span class="text-slate-500 dark:text-slate-500">Última actualización</span>
+              <span class="text-slate-500 dark:text-slate-500">{{ i18n.translate('roles.table.updated_at') }}</span>
               <span class="text-slate-700 dark:text-slate-300 font-medium">{{ r.updated_at | date:'dd MMM yyyy, HH:mm' }}</span>
             </div>
           </div>
@@ -108,6 +108,7 @@
 
   <div class="px-8 py-5 border-t border-slate-200/50 dark:border-slate-800/50 flex justify-end shrink-0 bg-transparent">
     <button appButton variant="secondary" (click)="close.emit()" class="w-full sm:w-auto h-12 px-6 rounded-xl border border-slate-200 bg-white text-slate-700 text-sm font-bold hover:bg-slate-50 hover:text-slate-900 transition-colors dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100">
-      Cerrar
+      {{ i18n.translate('common.close') }}
     </button>
   </div>
+</div>
