@@ -1,10 +1,10 @@
-<header class="h-16 flex items-center justify-between px-6 
-               bg-white/60 dark:bg-[#0B0F19]/60 backdrop-blur-xl border-b border-white/50 dark:border-slate-800/80 shadow-sm shrink-0 transition-colors duration-300 relative z-10 w-full">
-  
+<header class="h-16 flex items-center justify-between px-6
+               bg-[#eff1f5]/60 dark:bg-[#1a1b26]/60 backdrop-blur-xl border-b border-white/50 dark:border-slate-800/80 shadow-sm shrink-0 transition-colors duration-300 relative z-10 w-full">
+
   <div class="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-800 to-transparent"></div>
 
   <!-- Mobile Toggle -->
-  <button 
+  <button
     (click)="uiService.toggleSidebar()"
     class="lg:hidden p-2.5 -ml-3 rounded-xl text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:text-slate-400 dark:hover:text-indigo-400 dark:hover:bg-indigo-500/10 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500/50">
     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -23,7 +23,7 @@
     <!-- Dark Mode Toggle -->
     <button (click)="uiService.toggleDarkMode()"
       class="p-2.5 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-white dark:text-slate-400 dark:hover:text-indigo-400 dark:hover:bg-slate-800 hover:shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/50 border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
-      [title]="uiService.darkMode() ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
+      [title]="uiService.darkMode() ? i18n.translate('common.light_mode') : i18n.translate('common.dark_mode')">
       @if (uiService.darkMode()) {
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -37,9 +37,18 @@
       }
     </button>
 
+    <!-- Language Toggle -->
+    <button (click)="toggleLang()"
+      class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-slate-500 hover:text-indigo-600 hover:bg-white dark:text-slate-400 dark:hover:text-indigo-400 dark:hover:bg-slate-800 hover:shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/50 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 text-xs font-bold uppercase tracking-wider">
+      <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5c.413 2.893-1.028 5.799-3.501 7.74M4.5 9C4.5 9 5.59 14.988 11 17" />
+      </svg>
+      {{ i18n.currentLang() }}
+    </button>
+
     <!-- Notification placeholder -->
     <button class="relative p-2.5 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-white dark:text-slate-400 dark:hover:text-indigo-400 dark:hover:bg-slate-800 hover:shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/50 border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
-      <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-pink-500 border-2 border-white dark:border-[#0B0F19] rounded-full animate-pulse"></span>
+      <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-pink-500 border-2 border-white dark:border-[#1a1b26] rounded-full animate-pulse"></span>
       <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -58,7 +67,7 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
           d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
       </svg>
-      <span class="hidden sm:block">Salir</span>
+      <span class="hidden sm:block">{{ i18n.translate('nav.logout') }}</span>
     </button>
   </div>
 </header>

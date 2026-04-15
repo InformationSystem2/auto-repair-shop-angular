@@ -1,16 +1,19 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RoleDetail } from '@users/models/role.model';
 import { InputDirective } from '@ui/input/input.component';
+import { TranslationService } from '@core/services/translation.service';
 
 @Component({
   selector: 'app-users-toolbar',
   standalone: true,
   imports: [InputDirective],
   templateUrl: './users-toolbar.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersToolbarComponent {
+  readonly i18n = inject(TranslationService);
   roles = input<RoleDetail[]>([]);
-  
+
   filterChange = output<{ search: string; roleId: number | null }>();
 
   readonly currentSearch = signal('');

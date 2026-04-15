@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from '@users/services/user.service';
 import { RoleService } from '@users/services/role.service';
@@ -11,25 +11,28 @@ import { UserDetailModalComponent } from './components/user-detail-modal/user-de
 import { ButtonComponent } from '@ui/button/button.component';
 import { CardComponent } from '@ui/card/card.component';
 import { AlertDialogComponent } from '@ui/alert-dialog/alert-dialog.component';
+import { TranslationService } from '@core/services/translation.service';
 
 @Component({
   selector: 'app-users-page',
   standalone: true,
   imports: [
-    CommonModule, 
-    UsersToolbarComponent, 
-    UsersTableComponent, 
-    UserFormComponent, 
+    CommonModule,
+    UsersToolbarComponent,
+    UsersTableComponent,
+    UserFormComponent,
     UserDetailModalComponent,
     ButtonComponent,
     CardComponent,
     AlertDialogComponent
   ],
   templateUrl: './users-page.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersPageComponent implements OnInit {
   private readonly userSvc = inject(UserService);
   private readonly roleSvc = inject(RoleService);
+  readonly i18n = inject(TranslationService);
 
   readonly loading = signal(true);
   readonly saving = signal(false);
