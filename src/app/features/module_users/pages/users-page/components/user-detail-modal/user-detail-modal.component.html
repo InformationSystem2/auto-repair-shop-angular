@@ -36,7 +36,7 @@
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
         </svg>
-        <span class="text-sm text-slate-500 dark:text-slate-400 animate-pulse">Cargando información...</span>
+        <span class="text-sm text-slate-500 dark:text-slate-400 animate-pulse">{{ i18n.translate('users.loading_details') }}</span>
       </div>
     } @else if (user(); as u) {
       <div class="flex flex-col items-center text-center mb-6">
@@ -61,23 +61,30 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white/50 dark:bg-slate-950/40 backdrop-blur border border-white/60 dark:border-slate-800/80 rounded-2xl p-5 shadow-sm">
         <div class="space-y-1">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Correo Electrónico</span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ i18n.translate('common.email') }}</span>
           <p class="text-sm text-slate-700 dark:text-slate-200 font-medium truncate">{{ u.email }}</p>
         </div>
 
         <div class="space-y-1">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Teléfono</span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ i18n.translate('common.phone') }}</span>
           <p class="text-sm text-slate-700 dark:text-slate-200 font-medium">{{ u.phone || '—' }}</p>
         </div>
 
         <div class="space-y-1">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Creado</span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ i18n.translate('common.created_at') }}</span>
           <p class="text-xs text-slate-600 dark:text-slate-300 font-medium" [title]="u.created_at | date:'medium'">{{ u.created_at | timeAgo }}</p>
         </div>
 
         <div class="space-y-1">
           <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Actualizado</span>
           <p class="text-xs text-slate-600 dark:text-slate-300 font-medium" [title]="u.updated_at | date:'medium'">{{ u.updated_at | timeAgo }}</p>
+        </div>
+
+        <div class="sm:col-span-2 space-y-1 pt-1">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Registrado por (ID)</span>
+          <p class="text-xs text-indigo-600 dark:text-indigo-400 font-bold">
+            {{ u.created_by_id || 'Sistema' }}
+          </p>
         </div>
 
         <div class="sm:col-span-2 space-y-2 pt-2 border-t border-slate-200 dark:border-slate-800">

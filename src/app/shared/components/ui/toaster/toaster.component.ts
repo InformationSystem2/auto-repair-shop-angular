@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslationService } from '@core/services/translation.service';
 import { ToastService, Toast } from '@core/services/toast.service';
 
 // ─── Individual Toast Item ────────────────────────────────────────────────────
@@ -62,7 +63,7 @@ import { ToastService, Toast } from '@core/services/toast.service';
         <button
           class="shrink-0 rounded p-1 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
           (click)="toastSvc.remove(toast.id)"
-          aria-label="Cerrar notificación"
+          [attr.aria-label]="i18n.translate('common_ui.close_notification')"
         >
           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
@@ -85,6 +86,7 @@ export class ToastItemComponent implements OnInit, OnDestroy {
   @Input({ required: true }) toast!: Toast;
 
   public readonly toastSvc = inject(ToastService);
+  protected readonly i18n = inject(TranslationService);
   readonly progress = signal(100);
 
   private intervalId: ReturnType<typeof setInterval> | null = null;

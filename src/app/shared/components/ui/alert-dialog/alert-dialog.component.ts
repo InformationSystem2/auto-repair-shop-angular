@@ -1,4 +1,5 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, inject } from '@angular/core';
+import { TranslationService } from '@core/services/translation.service';
 import { ButtonComponent } from '../button/button.component';
 import { DialogComponent, DialogOverlayComponent, DialogContentComponent, DialogHeaderComponent, DialogFooterComponent, DialogTitleComponent, DialogDescriptionComponent } from '../dialog/dialog.component';
 
@@ -39,10 +40,12 @@ import { DialogComponent, DialogOverlayComponent, DialogContentComponent, Dialog
   `
 })
 export class AlertDialogComponent {
-  title = input<string>('¿Estás seguro?');
-  description = input<string>('Esta acción no se puede deshacer.');
-  cancelText = input<string>('Cancelar');
-  confirmText = input<string>('Confirmar');
+  private i18n = inject(TranslationService);
+
+  title = input<string>(this.i18n.translate('common_ui.confirm_title'));
+  description = input<string>(this.i18n.translate('common_ui.confirm_description'));
+  cancelText = input<string>(this.i18n.translate('common.cancel'));
+  confirmText = input<string>(this.i18n.translate('common.confirm'));
 
   confirm = output<void>();
   cancel = output<void>();
