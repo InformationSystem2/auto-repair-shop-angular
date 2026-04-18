@@ -9,7 +9,7 @@
     type="button"
     (click)="close.emit()"
     class="absolute right-5 top-5 rounded-full p-2 text-slate-500 hover:text-slate-900 bg-slate-100/50 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-700 transition-all hover:rotate-90 hover:scale-110"
-    aria-label="Cerrar">
+    [attr.aria-label]="i18n.translate('common_ui.close')">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
       <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
     </svg>

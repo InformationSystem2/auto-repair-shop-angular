@@ -12,7 +12,7 @@ export const MODULE_USERS_ROUTES: Routes = [
       { 
         path: 'users',
         component: UsersPageComponent,
-        canActivate: [roleGuard('admin', 'workshop_owner')]
+        canActivate: [roleGuard('admin')]
       },
       {
         path: 'roles',

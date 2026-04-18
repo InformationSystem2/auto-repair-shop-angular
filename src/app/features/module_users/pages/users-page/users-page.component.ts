@@ -11,6 +11,7 @@ import { UserDetailModalComponent } from './components/user-detail-modal/user-de
 import { ButtonComponent } from '@ui/button/button.component';
 import { CardComponent } from '@ui/card/card.component';
 import { AlertDialogComponent } from '@ui/alert-dialog/alert-dialog.component';
+import { ToastService } from '@core/services/toast.service';
 import { TranslationService } from '@core/services/translation.service';
 
 @Component({
@@ -32,6 +33,7 @@ import { TranslationService } from '@core/services/translation.service';
 export class UsersPageComponent implements OnInit {
   private readonly userSvc = inject(UserService);
   private readonly roleSvc = inject(RoleService);
+  private readonly toastSvc = inject(ToastService);
   readonly i18n = inject(TranslationService);
 
   readonly loading = signal(true);
@@ -104,12 +106,18 @@ export class UsersPageComponent implements OnInit {
 
     if (user) {
       this.userSvc.update(user.id, payload as UserUpdate).subscribe({
-        next: () => this.handleSuccess(),
+        next: () => {
+          this.toastSvc.success(this.i18n.translate('users.edit_success'));
+          this.handleSuccess();
+        },
         error: () => this.saving.set(false),
       });
     } else {
       this.userSvc.create(payload as UserCreate).subscribe({
-        next: () => this.handleSuccess(),
+        next: () => {
+          this.toastSvc.success(this.i18n.translate('users.new_success'));
+          this.handleSuccess();
+        },
         error: () => this.saving.set(false),
       });
     }
@@ -131,6 +139,7 @@ export class UsersPageComponent implements OnInit {
 
     this.userSvc.delete(user.id).subscribe({
       next: () => {
+        this.toastSvc.success(this.i18n.translate('users.delete_success'));
         this.selectedUserForDelete.set(null);
         this.loadUsers();
       },

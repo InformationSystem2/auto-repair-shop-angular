@@ -59,7 +59,6 @@ export class ProfilePageComponent implements OnInit {
       },
       error: () => {
         this.saving.set(false);
-        this.toastSvc.error(this.i18n.translate('profile.save_error'));
       }
     });
   }
