@@ -57,12 +57,12 @@ export class WorkshopManagementPageComponent implements OnInit {
   readonly form = this.fb.group({
     // Basic Info (WorkshopUpdate)
     name: ['', [Validators.required, Validators.maxLength(150)]],
-    business_name: ['', [Validators.required, Validators.maxLength(200)]],
+    business_name: ['', [Validators.required, Validators.maxLength(255)]],
     address: ['', [Validators.required]],
     phone: ['', [Validators.required, Validators.maxLength(50)]],
     latitude: [null as number | null],
     longitude: [null as number | null],
-    specialty_ids: [[] as string[]],
+    specialty_ids: [[] as number[]],
     
     // Admin Only Info (WorkshopAdminUpdate)
     commission_rate: [0, [Validators.required, Validators.min(0)]],
@@ -116,7 +116,7 @@ export class WorkshopManagementPageComponent implements OnInit {
     });
   }
 
-  onSpecialtyToggle(id: string): void {
+  onSpecialtyToggle(id: number): void {
     const current = this.form.get('specialty_ids')?.value || [];
     const index = current.indexOf(id);
     const updated = [...current];
@@ -150,7 +150,7 @@ export class WorkshopManagementPageComponent implements OnInit {
         phone: this.form.value.phone ?? undefined,
         latitude: this.form.value.latitude ?? undefined,
         longitude: this.form.value.longitude ?? undefined,
-        specialty_ids: this.form.value.specialty_ids as any ?? undefined
+        specialty_ids: this.form.value.specialty_ids ?? undefined
       };
       this.workshopSvc.updateMyWorkshop(payload).subscribe({
         next: (updated) => this.handleSuccess(updated),

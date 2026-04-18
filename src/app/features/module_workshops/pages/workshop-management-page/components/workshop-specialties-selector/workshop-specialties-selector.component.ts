@@ -87,8 +87,8 @@ export class WorkshopSpecialtiesSelectorComponent {
   readonly i18n = inject(TranslationService);
   
   availableSpecialties = input.required<Specialty[]>();
-  selectedIds = input<string[]>([]);
-  toggle = output<string>();
+  selectedIds = input<number[]>([]);
+  toggle = output<number>();
 
   readonly searchTerm = signal('');
   readonly filteredSpecialties = computed(() => {

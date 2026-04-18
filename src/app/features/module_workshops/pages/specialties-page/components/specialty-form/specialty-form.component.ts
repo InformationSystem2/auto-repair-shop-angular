@@ -26,18 +26,6 @@ import { TranslationService } from '@core/services/translation.service';
         </p>
       </div>
 
-      <div class="space-y-2">
-        <label class="text-[0.65rem] font-black uppercase tracking-widest text-slate-500 dark:text-slate-300 ml-1">
-          {{ i18n.translate('workshops.form.specialty_desc_label') }}
-        </label>
-        <textarea 
-          formControlName="description"
-          rows="4"
-          [placeholder]="i18n.translate('workshops.form.specialty_desc_placeholder')"
-          class="w-full px-5 py-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white focus:ring-4 focus:ring-indigo-500/15 focus:border-indigo-500 dark:focus:border-indigo-400 transition-all outline-none font-medium resize-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
-        ></textarea>
-      </div>
-
       <div class="flex items-center gap-3 pt-4">
         <button 
           appButton
@@ -73,15 +61,13 @@ export class SpecialtyFormComponent implements OnChanges {
   @Output() cancel = new EventEmitter<void>();
 
   readonly form = this.fb.group({
-    name: ['', [Validators.required, Validators.maxLength(100)]],
-    description: [''],
+    name: ['', [Validators.required, Validators.maxLength(50)]],
   });
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['specialty'] && this.specialty) {
       this.form.patchValue({
         name: this.specialty.name,
-        description: this.specialty.description || ''
       });
     } else if (changes['specialty']) {
       this.form.reset();

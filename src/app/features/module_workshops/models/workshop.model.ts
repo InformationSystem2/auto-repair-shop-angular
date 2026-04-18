@@ -2,6 +2,7 @@ import { Specialty } from './specialty.model';
 
 export interface Workshop {
   id: string;
+  owner_user_id: string;
   name: string;
   business_name: string;
   ruc_nit: string;
@@ -11,9 +12,13 @@ export interface Workshop {
   longitude: number | null;
   is_available: boolean;
   is_verified: boolean;
+  is_active: boolean;
   commission_rate: number;
   rating_avg: number | null;
   total_services: number;
+  rejection_count: number;
+  last_rejection_at: string | null;
+  rejection_rate: number;
   created_at: string;
   updated_at: string;
   specialties: Specialty[];
@@ -45,7 +50,7 @@ export interface WorkshopUpdate {
   phone?: string;
   latitude?: number | null;
   longitude?: number | null;
-  specialty_ids?: string[];
+  specialty_ids?: number[];
 }
 
 export interface WorkshopAdminUpdate extends WorkshopUpdate {

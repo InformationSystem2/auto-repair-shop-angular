@@ -101,6 +101,7 @@
     "detail_subtitle": "Información completa del sistema.",
     "loading_details": "Cargando información...",
     "no_id": "Sin identificador",
+    "updated_at": "Actualizado",
     "active_user": "Usuario Activo",
     "inactive_user": "Usuario Inactivo",
     "no_roles": "No tiene roles asignados",
@@ -222,6 +223,8 @@
     "stat_rating": "Rating Promedio",
     "stat_services": "Servicios Totales",
     "stat_techs": "Técnicos (Inc. Dueño)",
+    "stat_rejections": "Rechazos",
+    "stat_rejection_rate": "Tasa de Rechazo",
     "select_specialties_desc": "Selecciona las especialidades que ofrece tu taller",
     "register_title": "Registro de Taller",
     "register_subtitle": "Únete a nuestra red de talleres",
@@ -266,10 +269,7 @@
       "owner_password": "Contraseña de acceso",
       "specialty_name": "Nombre de la especialidad",
       "specialty_name_placeholder": "Ej. Mecánica General",
-      "specialty_name_error": "El nombre es requerido (máx. 100 caracteres)",
-      "specialty_desc": "Descripción de la especialidad",
-      "specialty_desc_placeholder": "Describe en qué consiste esta especialidad...",
-      "specialty_desc_label": "Descripción"
+      "specialty_name_error": "El nombre es requerido (máx. 50 caracteres)"
     },
     "table": {
       "workshop": "Taller",

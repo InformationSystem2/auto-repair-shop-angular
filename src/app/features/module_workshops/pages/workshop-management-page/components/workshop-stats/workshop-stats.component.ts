@@ -40,6 +40,17 @@ import { TranslationService } from '@core/services/translation.service';
               <p class="text-[0.55rem] uppercase font-black opacity-60 tracking-widest">{{ i18n.translate('workshops.stat_techs') }}</p>
             </div>
           </div>
+
+          <div class="col-span-2 pt-2 border-t border-white/10 dark:border-indigo-400/10 grid grid-cols-2 gap-4">
+            <div>
+              <span class="text-lg font-black block leading-none">{{ rejectionCount() }}</span>
+              <p class="text-[0.55rem] uppercase font-black opacity-60 tracking-widest">{{ i18n.translate('workshops.stat_rejections') }}</p>
+            </div>
+            <div class="text-right">
+              <span class="text-lg font-black block leading-none">{{ rejectionRate() | number:'1.0-2' }}%</span>
+              <p class="text-[0.55rem] uppercase font-black opacity-60 tracking-widest">{{ i18n.translate('workshops.stat_rejection_rate') }}</p>
+            </div>
+          </div>
         </div>
       </div>
     </app-card>
@@ -51,4 +62,6 @@ export class WorkshopStatsComponent {
   rating = input<string | number>('0.0');
   totalServices = input<number>(0);
   technicianCount = input<number>(0);
+  rejectionCount = input<number>(0);
+  rejectionRate = input<number>(0);
 }

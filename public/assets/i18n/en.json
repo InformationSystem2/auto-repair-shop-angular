@@ -101,6 +101,7 @@
     "detail_subtitle": "Complete system information.",
     "loading_details": "Loading information...",
     "no_id": "No identifier",
+    "updated_at": "Updated",
     "active_user": "Active User",
     "inactive_user": "Inactive User",
     "no_roles": "No roles assigned",
@@ -220,6 +221,8 @@
     "stat_rating": "Average Rating",
     "stat_services": "Total Services",
     "stat_techs": "Technicians (Inc. Owner)",
+    "stat_rejections": "Rejections",
+    "stat_rejection_rate": "Rejection Rate",
     "select_specialties_desc": "Select the specialties offered by your workshop",
     "register_title": "Workshop Registration",
     "register_subtitle": "Join our network of workshops",
@@ -264,10 +267,7 @@
       "owner_password": "Access password",
       "specialty_name": "Specialty Name",
       "specialty_name_placeholder": "e.g. General Mechanics",
-      "specialty_name_error": "Name is required (max. 100 characters)",
-      "specialty_desc": "Specialty Description",
-      "specialty_desc_placeholder": "Describe what this specialty consists of...",
-      "specialty_desc_label": "Description"
+      "specialty_name_error": "Name is required (max. 50 characters)"
     },
     "table": {
       "workshop": "Workshop",

@@ -195,7 +195,9 @@
         <app-workshop-stats 
           [rating]="workshop()?.rating_avg || '0.0'" 
           [totalServices]="workshop()?.total_services || 0"
-          [technicianCount]="workshop()?.technicians_count || 0">
+          [technicianCount]="workshop()?.technicians_count || 0"
+          [rejectionCount]="workshop()?.rejection_count || 0"
+          [rejectionRate]="workshop()?.rejection_rate || 0">
         </app-workshop-stats>
       </div>
 

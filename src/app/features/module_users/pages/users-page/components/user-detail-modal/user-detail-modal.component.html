@@ -9,7 +9,7 @@
     type="button"
     (click)="close.emit()"
     class="absolute right-5 top-5 rounded-full p-2 text-slate-500 hover:text-slate-900 bg-slate-100/50 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-700 transition-all hover:rotate-90 hover:scale-110 z-10"
-    aria-label="Cerrar">
+    [attr.aria-label]="i18n.translate('common.close')">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
       <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
     </svg>
@@ -22,10 +22,10 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
         </svg>
       </span>
-      Detalles del Usuario
+      {{ i18n.translate('users.detail_title') }}
     </h2>
     <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-3 pl-1">
-      Información completa recibida desde FastAPI.
+      {{ i18n.translate('users.detail_subtitle') }}
     </p>
   </div>
 
@@ -47,14 +47,14 @@
         </app-avatar>
 
         <h3 class="text-xl font-bold text-slate-900 dark:text-white">{{ u.name }} {{ u.last_name }}</h3>
-        <p class="text-indigo-600 dark:text-indigo-400 font-medium text-sm">{{ u.username ? '@' + u.username : 'Sin identificador' }}</p>
+        <p class="text-indigo-600 dark:text-indigo-400 font-medium text-sm">{{ u.username ? '@' + u.username : i18n.translate('users.no_id') }}</p>
 
         <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
           <app-badge [variant]="u.is_active ? 'success' : 'secondary'" class="rounded-full px-3">
-            {{ u.is_active ? 'Usuario Activo' : 'Usuario Inactivo' }}
+            {{ u.is_active ? i18n.translate('users.active_user') : i18n.translate('users.inactive_user') }}
           </app-badge>
           <app-badge variant="outline" class="rounded-full px-3">
-            ID: {{ u.id }}
+            {{ i18n.translate('common.id') }}: {{ u.id }}
           </app-badge>
         </div>
       </div>
@@ -76,26 +76,19 @@
         </div>
 
         <div class="space-y-1">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Actualizado</span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ i18n.translate('users.updated_at') }}</span>
           <p class="text-xs text-slate-600 dark:text-slate-300 font-medium" [title]="u.updated_at | date:'medium'">{{ u.updated_at | timeAgo }}</p>
         </div>
 
-        <div class="sm:col-span-2 space-y-1 pt-1">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Registrado por (ID)</span>
-          <p class="text-xs text-indigo-600 dark:text-indigo-400 font-bold">
-            {{ u.created_by_id || 'Sistema' }}
-          </p>
-        </div>
-
         <div class="sm:col-span-2 space-y-2 pt-2 border-t border-slate-200 dark:border-slate-800">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Roles Asignados</span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ i18n.translate('users.assigned_roles') }}</span>
           <div class="flex flex-wrap gap-1.5">
             @for (role of u.roles; track role.id) {
               <app-badge variant="outline" class="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
                 #{{ role.id }} {{ role.name }}
               </app-badge>
             } @empty {
-              <span class="text-xs text-slate-500 italic">No tiene roles asignados</span>
+              <span class="text-xs text-slate-500 italic">{{ i18n.translate('users.no_roles') }}</span>
             }
           </div>
         </div>

@@ -12,7 +12,6 @@ export interface User {
   created_at: string;
   updated_at: string;
   roles: Role[];
-  created_by_id: string | null;
 }
 
 /** Payload for POST /users */

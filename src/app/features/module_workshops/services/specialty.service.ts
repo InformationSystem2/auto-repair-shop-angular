@@ -13,7 +13,7 @@ export class SpecialtyService {
     return this.http.get<Specialty[]>(this.apiUrl);
   }
 
-  getById(id: string): Observable<Specialty> {
+  getById(id: number): Observable<Specialty> {
     return this.http.get<Specialty>(`${this.apiUrl}${id}`);
   }
 
@@ -21,11 +21,11 @@ export class SpecialtyService {
     return this.http.post<Specialty>(this.apiUrl, payload);
   }
 
-  update(id: string, payload: SpecialtyUpdate): Observable<Specialty> {
+  update(id: number, payload: SpecialtyUpdate): Observable<Specialty> {
     return this.http.put<Specialty>(`${this.apiUrl}${id}`, payload);
   }
 
-  delete(id: string): Observable<void> {
+  delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}${id}`);
   }
 }
