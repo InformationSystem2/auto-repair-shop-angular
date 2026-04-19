@@ -1,9 +1,9 @@
 <div class="space-y-6">
   <div>
-    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">{{ i18n.translate('dashboard.technician.title') }}</h1>
-    <p class="text-slate-600 dark:text-slate-400 text-sm mt-0.5">{{ i18n.translate('dashboard.technician.subtitle') }}</p>
+    <h1 class="text-2xl font-bold" style="color: var(--ds-text);">{{ i18n.translate('dashboard.technician.title') }}</h1>
+    <p class="text-sm mt-0.5" style="color: var(--ds-subtext);">{{ i18n.translate('dashboard.technician.subtitle') }}</p>
   </div>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-fr">
     <app-stat-card
       [label]="i18n.translate('dashboard.technician.pending_tasks')"
       value="8"
@@ -20,44 +20,44 @@
       [trend]="{ text: i18n.translate('dashboard.technician.trend_good'), positive: true }" />
   </div>
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <div class="lg:col-span-2 bg-white/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/50 rounded-xl p-5 shadow-sm dark:shadow-none">
-      <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">{{ i18n.translate('dashboard.technician.assigned_tasks') }}</h3>
+    <div class="rounded-xl p-5 overflow-hidden" style="background-color: var(--ds-card); border: 1px solid var(--ds-border); box-shadow: 0 4px 20px var(--ds-shadow);">
+      <h3 class="text-lg font-semibold mb-4" style="color: var(--ds-text);">{{ i18n.translate('dashboard.technician.assigned_tasks') }}</h3>
       <div class="space-y-4">
         @for (i of [1,2,3]; track i) {
-          <div class="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/30 hover:border-indigo-500/50 transition-all cursor-pointer group">
+          <div class="flex items-center justify-between p-4 rounded-xl transition-all cursor-pointer group" style="background-color: var(--ds-card-hi); border: 1px solid var(--ds-border-sub);">
             <div class="flex items-center gap-4">
-              <div class="w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-700/50 flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-indigo-500/20 group-hover:text-indigo-400 transition-colors">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-colors" style="background-color: var(--ds-surface0); color: var(--ds-blue);">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
               </div>
               <div>
-                <p class="text-sm font-medium text-slate-900 dark:text-white">{{ i18n.translate('dashboard.technician.task_example') }}</p>
-                <p class="text-xs text-slate-500 dark:text-slate-500">{{ i18n.translate('dashboard.technician.assigned_ago') }}</p>
+                <p class="text-sm font-medium" style="color: var(--ds-text);">{{ i18n.translate('dashboard.technician.task_example') }}</p>
+                <p class="text-xs" style="color: var(--ds-subtext);">{{ i18n.translate('dashboard.technician.assigned_ago') }}</p>
               </div>
             </div>
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ds-badge ds-badge-yellow">
               {{ i18n.translate('dashboard.technician.pending') }}
             </span>
           </div>
         }
       </div>
     </div>
-    <div class="bg-indigo-600/10 border border-indigo-500/20 rounded-xl p-5 flex flex-col items-center justify-center text-center">
-      <div class="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 p-1 mb-4">
-        <div class="w-full h-full rounded-full bg-white dark:bg-slate-900 flex items-center justify-center text-2xl font-bold text-slate-900 dark:text-white">
+    <div class="rounded-xl p-5 flex flex-col items-center justify-center text-center" style="background-color: var(--ds-card); border: 1px solid var(--ds-border); box-shadow: 0 4px 20px var(--ds-shadow);">
+      <div class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 p-1 mb-4">
+        <div class="w-full h-full rounded-full flex items-center justify-center text-2xl font-bold" style="background-color: var(--ds-bg); color: var(--ds-text);">
           T1
         </div>
       </div>
-      <h4 class="text-lg font-bold text-slate-900 dark:text-white">{{ i18n.translate('dashboard.technician.tech_profile') }}</h4>
-      <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">{{ i18n.translate('dashboard.technician.specialization') }}</p>
+      <h4 class="text-lg font-bold" style="color: var(--ds-text);">{{ i18n.translate('dashboard.technician.tech_profile') }}</h4>
+      <p class="text-sm mt-1" style="color: var(--ds-subtext);">{{ i18n.translate('dashboard.technician.specialization') }}</p>
       <div class="mt-6 w-full space-y-3">
         <div class="flex justify-between text-xs">
-          <span class="text-slate-500 dark:text-slate-500">{{ i18n.translate('dashboard.technician.productivity') }}</span>
-          <span class="text-indigo-400">85%</span>
+          <span style="color: var(--ds-subtext);">{{ i18n.translate('dashboard.technician.productivity') }}</span>
+          <span style="color: var(--ds-blue);">85%</span>
         </div>
-        <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5">
-          <div class="bg-indigo-500 h-1.5 rounded-full" style="width: 85%"></div>
+        <div class="w-full rounded-full h-1.5" style="background-color: var(--ds-surface0);">
+          <div class="h-1.5 rounded-full" style="width: 85%; background-color: var(--ds-blue);"></div>
         </div>
       </div>
     </div>

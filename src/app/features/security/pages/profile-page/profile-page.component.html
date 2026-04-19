@@ -1,7 +1,7 @@
-<div class="max-w-4xl mx-auto space-y-10 py-6 animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out fill-mode-both">
+<div class="max-w-4xl mx-auto py-6 animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out fill-mode-both">
 
-  <div class="flex items-center justify-between mb-4">
-    <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{{ i18n.translate('profile.title') }}</h1>
+  <div class="flex items-center justify-between mb-8">
+    <h1 class="text-3xl font-black tracking-tight" style="color: var(--ds-text);">{{ i18n.translate('profile.title') }}</h1>
   </div>
 
   @if (loading()) {
@@ -16,6 +16,9 @@
   @if (user(); as u) {
     <!-- Header stays always visible -->
     <app-profile-header [user]="u" />
+
+    <!-- Separator -->
+    <div class="h-px my-8" style="background-color: var(--ds-border);"></div>
 
     <!-- Edit Form -->
     <app-profile-edit-form

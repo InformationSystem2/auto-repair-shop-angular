@@ -1,53 +1,288 @@
-<div class="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700 max-w-7xl mx-auto">
-  <div class="mb-6">
-    <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 tracking-tight">{{ i18n.translate('dashboard.admin.title') }}</h1>
-    <p class="text-indigo-600 dark:text-indigo-400 font-bold tracking-wide mt-2 text-sm uppercase">{{ i18n.translate('dashboard.admin.subtitle') }}</p>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-    <app-stat-card
-      [label]="i18n.translate('dashboard.admin.active_workshops')"
-      value="124"
-      colorClass="bg-indigo-500"
-      [trend]="{ text: i18n.translate('dashboard.admin.trend_month'), positive: true }" />
-    <app-stat-card
-      [label]="i18n.translate('dashboard.admin.total_users')"
-      value="8,432"
-      colorClass="bg-cyan-500"
-      [trend]="{ text: i18n.translate('dashboard.admin.trend_users'), positive: true }" />
-    <app-stat-card
-      [label]="i18n.translate('dashboard.admin.incidents_today')"
-      value="45"
-      colorClass="bg-amber-500"
-      [trend]="{ text: i18n.translate('dashboard.admin.trend_stable'), positive: true }" />
-    <app-stat-card
-      [label]="i18n.translate('dashboard.admin.critical_alerts')"
-      value="2"
-      colorClass="bg-rose-500" />
-  </div>
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <div class="lg:col-span-2 bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/60 dark:border-slate-800/80 rounded-[2rem] p-8 min-h-[400px] flex items-center justify-center shadow-xl shadow-slate-200/40 dark:shadow-none hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
-      <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-      <div class="text-slate-400 dark:text-slate-500 flex flex-col items-center gap-3 text-center px-4 relative z-10">
-        <div class="p-6 rounded-full bg-slate-100 dark:bg-slate-800/50 mb-2">
-          <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
+<div class="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-7xl mx-auto">
+
+  <!-- Loading -->
+  @if (isLoading()) {
+    <div class="flex flex-col items-center justify-center py-24 gap-4">
+      <div class="ds-spinner"></div>
+      <p class="text-xs font-semibold tracking-widest uppercase" style="color:var(--ds-subtext)">
+        Cargando dashboard…
+      </p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (hasError()) {
+    <div class="ds-card p-8 flex flex-col items-center gap-3">
+      <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="var(--ds-red)" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
+      </svg>
+      <p class="text-sm font-semibold" style="color:var(--ds-text)">No se pudo cargar el dashboard</p>
+      <p class="text-xs" style="color:var(--ds-subtext)">Verifica tu conexión o intenta más tarde</p>
+    </div>
+  }
+
+  @if (!isLoading() && !hasError()) {
+
+    <!-- Header -->
+    <div>
+      <h1 class="text-3xl font-black tracking-tight" style="color:var(--ds-text)">
+        {{ i18n.translate('dashboard.admin.title') }}
+      </h1>
+      <p class="text-xs font-bold tracking-widest uppercase mt-1" style="color:var(--ds-blue)">
+        {{ i18n.translate('dashboard.admin.subtitle') }}
+      </p>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr">
+      <app-stat-card
+        [label]="i18n.translate('dashboard.admin.total_revenue')"
+        [value]="'$' + fmt(data()?.total_revenue ?? 0)"
+        colorClass="bg-emerald-500"
+        [trend]="{ text: i18n.translate('dashboard.admin.trend_revenue'), positive: true }"/>
+      <app-stat-card
+        [label]="i18n.translate('dashboard.admin.platform_profit')"
+        [value]="'$' + fmt(data()?.platform_profit ?? 0)"
+        colorClass="bg-indigo-500"
+        [trend]="{ text: i18n.translate('dashboard.admin.trend_revenue'), positive: true }"/>
+      <app-stat-card
+        [label]="i18n.translate('dashboard.admin.active_users')"
+        [value]="fmt(data()?.active_users ?? 0)"
+        colorClass="bg-cyan-500"
+        [trend]="{ text: i18n.translate('dashboard.admin.trend_users'), positive: true }"/>
+      <app-stat-card
+        [label]="i18n.translate('dashboard.admin.ai_success_rate')"
+        [value]="(data()?.ai_success_rate ?? 0).toFixed(1) + '%'"
+        colorClass="bg-violet-500"
+        [trend]="{ text: i18n.translate('dashboard.admin.trend_ai'), positive: true }"/>
+    </div>
+
+    <!-- Heatmap + Donut -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+      <!-- Heatmap -->
+      <div class="lg:col-span-2 ds-card p-7">
+        <div class="flex items-start justify-between mb-5 flex-wrap gap-3">
+          <div>
+            <h2 class="text-sm font-bold" style="color:var(--ds-text)">
+              {{ i18n.translate('dashboard.admin.heatmap_title') }}
+            </h2>
+            <p class="text-xs mt-0.5" style="color:var(--ds-subtext)">
+              {{ i18n.translate('dashboard.admin.heatmap_subtitle') }}
+            </p>
+          </div>
+          <div class="flex items-center gap-3 text-xs font-semibold flex-wrap" style="color:var(--ds-subtext)">
+            <span class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--ds-blue);opacity:0.4"></span>Bajo
+            </span>
+            <span class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--ds-peach)"></span>Medio
+            </span>
+            <span class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--ds-red)"></span>Alto
+            </span>
+          </div>
         </div>
-        <span class="font-bold text-lg text-slate-700 dark:text-slate-300">{{ i18n.translate('dashboard.admin.activity_chart') }}</span>
-        <span class="text-xs font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest bg-indigo-50 dark:bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-100 dark:border-indigo-500/20">{{ i18n.translate('dashboard.admin.pending_api') }}</span>
+        <div class="grid gap-2" style="grid-template-columns:repeat(10,1fr)">
+          @for (cell of heatmapCells; track $index) {
+            <div class="aspect-square rounded-full hover:scale-125 transition-transform duration-150 cursor-default"
+                 [style.background]="heatCellBg(cell.intensity)"></div>
+          }
+        </div>
+        <div class="flex justify-between mt-3 px-0.5 text-[9px] font-semibold tracking-widest uppercase"
+             style="color:var(--ds-overlay0)">
+          <span>Oeste</span><span>Centro</span><span>Norte</span><span>Este</span>
+        </div>
+      </div>
+
+      <!-- Donut -->
+      <div class="ds-card p-7 flex flex-col">
+        <div class="mb-4">
+          <h2 class="text-sm font-bold" style="color:var(--ds-text)">
+            {{ i18n.translate('dashboard.admin.distribution_title') }}
+          </h2>
+          <p class="text-xs mt-0.5" style="color:var(--ds-subtext)">
+            {{ i18n.translate('dashboard.admin.distribution_subtitle') }}
+          </p>
+        </div>
+        <!-- Donut via conic-gradient -->
+        <div class="flex items-center justify-center flex-1 py-2">
+          <div class="relative w-36 h-36 flex-shrink-0">
+            <div class="w-full h-full rounded-full" [style.background]="donutGradient()"></div>
+            <!-- Donut hole -->
+            <div class="absolute inset-0 m-auto w-[60%] h-[60%] rounded-full flex flex-col items-center justify-center"
+                 style="background:var(--ds-card)">
+              <span class="text-xl font-black leading-none" style="color:var(--ds-text)">{{ totalIncidents() }}</span>
+              <span class="text-[9px] font-bold uppercase tracking-wider mt-0.5" style="color:var(--ds-subtext)">
+                incidentes
+              </span>
+            </div>
+          </div>
+        </div>
+        <!-- Legend -->
+        <div class="space-y-2 mt-3">
+          @for (seg of incidentSegments(); track seg.label) {
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" [style.background]="seg.color"></span>
+                <span class="text-xs font-medium" style="color:var(--ds-text)">{{ seg.label }}</span>
+              </div>
+              <span class="text-xs font-bold" style="color:var(--ds-text)">{{ seg.percent }}%</span>
+            </div>
+          }
+        </div>
       </div>
     </div>
-    <div class="bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/60 dark:border-slate-800/80 rounded-[2rem] p-8 min-h-[400px] flex items-center justify-center shadow-xl shadow-slate-200/40 dark:shadow-none hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
-      <div class="absolute inset-0 bg-gradient-to-bl from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-      <div class="text-slate-400 dark:text-slate-500 flex flex-col items-center gap-3 text-center px-4 relative z-10">
-        <div class="p-6 rounded-full bg-slate-100 dark:bg-slate-800/50 mb-2">
-          <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+
+    <!-- Growth Line Chart -->
+    <div class="ds-card p-7">
+      <div class="flex items-start justify-between mb-5 flex-wrap gap-3">
+        <div>
+          <h2 class="text-sm font-bold" style="color:var(--ds-text)">
+            {{ i18n.translate('dashboard.admin.growth_title') }}
+          </h2>
+          <p class="text-xs mt-0.5" style="color:var(--ds-subtext)">
+            {{ i18n.translate('dashboard.admin.growth_subtitle') }}
+          </p>
         </div>
-        <span class="font-bold text-lg text-slate-700 dark:text-slate-300">{{ i18n.translate('dashboard.admin.recent_activity') }}</span>
-        <span class="text-xs font-bold text-purple-500 dark:text-purple-400 uppercase tracking-widest bg-purple-50 dark:bg-purple-500/10 px-3 py-1 rounded-full border border-purple-100 dark:border-purple-500/20">{{ i18n.translate('dashboard.admin.pending_api') }}</span>
+        <div class="flex items-center gap-4 text-xs font-semibold" style="color:var(--ds-subtext)">
+          <span class="flex items-center gap-1.5">
+            <span class="w-6 h-0.5 rounded-full inline-block" style="background:var(--ds-blue)"></span>
+            {{ i18n.translate('dashboard.admin.growth_workshops') }}
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="w-6 h-0.5 rounded-full inline-block" style="background:var(--ds-teal)"></span>
+            {{ i18n.translate('dashboard.admin.growth_clients') }}
+          </span>
+        </div>
+      </div>
+      <svg viewBox="0 0 600 195" class="w-full h-40" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="adminWkGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--ds-blue)"  stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="var(--ds-blue)" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="adminClGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--ds-teal)"  stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="var(--ds-teal)" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        @for (y of [20,60,100,140,180]; track y) {
+          <line x1="0" [attr.y1]="y" x2="600" [attr.y2]="y"
+                stroke="var(--ds-border-sub)" stroke-width="0.8"/>
+        }
+        @if (workshopArea()) {
+          <path [attr.d]="workshopArea()" fill="url(#adminWkGrad)"/>
+          <polyline [attr.points]="workshopGrowthPts()" fill="none"
+                    stroke="var(--ds-blue)" stroke-width="2.5"
+                    stroke-linejoin="round" stroke-linecap="round"/>
+        }
+        @if (clientArea()) {
+          <path [attr.d]="clientArea()" fill="url(#adminClGrad)"/>
+          <polyline [attr.points]="clientGrowthPts()" fill="none"
+                    stroke="var(--ds-teal)" stroke-width="2.5"
+                    stroke-linejoin="round" stroke-linecap="round"/>
+        }
+      </svg>
+      <div class="flex justify-between mt-1">
+        @for (m of growthMonths(); track m) {
+          <span class="text-[10px] font-semibold" style="color:var(--ds-overlay0)">{{ m }}</span>
+        }
       </div>
     </div>
-  </div>
+
+    <!-- Tables -->
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+
+      <!-- Pending Workshops -->
+      <div class="ds-card overflow-hidden">
+        <div class="px-5 py-4 flex items-center justify-between" style="border-bottom:1px solid var(--ds-border)">
+          <h2 class="text-sm font-bold" style="color:var(--ds-text)">
+            {{ i18n.translate('dashboard.admin.pending_workshops_title') }}
+          </h2>
+          <span class="ds-badge ds-badge-yellow">{{ pendingWorkshops().length }} pendientes</span>
+        </div>
+        @if (!pendingWorkshops().length) {
+          <p class="text-xs text-center py-8 font-medium" style="color:var(--ds-subtext)">
+            Ningún taller pendiente ✓
+          </p>
+        }
+        @if (pendingWorkshops().length) {
+          <table class="w-full">
+            <thead>
+              <tr>
+                <th class="ds-th">{{ i18n.translate('dashboard.admin.col_workshop') }}</th>
+                <th class="ds-th">{{ i18n.translate('dashboard.admin.col_city') }}</th>
+                <th class="ds-th">{{ i18n.translate('dashboard.admin.col_date') }}</th>
+                <th class="ds-th"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (ws of pendingWorkshops(); track ws.id) {
+                <tr class="ds-tr">
+                  <td class="ds-td">
+                    <p class="font-semibold text-xs" style="color:var(--ds-text)">{{ ws.name }}</p>
+                    <p class="text-[11px]" style="color:var(--ds-subtext)">{{ ws.owner_name }}</p>
+                  </td>
+                  <td class="ds-td text-[11px]" style="color:var(--ds-subtext)">{{ ws.city }}</td>
+                  <td class="ds-td text-[11px]" style="color:var(--ds-overlay0)">{{ fmtDate(ws.created_at) }}</td>
+                  <td class="ds-td">
+                    <div class="flex gap-1.5">
+                      <button class="ds-btn-primary">{{ i18n.translate('dashboard.admin.approve') }}</button>
+                      <button class="ds-btn-ghost">{{ i18n.translate('dashboard.admin.reject_btn') }}</button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+
+      <!-- Cancelled Services Audit -->
+      <div class="ds-card overflow-hidden">
+        <div class="px-5 py-4 flex items-center justify-between" style="border-bottom:1px solid var(--ds-border)">
+          <h2 class="text-sm font-bold" style="color:var(--ds-text)">
+            {{ i18n.translate('dashboard.admin.cancelled_services_title') }}
+          </h2>
+          <span class="ds-badge ds-badge-red">{{ cancelledServices().length }} cancelados</span>
+        </div>
+        @if (!cancelledServices().length) {
+          <p class="text-xs text-center py-8 font-medium" style="color:var(--ds-subtext)">
+            Sin servicios cancelados ✓
+          </p>
+        }
+        @if (cancelledServices().length) {
+          <table class="w-full">
+            <thead>
+              <tr>
+                <th class="ds-th">{{ i18n.translate('dashboard.admin.col_client') }}</th>
+                <th class="ds-th">{{ i18n.translate('dashboard.admin.col_workshop') }}</th>
+                <th class="ds-th">Categoría</th>
+                <th class="ds-th">Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (svc of cancelledServices(); track $index) {
+                <tr class="ds-tr">
+                  <td class="ds-td font-semibold text-xs" style="color:var(--ds-text)">{{ svc.client_name }}</td>
+                  <td class="ds-td text-[11px]" style="color:var(--ds-subtext)">{{ svc.workshop_name }}</td>
+                  <td class="ds-td">
+                    @if (svc.ai_category) {
+                      <span class="ds-badge ds-badge-mauve">{{ svc.ai_category }}</span>
+                    } @else {
+                      <span class="ds-badge ds-badge-neutral">—</span>
+                    }
+                  </td>
+                  <td class="ds-td text-[11px]" style="color:var(--ds-overlay0)">{{ fmtDate(svc.created_at) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+
+    </div>
+
+  } <!-- end data loaded -->
 </div>

@@ -1,29 +1,290 @@
-<div class="space-y-6">
-  <div>
-    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">{{ i18n.translate('dashboard.workshop.title') }}</h1>
-    <p class="text-slate-600 dark:text-slate-400 text-sm mt-0.5">{{ i18n.translate('dashboard.workshop.subtitle', { name: auth.currentUserName() ?? 'Usuario' }) }}</p>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <app-stat-card
-      [label]="i18n.translate('dashboard.workshop.active_services')"
-      value="12"
-      colorClass="bg-indigo-500/10 group-hover:bg-indigo-500/20" />
-    <app-stat-card
-      [label]="i18n.translate('dashboard.workshop.completed_today')"
-      value="4"
-      colorClass="bg-emerald-500/10 group-hover:bg-emerald-500/20" />
-    <app-stat-card
-      [label]="i18n.translate('dashboard.workshop.available_mechanics')"
-      value="3/5"
-      colorClass="bg-cyan-500/10 group-hover:bg-cyan-500/20" />
-  </div>
-  <div class="bg-white/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/50 rounded-xl p-5 min-h-[280px] flex items-center justify-center shadow-sm dark:shadow-none">
-    <p class="text-slate-500 dark:text-slate-500 flex flex-col items-center gap-2 text-center px-4">
-      <svg class="w-8 h-8 opacity-50 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+<div class="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-7xl mx-auto">
+
+  <!-- Loading -->
+  @if (isLoading()) {
+    <div class="flex flex-col items-center justify-center py-24 gap-4">
+      <div class="ds-spinner"></div>
+      <p class="text-xs font-semibold tracking-widest uppercase" style="color:var(--ds-subtext)">
+        Cargando tu taller…
+      </p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (hasError()) {
+    <div class="ds-card p-8 flex flex-col items-center gap-3">
+      <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="var(--ds-red)" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
       </svg>
-      <span class="font-medium">{{ i18n.translate('dashboard.workshop.work_queue') }}</span>
-      <span class="text-xs text-slate-500 dark:text-slate-600 uppercase tracking-widest mt-1">{{ i18n.translate('dashboard.workshop.pending_api') }}</span>
-    </p>
-  </div>
+      <p class="text-sm font-semibold" style="color:var(--ds-text)">No se pudo cargar el dashboard</p>
+    </div>
+  }
+
+  @if (!isLoading() && !hasError()) {
+
+    <!-- Header -->
+    <div>
+      <h1 class="text-3xl font-black tracking-tight" style="color:var(--ds-text)">
+        {{ i18n.translate('dashboard.workshop.title') }}
+      </h1>
+      <p class="text-xs font-bold tracking-widest uppercase mt-1" style="color:var(--ds-mauve)">
+        {{ i18n.translate('dashboard.workshop.subtitle', { name: auth.currentUserName() ?? 'Usuario' }) }}
+      </p>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 auto-rows-fr">
+      <app-stat-card
+        [label]="i18n.translate('dashboard.workshop.completed_services')"
+        [value]="fmt(data()?.completed_services ?? 0)"
+        colorClass="bg-emerald-500"/>
+      <app-stat-card
+        [label]="i18n.translate('dashboard.workshop.gross_revenue')"
+        [value]="'$' + fmt(data()?.gross_revenue ?? 0)"
+        colorClass="bg-indigo-500"/>
+      <app-stat-card
+        [label]="i18n.translate('dashboard.workshop.commission_due')"
+        [value]="'$' + fmt(data()?.commission_due ?? 0)"
+        colorClass="bg-amber-500"/>
+      <app-stat-card
+        [label]="i18n.translate('dashboard.workshop.avg_rating')"
+        [value]="(data()?.avg_rating ?? 0).toFixed(1) + ' ★'"
+        colorClass="bg-yellow-400"/>
+      <app-stat-card
+        [label]="i18n.translate('dashboard.workshop.avg_response')"
+        [value]="(data()?.avg_response_min ?? 0).toFixed(0) + ' min'"
+        colorClass="bg-cyan-500"/>
+    </div>
+
+    <!-- Technician bars + Availability donut -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+      <!-- Technician Performance -->
+      <div class="lg:col-span-2 ds-card p-7">
+        <div class="mb-5">
+          <h2 class="text-sm font-bold" style="color:var(--ds-text)">
+            {{ i18n.translate('dashboard.workshop.tech_performance_title') }}
+          </h2>
+          <p class="text-xs mt-0.5" style="color:var(--ds-subtext)">
+            {{ i18n.translate('dashboard.workshop.tech_performance_subtitle') }}
+          </p>
+        </div>
+        @if (!techWithBars().length) {
+          <p class="text-xs text-center py-6" style="color:var(--ds-subtext)">Sin técnicos registrados</p>
+        }
+        <div class="space-y-4">
+          @for (tech of techWithBars(); track tech.id) {
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-black flex-shrink-0"
+                       style="background:linear-gradient(135deg, var(--ds-blue), var(--ds-mauve))">
+                    {{ tech.name[0] || '?' }}
+                  </div>
+                  <span class="text-xs font-semibold" style="color:var(--ds-text)">{{ tech.name }}</span>
+                </div>
+                <div class="flex items-center gap-4 text-xs">
+                  <span class="font-bold" style="color:var(--ds-blue)">{{ tech.incidents_completed }} inc.</span>
+                  <span class="font-bold" style="color:var(--ds-green)">${{ fmt(tech.revenue) }}</span>
+                </div>
+              </div>
+              <div class="h-2 rounded-full overflow-hidden" style="background:var(--ds-mantle)">
+                <div class="h-full rounded-full transition-all duration-700"
+                     style="background:linear-gradient(to right, var(--ds-blue), var(--ds-teal))"
+                     [style.width]="tech.barPct"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Availability Donut -->
+      <div class="ds-card p-7 flex flex-col">
+        <div class="mb-4">
+          <h2 class="text-sm font-bold" style="color:var(--ds-text)">
+            {{ i18n.translate('dashboard.workshop.availability_title') }}
+          </h2>
+          <div class="flex items-center gap-1.5 mt-1">
+            <span class="ds-live-dot"></span>
+            <span class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--ds-green)">En vivo</span>
+          </div>
+        </div>
+        <div class="flex items-center justify-center flex-1 py-2">
+          <div class="relative w-36 h-36">
+            <div class="w-full h-full rounded-full" [style.background]="availabilityGradient()"></div>
+            <div class="absolute inset-0 m-auto w-[58%] h-[58%] rounded-full flex flex-col items-center justify-center"
+                 style="background:var(--ds-card)">
+              <span class="text-xl font-black leading-none" style="color:var(--ds-text)">
+                {{ busyCount() }}/{{ totalTechs() }}
+              </span>
+              <span class="text-[9px] font-bold uppercase tracking-wider mt-0.5" style="color:var(--ds-subtext)">
+                activos
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="space-y-2 mt-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--ds-peach)"></span>
+              <span class="text-xs" style="color:var(--ds-text)">{{ i18n.translate('dashboard.workshop.busy_label') }}</span>
+            </div>
+            <span class="text-xs font-bold" style="color:var(--ds-text)">{{ busyCount() }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--ds-teal)"></span>
+              <span class="text-xs" style="color:var(--ds-text)">{{ i18n.translate('dashboard.workshop.free_label') }}</span>
+            </div>
+            <span class="text-xs font-bold" style="color:var(--ds-text)">{{ freeCount() }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly Revenue -->
+    <div class="ds-card p-7">
+      <div class="flex items-start justify-between mb-4 flex-wrap gap-3">
+        <h2 class="text-sm font-bold" style="color:var(--ds-text)">
+          {{ i18n.translate('dashboard.workshop.daily_revenue_title') }}
+        </h2>
+        <span class="text-2xl font-black" style="color:var(--ds-blue)">
+          ${{ fmt(data()?.gross_revenue ?? 0) }}
+        </span>
+      </div>
+      <svg viewBox="0 0 600 165" class="w-full h-36" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="wkRevGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--ds-mauve)" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="var(--ds-mauve)" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        @for (y of [20, 55, 90, 125]; track y) {
+          <line x1="0" [attr.y1]="y" x2="600" [attr.y2]="y"
+                stroke="var(--ds-border-sub)" stroke-width="0.8"/>
+        }
+        @if (revenueArea()) {
+          <path [attr.d]="revenueArea()" fill="url(#wkRevGrad)"/>
+          <polyline [attr.points]="revenuePoints()" fill="none"
+                    stroke="var(--ds-mauve)" stroke-width="2.5"
+                    stroke-linejoin="round" stroke-linecap="round"/>
+        }
+        @for (pt of revenueDataPts(); track $index) {
+          <circle [attr.cx]="pt[0]" [attr.cy]="pt[1]" r="4"
+                  fill="var(--ds-mauve)" stroke="var(--ds-card)" stroke-width="2"/>
+        }
+      </svg>
+      <div class="flex justify-between mt-1">
+        @for (d of weekDays(); track d) {
+          <span class="text-[10px] font-semibold" style="color:var(--ds-overlay0)">{{ d }}</span>
+        }
+      </div>
+    </div>
+
+    <!-- Emergency Inbox + Live Map -->
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+
+      <!-- Emergency Inbox -->
+      <div class="ds-card overflow-hidden">
+        <div class="px-5 py-4 flex items-center gap-2" style="border-bottom:1px solid var(--ds-border)">
+          <span class="ds-live-dot" style="background:var(--ds-red)"></span>
+          <h2 class="text-sm font-bold" style="color:var(--ds-text)">
+            {{ i18n.translate('dashboard.workshop.emergency_inbox_title') }}
+          </h2>
+          @if (inbox().length) {
+            <span class="ds-badge ds-badge-red ml-auto">{{ inbox().length }}</span>
+          }
+        </div>
+        @if (!inbox().length) {
+          <p class="text-xs text-center py-10 font-medium" style="color:var(--ds-subtext)">
+            No hay solicitudes pendientes ✓
+          </p>
+        }
+        <div class="divide-y" style="border-color:var(--ds-border-sub)">
+          @for (req of inbox(); track req.id) {
+            <div class="p-5 transition-colors" style="--tw-bg-opacity:1"
+                 [style.background]="'transparent'"
+                 onmouseenter="this.style.background='var(--ds-row-hover)'"
+                 onmouseleave="this.style.background='transparent'">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="text-xs font-bold" style="color:var(--ds-text)">{{ req.client_name }}</span>
+                    <span [class]="priorityClass(req.ai_priority)">{{ req.ai_priority ?? 'N/A' }}</span>
+                  </div>
+                  <p class="text-xs font-semibold mt-0.5" style="color:var(--ds-blue)">{{ catLabel(req.ai_category) }}</p>
+                  @if (req.incident_lat && req.incident_lng) {
+                    <p class="text-[11px] mt-0.5" style="color:var(--ds-subtext)">
+                      📍 {{ req.incident_lat | number:'1.4-4' }}, {{ req.incident_lng | number:'1.4-4' }}
+                    </p>
+                  }
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <p class="text-[10px] mb-2" style="color:var(--ds-overlay0)">{{ fmtTime(req.created_at) }}</p>
+                  <div class="flex flex-col gap-1.5">
+                    <button class="ds-btn-primary">{{ i18n.translate('dashboard.workshop.accept') }}</button>
+                    <button class="ds-btn-ghost">{{ i18n.translate('dashboard.workshop.reject_btn') }}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Live Technician Map -->
+      <div class="ds-card overflow-hidden">
+        <div class="px-5 py-4 flex items-center gap-2" style="border-bottom:1px solid var(--ds-border)">
+          <span class="ds-live-dot"></span>
+          <h2 class="text-sm font-bold" style="color:var(--ds-text)">
+            {{ i18n.translate('dashboard.workshop.live_map_title') }}
+          </h2>
+          <p class="text-xs ml-auto" style="color:var(--ds-subtext)">
+            {{ i18n.translate('dashboard.workshop.live_map_subtitle') }}
+          </p>
+        </div>
+        <!-- Map simulation grid -->
+        <div class="relative overflow-hidden" style="height:280px;background:var(--ds-card-hi)">
+          <!-- Street grid -->
+          <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 280"
+               preserveAspectRatio="none" style="opacity:0.15">
+            @for (x of [50,100,150,200,250,300,350]; track x) {
+              <line [attr.x1]="x" y1="0" [attr.x2]="x" y2="280"
+                    stroke="var(--ds-text)" stroke-width="0.7"/>
+            }
+            @for (y of [40,80,120,160,200,240]; track y) {
+              <line x1="0" [attr.y1]="y" x2="400" [attr.y2]="y"
+                    stroke="var(--ds-text)" stroke-width="0.7"/>
+            }
+          </svg>
+          <!-- Technician blips -->
+          @for (blip of techBlips(); track blip.id) {
+            <div class="absolute flex flex-col items-center -translate-x-1/2 -translate-y-1/2"
+                 [style.top]="blip.top + '%'" [style.left]="blip.left + '%'">
+              <div class="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-black shadow-lg"
+                   [style.background]="blip.is_available ? 'var(--ds-green)' : 'var(--ds-peach)'">
+                {{ blip.initials }}
+              </div>
+              <span class="text-[8px] font-bold px-1.5 py-0.5 rounded mt-0.5 text-white"
+                    [style.background]="blip.is_available ? 'var(--ds-green)' : 'var(--ds-peach)'">
+                {{ blip.is_available ? 'LIBRE' : 'OCUPADO' }}
+              </span>
+            </div>
+          }
+          @if (!techBlips().length) {
+            <div class="absolute inset-0 flex items-center justify-center">
+              <p class="text-xs font-medium" style="color:var(--ds-subtext)">Sin técnicos registrados</p>
+            </div>
+          }
+          <!-- City label -->
+          <div class="absolute bottom-3 right-3 px-3 py-1.5 rounded-lg text-[10px] font-bold"
+               style="background:var(--ds-card);color:var(--ds-subtext);border:1px solid var(--ds-border)">
+            Santa Cruz, Bolivia
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  } <!-- end data loaded -->
 </div>
