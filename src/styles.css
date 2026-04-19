@@ -43,6 +43,195 @@ body {
 }
 
 html.dark body {
-  background-color: #1a1b26; /* Tokyo Night Night Background */
-  color: #a9b1d6;            /* Tokyo Night Foreground */
+  background-color: #1a1b26; /* Tokyo Night Background */
+  color: #c0caf5;            /* Tokyo Night Foreground */
+}
+
+/* ══════════════════════════════════════════════════════════
+   DASHBOARD THEME — Catppuccin Latte (light) · Tokyo Night (dark)
+   ══════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Catppuccin Latte ── */
+  --ds-bg:        #eff1f5;
+  --ds-mantle:    #e6e9ef;
+  --ds-crust:     #dce0e8;
+  --ds-surface0:  #ccd0da;
+  --ds-surface1:  #bcc0cc;
+  --ds-overlay0:  #9ca0b0;
+  --ds-overlay1:  #8c8fa1;
+  --ds-subtext:   #6c6f85;
+  --ds-text:      #4c4f69;
+
+  --ds-blue:      #1e66f5;
+  --ds-lavender:  #7287fd;
+  --ds-mauve:     #8839ef;
+  --ds-red:       #d20f39;
+  --ds-maroon:    #e64553;
+  --ds-peach:     #fe640b;
+  --ds-yellow:    #df8e1d;
+  --ds-green:     #40a02b;
+  --ds-teal:      #179299;
+  --ds-sky:       #04a5e5;
+  --ds-sapphire:  #209fb5;
+
+  /* Semantic */
+  --ds-card:         #e6e9ef;
+  --ds-card-hi:      #dce0e8;
+  --ds-border:       #ccd0da;
+  --ds-border-sub:   #bcc0cc;
+  --ds-shadow:       rgba(76, 79, 105, 0.10);
+  --ds-row-hover:    rgba(30, 102, 245, 0.04);
+}
+
+.dark {
+  /* ── Tokyo Night ── */
+  --ds-bg:        #1a1b26;
+  --ds-mantle:    #16161e;
+  --ds-crust:     #13131a;
+  --ds-surface0:  #414868;
+  --ds-surface1:  #565f89;
+  --ds-overlay0:  #6b7089;
+  --ds-overlay1:  #787c99;
+  --ds-subtext:   #a9b1d6;
+  --ds-text:      #c0caf5;
+
+  --ds-blue:      #7aa2f7;
+  --ds-lavender:  #7aa2f7;
+  --ds-mauve:     #bb9af7;
+  --ds-red:       #f7768e;
+  --ds-maroon:    #ff757f;
+  --ds-peach:     #ff9e64;
+  --ds-yellow:    #e0af68;
+  --ds-green:     #9ece6a;
+  --ds-teal:      #7dcfff;
+  --ds-sky:       #7dcfff;
+  --ds-sapphire:  #2ac3de;
+
+  /* Semantic */
+  --ds-card:         #24283b;
+  --ds-card-hi:      #1f2335;
+  --ds-border:       #414868;
+  --ds-border-sub:   #2f3549;
+  --ds-shadow:       rgba(0, 0, 0, 0.35);
+  --ds-row-hover:    rgba(122, 162, 247, 0.06);
+}
+
+/* ── Layout utilities ─────────────────────────────────── */
+.ds-card {
+  background-color: var(--ds-card);
+  border: 1px solid var(--ds-border);
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 20px var(--ds-shadow);
+}
+
+.ds-card-hi {
+  background-color: var(--ds-card-hi);
+  border: 1px solid var(--ds-border);
+  border-radius: 1.5rem;
+}
+
+.ds-surface {
+  background-color: var(--ds-mantle);
+  border: 1px solid var(--ds-border-sub);
+  border-radius: 0.75rem;
+}
+
+/* ── Badge variants ───────────────────────────────────── */
+.ds-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 9999px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  border-width: 1px;
+  border-style: solid;
+}
+.ds-badge-blue    { color: var(--ds-blue);    background: color-mix(in srgb, var(--ds-blue)    15%, transparent); border-color: color-mix(in srgb, var(--ds-blue)    30%, transparent); }
+.ds-badge-green   { color: var(--ds-green);   background: color-mix(in srgb, var(--ds-green)   15%, transparent); border-color: color-mix(in srgb, var(--ds-green)   30%, transparent); }
+.ds-badge-yellow  { color: var(--ds-yellow);  background: color-mix(in srgb, var(--ds-yellow)  15%, transparent); border-color: color-mix(in srgb, var(--ds-yellow)  30%, transparent); }
+.ds-badge-red     { color: var(--ds-red);     background: color-mix(in srgb, var(--ds-red)     15%, transparent); border-color: color-mix(in srgb, var(--ds-red)     30%, transparent); }
+.ds-badge-mauve   { color: var(--ds-mauve);   background: color-mix(in srgb, var(--ds-mauve)   15%, transparent); border-color: color-mix(in srgb, var(--ds-mauve)   30%, transparent); }
+.ds-badge-peach   { color: var(--ds-peach);   background: color-mix(in srgb, var(--ds-peach)   15%, transparent); border-color: color-mix(in srgb, var(--ds-peach)   30%, transparent); }
+.ds-badge-teal    { color: var(--ds-teal);    background: color-mix(in srgb, var(--ds-teal)    15%, transparent); border-color: color-mix(in srgb, var(--ds-teal)    30%, transparent); }
+.ds-badge-neutral { color: var(--ds-overlay0); background: color-mix(in srgb, var(--ds-surface0) 40%, transparent); border-color: var(--ds-border-sub); }
+
+/* ── Button variants ──────────────────────────────────── */
+.ds-btn-primary {
+  background: var(--ds-green);
+  color: #fff;
+  padding: 0.3rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.ds-btn-primary:hover { opacity: 0.82; }
+
+.ds-btn-ghost {
+  background: transparent;
+  color: var(--ds-subtext);
+  padding: 0.3rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border: 1px solid var(--ds-border);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ds-btn-ghost:hover { color: var(--ds-red); border-color: color-mix(in srgb, var(--ds-red) 50%, transparent); }
+
+/* ── Table helpers ────────────────────────────────────── */
+.ds-th {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--ds-overlay0);
+  padding: 0.5rem 1.25rem;
+  text-align: left;
+  border-bottom: 1px solid var(--ds-border);
+}
+
+.ds-tr {
+  border-bottom: 1px solid var(--ds-border-sub);
+  transition: background 0.12s;
+}
+.ds-tr:hover { background-color: var(--ds-row-hover); }
+.ds-tr:last-child { border-bottom: none; }
+
+.ds-td {
+  padding: 0.8rem 1.25rem;
+  color: var(--ds-text);
+  font-size: 0.8125rem;
+}
+
+/* ── Spinner ──────────────────────────────────────────── */
+.ds-spinner {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 3px solid var(--ds-border);
+  border-top-color: var(--ds-blue);
+  animation: ds-spin 0.7s linear infinite;
+}
+@keyframes ds-spin { to { transform: rotate(360deg); } }
+
+/* ── Pulse dot ────────────────────────────────────────── */
+.ds-live-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--ds-green);
+  animation: ds-pulse 1.5s ease-in-out infinite;
+}
+@keyframes ds-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.85); }
 }

@@ -7,15 +7,15 @@ import { TranslationService } from '@core/services/translation.service';
   imports: [UpperCasePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="relative overflow-hidden rounded-3xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/60 dark:border-slate-700/50 shadow-xl shadow-slate-200/50 dark:shadow-none p-8 flex flex-col sm:flex-row items-center gap-6 sm:gap-8 transition-all hover:shadow-2xl hover:shadow-indigo-500/10 group">
+    <div class="relative overflow-hidden rounded-3xl p-8 flex flex-col sm:flex-row items-center gap-6 sm:gap-8 transition-all hover:shadow-2xl group" style="background-color: var(--ds-card); border: 1px solid var(--ds-border); box-shadow: 0 4px 20px var(--ds-shadow);">
       <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 
-      <div class="relative z-10 w-28 h-28 shrink-0 rounded-[2rem] bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center text-white text-4xl font-black shadow-xl shadow-indigo-500/30 ring-4 ring-white dark:ring-slate-800 transform transition-transform duration-500 group-hover:scale-105 group-hover:-rotate-3">
+      <div class="relative z-10 w-28 h-28 shrink-0 rounded-[2rem] bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center text-white text-4xl font-black shadow-xl shadow-indigo-500/30 ring-4 transform transition-transform duration-500 group-hover:scale-105 group-hover:-rotate-3" style="ring-color: var(--ds-bg);">
         {{ user().name[0] | uppercase }}{{ user().last_name[0] | uppercase }}
       </div>
 
       <div class="relative z-10 text-center sm:text-left flex-1">
-        <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 tracking-tight">
+        <h2 class="text-3xl font-extrabold tracking-tight" style="color: var(--ds-text);">
           {{ user().name }} {{ user().last_name }}
         </h2>
         <p class="text-indigo-600 dark:text-indigo-400 font-bold tracking-wide mt-1.5 text-sm uppercase letter-spacing-1">
