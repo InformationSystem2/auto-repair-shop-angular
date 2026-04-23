@@ -9,8 +9,8 @@
   <div class="flex flex-1 gap-6 z-10 relative p-4 sm:p-6 w-full h-full">
     
     <!-- LEFT PANEL: INBOX LIST -->
-    <div class="w-full sm:w-[400px] flex flex-col bg-white/70 dark:bg-slate-800/60 backdrop-blur-md rounded-[1.5rem] border border-white/50 dark:border-slate-700/50 shadow-xl overflow-hidden transition-all">
-      <app-request-inbox
+    <div class="w-full sm:w-[400px] flex flex-col bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden transition-all relative z-[100]">
+      <app-request-inbox class="block w-full h-full"
         [offers]="activeTab === 'new' ? offers : activeOffers"
         [selectedOffer]="selectedOffer"
         [isProcessing]="isProcessing"
@@ -22,8 +22,8 @@
     </div>
 
     <!-- RIGHT PANEL: DETAILS & MAP -->
-    <div class="flex-1 hidden sm:flex flex-col relative w-full h-full rounded-[1.5rem] overflow-hidden shadow-xl border border-white/50 dark:border-slate-700/50 bg-white/90 dark:bg-slate-800/90 backdrop-blur-3xl">
-      <app-request-details
+    <div class="flex-1 hidden sm:flex flex-col relative w-full h-full rounded-[1.5rem] overflow-hidden shadow-xl border border-white/50 dark:border-slate-700/50 bg-white/90 dark:bg-slate-800/90 backdrop-blur-3xl z-0">
+      <app-request-details class="block w-full h-full"
         [selectedOffer]="selectedOffer"
         [isProcessing]="isProcessing"
         [activeTab]="activeTab"

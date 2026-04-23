@@ -1,10 +1,10 @@
 <div class="relative w-full h-full flex flex-col overflow-hidden bg-slate-900/5 dark:bg-transparent">
   
   <!-- TOP: MAP COMPONENT (Full Background) -->
-  <div class="absolute inset-0 z-0">
+  <div class="absolute inset-0 z-0" *ngIf="selectedOffer">
     <app-leaflet-map class="w-full h-full"
-        [workshopLat]="selectedOffer.workshop?.latitude!" 
-        [workshopLng]="selectedOffer.workshop?.longitude!"
+        [workshopLat]="selectedOffer.workshop?.latitude ?? 0" 
+        [workshopLng]="selectedOffer.workshop?.longitude ?? 0"
         [incidentLat]="selectedOffer.incident.latitude"
         [incidentLng]="selectedOffer.incident.longitude">
     </app-leaflet-map>
@@ -14,35 +14,39 @@
 
   <!-- EMPTY STATE OVERLAY (Only if no offer selected) -->
   <div *ngIf="!selectedOffer" class="absolute inset-0 bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-sm flex items-center justify-center z-50">
-    <div class="text-center animate-in slide-in-from-bottom-4 duration-700">
+    <div class="text-center p-8">
        <div class="w-24 h-24 bg-white dark:bg-slate-800 shadow-xl shadow-indigo-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
          </svg>
        </div>
        <h3 class="text-2xl font-bold text-slate-800 dark:text-white tracking-tight">{{ i18n.translate('requests.details.ready_title') }}</h3>
-       <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium">{{ i18n.translate('requests.details.ready_desc') }}</p>
+       <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium max-w-sm">{{ i18n.translate('requests.details.ready_desc') }}</p>
     </div>
   </div>
 
   <!-- SLIDING DETAILS CARD (Absolute Overlay) -->
-  <ng-container *ngIf="selectedOffer">
-    <div class="absolute bottom-0 left-0 right-0 z-20 flex flex-col bg-white dark:bg-slate-800/95 px-8 pt-4 pb-8 rounded-t-[2.5rem] shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.3)] transition-all duration-700 ease-in-out border-t border-white/20 dark:border-slate-700/50"
-         [style.transform]="isExpanded ? 'translateY(0)' : 'translateY(calc(100% - 120px))'"
-         style="max-height: 85%; min-height: 120px;">
+  <ng-container *ngIf="selectedOffer as offer">
+    <div class="absolute bottom-0 left-0 right-0 z-20 flex flex-col bg-white dark:bg-slate-800/95 rounded-t-[2.5rem] shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.3)] transition-all duration-700 ease-in-out border-t border-white/20 dark:border-slate-700/50"
+         [style.transform]="isExpanded ? 'translateY(0)' : 'translateY(calc(100% - 85px))'"
+         style="max-height: 85%; min-height: 85px;">
        
-       <!-- HANDLE BAR -->
-       <div class="w-16 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mx-auto mb-6 shrink-0 cursor-pointer hover:bg-slate-300 dark:hover:bg-slate-600 transition-all duration-300" 
-            (click)="togglePanel()"></div>
-       
-       <!-- TITLE SECTION -->
-       <h1 class="font-extrabold text-slate-900 dark:text-white tracking-tight shrink-0 transition-all duration-500 cursor-pointer mb-6"
-           [ngClass]="isExpanded ? 'text-3xl' : 'text-xl'"
-           (click)="!isExpanded && togglePanel()">
-         {{ selectedOffer.incident.ai_category ? (i18n.translate('requests.categories.' + selectedOffer.incident.ai_category) || selectedOffer.incident.ai_category) : i18n.translate('requests.details.unknown_category') }}
-       </h1>
+       <!-- INTERACTIVE HEADER: Clicking anywhere here toggles the panel -->
+       <div class="w-full px-8 flex flex-col items-center cursor-pointer group/header" 
+            [ngClass]="isExpanded ? 'pt-4 pb-2' : 'pt-3 pb-3'"
+            (click)="togglePanel()">
+          <!-- HANDLE BAR: More compact in minimized state -->
+          <div class="w-16 h-1.5 bg-slate-200 dark:bg-slate-700 group-hover/header:bg-indigo-400 dark:group-hover/header:bg-indigo-500 rounded-full transition-all duration-300 shadow-sm"
+               [ngClass]="isExpanded ? 'mb-6' : 'mb-2'"></div>
+          
+          <!-- TITLE SECTION -->
+          <h1 class="w-full font-extrabold text-slate-900 dark:text-white tracking-tight transition-all duration-500 text-left"
+              [ngClass]="isExpanded ? 'text-3xl mb-4' : 'text-lg mb-0'">
+            {{ offer.incident.ai_category ? (i18n.translate('requests.categories.' + offer.incident.ai_category) || offer.incident.ai_category) : i18n.translate('requests.details.unknown_category') }}
+          </h1>
+       </div>
 
-       <div class="flex-1 flex flex-col md:flex-row gap-8 overflow-y-auto custom-scrollbar transition-all duration-500 pr-2"
+       <div class="flex-1 flex flex-col md:flex-row gap-8 overflow-y-auto custom-scrollbar transition-all duration-500 px-8 pb-8 pr-10"
             [ngStyle]="{'opacity': isExpanded ? '1' : '0', 'pointer-events': isExpanded ? 'auto' : 'none'}">
           
           <!-- INFO COLUMN -->
@@ -55,15 +59,15 @@
                      <span class="font-bold text-base tracking-tight">{{ i18n.translate('requests.details.ai_diagnosis') }}</span>
                   </div>
                   <div class="whitespace-pre-wrap max-h-[250px] overflow-y-auto custom-scrollbar pr-2">
-                    {{ selectedOffer.incident.ai_summary || selectedOffer.incident.description }}
+                    {{ offer.incident.ai_summary || offer.incident.description }}
                   </div>
                 </div>
                 
                 <!-- IMAGE GALLERY -->
-                <div *ngIf="selectedOffer.incident.evidence_urls && selectedOffer.incident.evidence_urls.length > 0" class="mt-6">
+                <div *ngIf="offer.incident.evidence_urls && offer.incident.evidence_urls.length > 0" class="mt-6">
                   <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 ml-1">{{ i18n.translate('requests.details.evidence_title') || 'Evidencia' }}</h4>
                   <div class="flex gap-4 overflow-x-auto custom-scrollbar pb-3">
-                    <div *ngFor="let url of selectedOffer.incident.evidence_urls" 
+                    <div *ngFor="let url of offer.incident.evidence_urls" 
                          (click)="viewImage(url)"
                          class="relative group shrink-0 w-32 h-32 rounded-2xl overflow-hidden cursor-zoom-in border-2 border-transparent hover:border-indigo-500 transition-all duration-300 shadow-md">
                       <img [src]="url" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Evidence">
@@ -123,7 +127,7 @@
                    </div>
                    <div class="bg-white dark:bg-slate-800/80 p-4 rounded-2xl text-center shadow-sm">
                       <div class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-1">ETA reporte</div>
-                      <div class="text-2xl font-black text-indigo-600 dark:text-indigo-400">{{ selectedOffer.estimated_arrival_min }} <span class="text-xs text-slate-400">min</span></div>
+                      <div class="text-2xl font-black text-indigo-600 dark:text-indigo-400">{{ offer.estimated_arrival_min }} <span class="text-xs text-slate-400">min</span></div>
                    </div>
                 </div>
 
