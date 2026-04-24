@@ -1,4 +1,4 @@
-# Build stage
+# Build stage - Triggered rebuild for production synchronization
 FROM node:20-alpine AS build
 
 WORKDIR /app
