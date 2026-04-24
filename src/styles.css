@@ -162,7 +162,7 @@ html.dark body {
 
 /* ── Button variants ──────────────────────────────────── */
 .ds-btn-primary {
-  background: var(--ds-green);
+  background: var(--ds-mauve);
   color: #fff;
   padding: 0.3rem 0.75rem;
   border-radius: 0.5rem;
@@ -170,9 +170,13 @@ html.dark body {
   font-weight: 700;
   border: none;
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: all 0.2s ease;
 }
-.ds-btn-primary:hover { opacity: 0.82; }
+.ds-btn-primary:hover { 
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(187, 154, 247, 0.25);
+}
 
 .ds-btn-ghost {
   background: transparent;

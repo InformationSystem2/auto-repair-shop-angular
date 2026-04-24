@@ -68,7 +68,7 @@
   },
   "login": {
     "title": "Bienvenido",
-    "subtitle": "Por favor ingrese sus datos",
+    "subtitle": "Ingrese sus credenciales para acceder",
     "username": "Usuario",
     "password": "Contraseña",
     "sign_in": "Entrar",
@@ -270,9 +270,9 @@
   "workshops": {
     "title": "Talleres",
     "subtitle": "Verifica y administra la red de centros autorizados",
-    "management_title": "Gestión de Talleres",
-    "management_desc": "Configuración administrativa y visualización de métricas",
-    "profile_desc": "Administra la información pública y especialidades de tu centro",
+    "management_title": "Gestión de Taller",
+    "management_desc": "Configuración avanzada y métricas de rendimiento operacional",
+    "profile_desc": "Administra la información general de tu taller",
     "general_info": "Información General",
     "owner_info": "Información del Dueño",
     "stats_title": "Métricas del Taller",
@@ -355,7 +355,8 @@
       "technician": "Mecánico",
       "email": "Email",
       "phone": "Teléfono",
-      "status": "Estado"
+      "status": "Estado",
+      "name": "Nombre"
     },
     "new_tech": "Nuevo Mecánico",
     "edit_tech": "Editar Mecánico",
@@ -377,7 +378,7 @@
     }
   },
   "errors": {
-    "401": "Sextion expirada. Por favor inicie sesión nuevamente.",
+    "401": "Sesión expirada. Por favor inicie sesión nuevamente.",
     "403": "No tiene permisos para realizar esta acción.",
     "404": "El recurso solicitado no fue encontrado.",
     "409": "Ocurrió un conflicto con los datos (posible registro duplicado).",
@@ -404,9 +405,13 @@
     "year": "año",
     "years": "años"
   },
-  "requests": {
+    "requests": {
     "title": "S.O.S Activos",
     "subtitle": "Emergencias en tu zona de cobertura",
+    "tabs": {
+      "new": "Nuevas",
+      "active": "En Curso"
+    },
     "no_requests": "Todo tranquilo",
     "no_requests_desc": "No hay emergencias nuevas por el momento.",
     "expires_in": "Expira en {{seconds}}s",
@@ -444,7 +449,13 @@
        "accept_btn": "DESPACHAR AHORA",
        "unknown_category": "Avería No Especificada",
        "active_badge": "Servicio en Curso",
-       "evidence_title": "Evidencia Fotográfica"
+       "evidence_title": "Evidencia Fotográfica",
+       "technician_assigned": "Técnico asignado",
+       "loading_technicians": "Cargando técnicos...",
+       "no_technicians": "Sin técnicos disponibles ahora",
+       "complete_btn": "Completar Servicio",
+       "reject_btn": "RECHAZAR SOLICITUD",
+       "active_eta": "ETA reporte"
     },
     "map": {
       "my_workshop": "Mi Taller",

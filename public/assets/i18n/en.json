@@ -353,7 +353,8 @@
       "technician": "Technician",
       "email": "Email",
       "phone": "Phone",
-      "status": "Status"
+      "status": "Status",
+      "name": "Name"
     },
     "new_tech": "New Technician",
     "edit_tech": "Edit Technician",
@@ -440,7 +441,13 @@
        "accept_btn": "DISPATCH NOW",
        "unknown_category": "Unspecified Breakdown",
        "active_badge": "Service in Progress",
-       "evidence_title": "Photographic Evidence"
+       "evidence_title": "Photographic Evidence",
+       "technician_assigned": "Technician assigned",
+       "loading_technicians": "Loading technicians...",
+       "no_technicians": "No technicians available now",
+       "complete_btn": "Complete Service",
+       "reject_btn": "REJECT REQUEST",
+       "active_eta": "ETA report"
     },
     "map": {
       "my_workshop": "My Workshop",
