@@ -23,7 +23,7 @@ RUN apk add --no-cache gettext
 
 # Configurar puerto por defecto (Cloud Run inyectará el suyo)
 ENV PORT 8080
-ENV BACKEND_URL "https://auto-repair-shop-fastapi-776780812382.southamerica-west1.run.app"
+ENV BACKEND_URL "https://auto-repair-shop-fastapi-776780812382.southamerica-west1.run.app/api"
 
 # Copy built Angular application to nginx
 COPY --from=build /app/dist/auto-repair-shop-angular/browser /usr/share/nginx/html
