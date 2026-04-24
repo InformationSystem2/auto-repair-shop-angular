@@ -1,13 +1,13 @@
 import { Component, input, output, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Technician } from '../../../../models/technician.model';
-import { BadgeComponent } from '@ui/badge/badge.component';
+
 import { TableRowActionsComponent } from '@ui/table-row-actions/table-row-actions.component';
 import { TranslationService } from '@core/services/translation.service';
 
 @Component({
   selector: 'app-technicians-table',
   standalone: true,
-  imports: [BadgeComponent, TableRowActionsComponent],
+  imports: [],
   templateUrl: './technicians-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

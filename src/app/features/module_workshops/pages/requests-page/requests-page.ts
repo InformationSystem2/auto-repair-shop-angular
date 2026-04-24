@@ -6,6 +6,8 @@ import { Subscription, interval } from 'rxjs';
 import { RequestInboxComponent } from './components/request-inbox/request-inbox';
 import { RequestDetailsComponent } from './components/request-details/request-details';
 
+import { TranslationService } from '@core/services/translation.service';
+
 @Component({
   selector: 'app-requests-page',
   standalone: true,
@@ -21,7 +23,10 @@ export class RequestsPageComponent implements OnInit, OnDestroy {
   
   private pollSub: Subscription | null = null;
 
-  constructor(private offerService: OfferService) {}
+  constructor(
+    private offerService: OfferService,
+    public i18n: TranslationService
+  ) {}
 
   ngOnInit(): void {
     this.loadOffers();
@@ -76,11 +81,15 @@ export class RequestsPageComponent implements OnInit, OnDestroy {
     this.selectedOffer = offer;
   }
 
-  handleAcceptOffer(estimatedArrivalMin: number): void {
+  handleAcceptOffer(event: { estimatedArrivalMin: number; technicianId: string }): void {
     if (!this.selectedOffer || this.isProcessing) return;
     this.isProcessing = true;
 
-    this.offerService.acceptOffer(this.selectedOffer.offer_id, estimatedArrivalMin).subscribe({
+    this.offerService.acceptOffer(
+      this.selectedOffer.offer_id,
+      event.estimatedArrivalMin,
+      event.technicianId
+    ).subscribe({
       next: () => {
         this.selectedOffer = null;
         this.loadOffers();
@@ -109,11 +118,11 @@ export class RequestsPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  handleCompleteOffer(): void {
+  handleCompleteOffer(cost?: number): void {
     if (!this.selectedOffer || this.isProcessing) return;
     this.isProcessing = true;
 
-    this.offerService.completeOffer(this.selectedOffer.offer_id).subscribe({
+    this.offerService.completeOffer(this.selectedOffer.offer_id, cost).subscribe({
       next: () => {
         this.selectedOffer = null;
         this.loadOffers();

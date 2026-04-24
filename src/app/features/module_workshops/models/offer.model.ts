@@ -6,6 +6,7 @@ export interface IncidentLocation {
   latitude: number;
   longitude: number;
   evidence_urls?: string[];
+  vertex_analysis?: any;
 }
 
 export interface WorkshopLocation {

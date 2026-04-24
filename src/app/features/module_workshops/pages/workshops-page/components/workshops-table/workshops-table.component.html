@@ -1,54 +1,54 @@
-<div class="overflow-x-auto">
-  <table class="min-w-full border-separate border-spacing-0 text-sm">
+<div class="overflow-x-auto custom-scrollbar">
+  <table class="w-full border-collapse">
     <thead>
-      <tr class="text-left text-xs uppercase tracking-widest text-slate-400 dark:text-slate-500 bg-slate-50/50 dark:bg-slate-800/30">
-        <th class="px-6 py-4 font-black rounded-tl-2xl">{{ i18n.translate('workshops.table.workshop') }}</th>
-        <th class="px-6 py-4 font-black">{{ i18n.translate('workshops.table.ruc') }}</th>
-        <th class="px-6 py-4 font-black">{{ i18n.translate('workshops.table.phone') }}</th>
-        <th class="px-6 py-4 font-black">{{ i18n.translate('workshops.table.status') }}</th>
-        <th class="px-6 py-4 font-black text-right rounded-tr-2xl">{{ i18n.translate('common.actions') }}</th>
+      <tr>
+        <th class="ds-th">{{ i18n.translate('workshops.table.workshop') }}</th>
+        <th class="ds-th">{{ i18n.translate('workshops.table.ruc') }}</th>
+        <th class="ds-th">{{ i18n.translate('workshops.table.phone') }}</th>
+        <th class="ds-th">{{ i18n.translate('workshops.table.status') }}</th>
+        <th class="ds-th text-right">{{ i18n.translate('common.actions') }}</th>
       </tr>
     </thead>
-    <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50">
+    <tbody>
       @for (workshop of workshops(); track workshop.id) {
-        <tr class="align-middle transition-all duration-300 hover:bg-white dark:hover:bg-slate-800/80 group">
-          <td class="px-6 py-4">
-            <div class="flex items-center gap-4 min-w-0">
-              <div class="flex items-center justify-center w-11 h-11 shrink-0 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-black border border-indigo-100 dark:border-indigo-500/20 shadow-sm group-hover:scale-105 transition-transform duration-300">
-                {{ workshop.name[0] }}
+        <tr class="ds-tr group">
+          <td class="ds-td">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold" style="background-color: var(--ds-surface0); color: var(--ds-blue);">
+                {{ workshop.name[0] | uppercase }}
               </div>
               <div class="min-w-0">
-                <p class="font-bold text-slate-900 dark:text-white truncate text-[0.95rem]">{{ workshop.name }}</p>
-                <p class="text-xs font-semibold text-slate-500 truncate uppercase tracking-widest">{{ workshop.business_name }}</p>
+                <p class="font-bold truncate">{{ workshop.name }}</p>
+                <p class="text-[10px] uppercase tracking-wider opacity-60" style="color: var(--ds-subtext);">{{ workshop.business_name }}</p>
               </div>
             </div>
           </td>
-          <td class="px-6 py-4 font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">{{ workshop.ruc_nit }}</td>
-          <td class="px-6 py-4 font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">{{ workshop.phone }}</td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <app-badge [variant]="workshop.is_verified ? 'success' : 'warning'">
-              <span class="relative flex h-2 w-2 mr-2">
-                <span [class]="workshop.is_verified ? 'animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75' : 'hidden'"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2" [class]="workshop.is_verified ? 'bg-emerald-500' : 'bg-amber-500'"></span>
+          <td class="ds-td" style="color: var(--ds-subtext);">{{ workshop.ruc_nit }}</td>
+          <td class="ds-td" style="color: var(--ds-subtext);">{{ workshop.phone }}</td>
+          <td class="ds-td whitespace-nowrap">
+            @if (workshop.is_verified) {
+              <span class="ds-badge ds-badge-green">
+                <span class="ds-live-dot mr-1.5"></span>
+                {{ i18n.translate('common.verified') }}
               </span>
-              {{ workshop.is_verified ? i18n.translate('common.verified') : i18n.translate('common.pending') }}
-            </app-badge>
+            } @else {
+              <span class="ds-badge ds-badge-neutral">
+                {{ i18n.translate('common.pending') }}
+              </span>
+            }
           </td>
-          <td class="px-6 py-4 text-right">
-            <app-table-row-actions
-              [viewTitle]="i18n.translate('common.view_details')"
-              [showEdit]="false"
-              [showDelete]="false"
-              (view)="onView(workshop)" />
+          <td class="ds-td">
+            <div class="flex justify-end gap-1">
+               <button (click)="onView(workshop)" class="p-1.5 rounded-lg hover:bg-white/5 transition-colors" style="color: var(--ds-blue);">
+                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+               </button>
+            </div>
           </td>
         </tr>
       } @empty {
         <tr>
-          <td colspan="5" class="px-6 py-16 text-center">
-            <div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
-              <p class="font-bold text-lg text-slate-600 dark:text-slate-300">{{ i18n.translate('workshops.no_workshops') }}</p>
-              <p class="text-sm mt-1">{{ i18n.translate('common.adjust_filters') }}</p>
-            </div>
+          <td colspan="5" class="ds-td text-center py-20">
+            <p class="font-bold opacity-40 uppercase tracking-[0.2em]">{{ i18n.translate('workshops.no_workshops') }}</p>
           </td>
         </tr>
       }

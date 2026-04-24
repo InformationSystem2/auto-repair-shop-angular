@@ -21,11 +21,12 @@ export class ButtonComponent {
 
   classes = computed(() => {
     return cn(
-      'inline-flex items-center justify-center whitespace-nowrap rounded-2xl text-sm font-bold ring-offset-white transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/50 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+      'inline-flex items-center justify-center whitespace-nowrap rounded-2xl text-sm font-bold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]',
       {
-        'bg-indigo-600 text-white hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/40 hover:-translate-y-0.5 border border-transparent': this.variant() === 'default',
-        'bg-red-500 text-slate-50 hover:bg-red-400 hover:shadow-lg hover:shadow-red-500/40 hover:-translate-y-0.5': this.variant() === 'destructive',
-        'border border-slate-200 dark:border-slate-700/80 bg-white/80 dark:bg-slate-900/50 backdrop-blur hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50 shadow-sm': this.variant() === 'outline',
+        'text-white hover:shadow-lg hover:-translate-y-0.5 border border-transparent': this.variant() === 'default',
+        'shadow-indigo-500/20': this.variant() === 'default',
+        'bg-red-500 text-white hover:bg-red-400 hover:shadow-lg hover:shadow-red-500/40 hover:-translate-y-0.5': this.variant() === 'destructive',
+        'border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 backdrop-blur hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50 shadow-sm': this.variant() === 'outline',
         'bg-slate-100/80 dark:bg-slate-800/80 text-slate-900 dark:text-slate-50 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 backdrop-blur': this.variant() === 'secondary',
         'hover:bg-slate-100/50 hover:text-slate-900 dark:hover:bg-slate-800/50 dark:hover:text-slate-50': this.variant() === 'ghost',
         'text-indigo-600 underline-offset-4 hover:underline dark:text-indigo-400': this.variant() === 'link',
@@ -34,6 +35,7 @@ export class ButtonComponent {
         'h-14 rounded-2xl px-8 text-base': this.size() === 'lg',
         'h-12 w-12': this.size() === 'icon'
       },
+      this.variant() === 'default' ? 'bg-[var(--ds-mauve)] hover:bg-[var(--ds-blue)]' : '',
       this.userClass()
     );
   });

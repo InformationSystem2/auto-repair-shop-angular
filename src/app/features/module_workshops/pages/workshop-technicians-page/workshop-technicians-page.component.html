@@ -1,60 +1,37 @@
-<div class="p-8 max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-700 space-y-10">
+<div class="p-6 md:p-8 max-w-7xl mx-auto animate-in fade-in duration-700 relative z-10" style="background-color: var(--ds-bg);">
   
   <!-- Header -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-    <div class="flex items-center gap-6">
-       <div class="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200 dark:shadow-none">
-          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-       </div>
-       <div>
-         <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-           {{ i18n.translate('technicians.title') }}
-         </h1>
-         <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mt-0.5">
-           {{ i18n.translate('technicians.subtitle') }}
-         </p>
-       </div>
+  <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div>
+      <h1 class="text-2xl font-bold" style="color: var(--ds-text);">{{ i18n.translate('technicians.title') }}</h1>
+      <p class="text-sm mt-0.5" style="color: var(--ds-subtext);">{{ i18n.translate('technicians.subtitle') }}</p>
     </div>
-
+    
     <button 
-      appButton 
       (click)="openModal()" 
-      variant="default" 
-      class="px-8 h-12 rounded-2xl shadow-lg shadow-indigo-500/20"
+      class="ds-btn-primary px-6 h-10 flex items-center gap-2 shadow-lg shadow-indigo-500/20"
     >
-      <div class="flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
-        </svg>
-        <span class="font-black uppercase tracking-widest text-xs">
-          {{ i18n.translate('technicians.new_tech') }}
-        </span>
-      </div>
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+      </svg>
+      {{ i18n.translate('technicians.new_tech') }}
     </button>
   </div>
 
   <!-- Table Container -->
-  <app-card
-    class="flex bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/60 dark:border-slate-800/80 rounded-[2rem] shadow-xl shadow-slate-200/40 dark:shadow-none min-h-[400px] overflow-hidden p-0">
-    <div class="w-full">
-      @if (loading()) {
-        <div class="flex justify-center items-center py-24">
-          <svg class="animate-spin w-10 h-10 text-indigo-500" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
-        </div>
-      } @else {
-        <app-technicians-table
-          [technicians]="technicians()"
-          (view)="openDetail($event)"
-          (edit)="openModal($event)"
-          (delete)="deleteTech($event)" />
-      }
-    </div>
-  </app-card>
+  <div class="rounded-xl overflow-hidden" style="background-color: var(--ds-card); border: 1px solid var(--ds-border); box-shadow: 0 4px 20px var(--ds-shadow);">
+    @if (loading()) {
+      <div class="flex justify-center items-center py-24">
+        <div class="ds-spinner"></div>
+      </div>
+    } @else {
+      <app-technicians-table
+        [technicians]="technicians()"
+        (view)="openDetail($event)"
+        (edit)="openModal($event)"
+        (delete)="deleteTech($event)" />
+    }
+  </div>
 
 </div>
 
@@ -62,10 +39,10 @@
 @if (showModal()) {
   <app-dialog>
     <app-dialog-overlay (click)="showModal.set(false)" />
-    <app-dialog-content (close)="showModal.set(false)" class="max-w-xl bg-white dark:bg-slate-900 rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden">
-      <div class="p-10">
-        <app-dialog-header class="mb-8">
-          <app-dialog-title class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+    <app-dialog-content (close)="showModal.set(false)" class="max-w-xl p-0 overflow-hidden" style="background-color: var(--ds-card); border: 1px solid var(--ds-border); border-radius: 1.5rem;">
+      <div class="p-8">
+        <app-dialog-header class="mb-6">
+          <app-dialog-title class="text-xl font-bold" style="color: var(--ds-text);">
             {{ (selectedTech()) ? i18n.translate('technicians.edit_tech') : i18n.translate('technicians.new_tech_title') }}
           </app-dialog-title>
         </app-dialog-header>

@@ -1,26 +1,34 @@
 <!-- HEADER -->
-<div class="px-6 pt-8 pb-5 flex flex-col gap-3 z-20 bg-white/40 dark:bg-slate-900/40 border-b border-gray-100/50 dark:border-slate-800/50">
+<div class="px-6 py-6 flex flex-col gap-4 border-b" style="border-color: var(--ds-border);">
   <div class="flex justify-between items-center">
-     <h2 class="text-2xl font-bold bg-gradient-to-r from-slate-800 to-slate-500 dark:from-white dark:to-slate-300 bg-clip-text text-transparent tracking-tight">
+     <h2 class="text-xl font-bold" style="color: var(--ds-text);">
        {{ i18n.translate('requests.title') }}
      </h2>
-     <button (click)="onRefresh()" class="group p-2.5 bg-white dark:bg-slate-800 shadow-sm border border-gray-100 dark:border-slate-700 hover:border-indigo-100 dark:hover:border-indigo-500/30 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 active:scale-95 rounded-xl transition-all duration-300">
-       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600 dark:text-indigo-400 group-hover:-rotate-180 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+     <button (click)="onRefresh()" class="w-9 h-9 flex items-center justify-center rounded-lg ds-btn-ghost transition-all">
+       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
        </svg>
      </button>
   </div>
   
-  <div class="flex bg-slate-100/50 dark:bg-slate-800/50 p-1 rounded-xl w-full">
+  <div class="flex p-1 rounded-lg w-full border" style="background-color: var(--ds-surface0); border-color: var(--ds-border-sub);">
     <button (click)="setTab('new')"
-            [ngClass]="activeTab === 'new' ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-800 dark:text-white font-bold' : 'text-slate-500 dark:text-slate-400 font-medium hover:text-slate-700 dark:hover:text-slate-300'"
-            class="flex-1 py-1.5 px-3 rounded-lg text-sm transition-all duration-200 ease-in-out relative">
-      Nuevas
+            [style.background-color]="activeTab === 'new' ? 'var(--ds-card)' : 'transparent'"
+            [style.color]="activeTab === 'new' ? 'var(--ds-text)' : 'var(--ds-subtext)'"
+            class="flex-1 py-2 px-3 rounded-md text-[10px] uppercase font-bold tracking-widest transition-all relative">
+      {{ i18n.translate('requests.tabs.new') }}
+      @if (activeTab === 'new') {
+        <div class="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,1)]"></div>
+      }
     </button>
     <button (click)="setTab('active')"
-            [ngClass]="activeTab === 'active' ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-800 dark:text-white font-bold' : 'text-slate-500 dark:text-slate-400 font-medium hover:text-slate-700 dark:hover:text-slate-300'"
-            class="flex-1 py-1.5 px-3 rounded-lg text-sm transition-all duration-200 ease-in-out relative">
-      En Curso
+            [style.background-color]="activeTab === 'active' ? 'var(--ds-card)' : 'transparent'"
+            [style.color]="activeTab === 'active' ? 'var(--ds-text)' : 'var(--ds-subtext)'"
+            class="flex-1 py-2 px-3 rounded-md text-[10px] uppercase font-bold tracking-widest transition-all relative">
+      {{ i18n.translate('requests.tabs.active') }}
+      @if (activeTab === 'active') {
+        <div class="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,1)]"></div>
+      }
     </button>
   </div>
 </div>
@@ -28,53 +36,56 @@
 <!-- LIST CONTAINER -->
 <div class="flex-1 overflow-y-auto px-4 py-4 space-y-3 custom-scrollbar">
   
-  <!-- LOADING SKELETON -->
-  <div *ngIf="isProcessing && offers.length === 0" class="flex flex-col gap-3">
-    <div *ngFor="let i of [1,2,3]" class="h-32 rounded-2xl bg-slate-100 dark:bg-slate-800 animate-pulse border border-slate-200 dark:border-slate-700"></div>
-  </div>
-  
   <!-- EMPTY STATE -->
-  <div *ngIf="!isProcessing && offers.length === 0" class="h-full flex flex-col items-center justify-center text-center px-6 animate-in fade-in zoom-in duration-500">
-    <div class="w-20 h-20 bg-indigo-50 dark:bg-indigo-500/10 rounded-full flex items-center justify-center mb-4">
-       <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-indigo-300 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-      </svg>
+  @if (!isProcessing && offers.length === 0) {
+    <div class="h-full flex flex-col items-center justify-center text-center px-6">
+      <div class="w-16 h-16 flex items-center justify-center mb-4 rounded-xl" style="background-color: var(--ds-surface0);">
+         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+        </svg>
+      </div>
+      <h3 class="text-lg font-bold" style="color: var(--ds-text);">{{ i18n.translate('requests.no_requests') }}</h3>
+      <p class="text-xs mt-1 font-bold uppercase tracking-widest opacity-40" style="color: var(--ds-subtext);">{{ i18n.translate('requests.no_requests_desc') }}</p>
     </div>
-    <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300">{{ i18n.translate('requests.no_requests') }}</h3>
-    <p class="text-sm text-slate-400 dark:text-slate-500 mt-1">{{ i18n.translate('requests.no_requests_desc') }}</p>
-  </div>
+  }
 
   <!-- ITEMS -->
-  <div *ngFor="let offer of offers" 
-       (click)="onSelect(offer)"
-       class="group relative p-5 bg-white dark:bg-slate-800/80 cursor-pointer rounded-2xl transition-all duration-400 ease-out border"
-       [ngClass]="selectedOffer?.offer_id === offer.offer_id 
-                  ? 'border-indigo-400 shadow-md shadow-indigo-500/10 translate-x-1' 
-                  : 'border-transparent dark:border-slate-700/50 shadow-sm hover:shadow-md hover:border-slate-200 dark:hover:border-slate-600 hover:-translate-y-0.5'">
-    
-    <div class="flex justify-between items-start mb-3">
-      <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-bold tracking-widest uppercase shadow-sm" 
-            [ngClass]="getSeverityClasses(offer.incident.ai_priority)">
-        <span class="w-1.5 h-1.5 rounded-full animate-pulse" [ngClass]="getSeverityDot(offer.incident.ai_priority)"></span>
-        {{ i18n.translate('requests.priority.' + (offer.incident.ai_priority.toLowerCase() || 'medium')) }}
-      </span>
-      <span class="text-xs font-semibold text-slate-400 dark:text-slate-500 flex items-center gap-1 bg-slate-50 dark:bg-slate-900/50 px-2 py-1 rounded-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-        {{ offer.distance_km | number:'1.1-1' }} km
-      </span>
-    </div>
-    
-    <h3 class="text-base font-bold text-slate-800 dark:text-white line-clamp-1 mb-1">{{ offer.incident.ai_category ? (i18n.translate('requests.categories.' + offer.incident.ai_category) || offer.incident.ai_category) : i18n.translate('requests.details.unknown_category') }}</h3>
-    <p class="text-sm font-medium text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">{{ offer.incident.description }}</p>
-    
-    <div class="mt-4 pt-4 border-t border-slate-50 dark:border-slate-700/50 flex items-center justify-between">
-      <div class="text-[11px] font-semibold text-rose-500 dark:text-rose-400 flex items-center gap-1.5 px-2 py-1 bg-rose-50 dark:bg-rose-500/10 rounded-lg animate-pulse" *ngIf="offer.expires_in_seconds && offer.expires_in_seconds < 120">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        {{ i18n.translate('requests.expires_in', { seconds: offer.expires_in_seconds.toString() }) }}
+  @for (offer of offers; track offer.offer_id) {
+    <div (click)="onSelect(offer)"
+         class="relative p-5 cursor-pointer rounded-xl transition-all border group"
+         [style.background-color]="selectedOffer?.offer_id === offer.offer_id ? 'var(--ds-card-hi)' : 'transparent'"
+         [style.border-color]="selectedOffer?.offer_id === offer.offer_id ? 'var(--ds-blue)' : 'var(--ds-border-sub)'"
+         [class.shadow-lg]="selectedOffer?.offer_id === offer.offer_id"
+         [class.hover:border-indigo-500/30]="selectedOffer?.offer_id !== offer.offer_id">
+      
+      <div class="flex justify-between items-start mb-3">
+        <span class="ds-badge" [ngClass]="getSeverityClasses(offer.incident.ai_priority)">
+          <span class="w-1 h-1 rounded-full" [ngClass]="getSeverityDot(offer.incident.ai_priority)"></span>
+          {{ i18n.translate('requests.priority.' + (offer.incident.ai_priority.toLowerCase() || 'medium')) }}
+        </span>
+        <span class="text-[10px] font-bold flex items-center gap-1.5 opacity-60 uppercase" style="color: var(--ds-subtext);">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+          {{ offer.distance_km | number:'1.1-1' }} km
+        </span>
       </div>
-      <div *ngIf="!offer.expires_in_seconds || offer.expires_in_seconds >= 120" class="text-[11px] font-medium text-slate-400 dark:text-slate-500">
-         {{ i18n.translate('requests.just_now') }}
+      
+      <h3 class="text-sm font-bold tracking-tight line-clamp-1 mb-1 transition-colors"
+          [style.color]="selectedOffer?.offer_id === offer.offer_id ? 'var(--ds-blue)' : 'var(--ds-text)'">
+        {{ offer.incident.ai_category ? (i18n.translate('requests.categories.' + offer.incident.ai_category) || offer.incident.ai_category) : i18n.translate('requests.details.unknown_category') }}
+      </h3>
+      <p class="text-xs line-clamp-2 leading-relaxed opacity-70" style="color: var(--ds-subtext);">{{ offer.incident.description }}</p>
+      
+      <div class="mt-4 pt-4 border-t flex items-center justify-between" style="border-color: var(--ds-border-sub);">
+        @if (offer.expires_in_seconds && offer.expires_in_seconds < 120) {
+          <div class="text-[10px] font-bold flex items-center gap-1.5 uppercase tracking-wider" style="color: var(--ds-red);">
+            <span class="ds-live-dot" style="background-color: var(--ds-red);"></span>
+            {{ i18n.translate('requests.expires_in', { seconds: offer.expires_in_seconds.toString() }) }}
+          </div>
+        }
+        <div class="text-[9px] font-bold uppercase tracking-widest ml-auto opacity-40" style="color: var(--ds-subtext);">
+           {{ i18n.translate('requests.just_now') }}
+        </div>
       </div>
     </div>
-  </div>
+  }
 </div>

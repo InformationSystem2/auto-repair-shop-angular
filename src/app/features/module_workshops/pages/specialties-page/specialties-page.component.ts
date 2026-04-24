@@ -14,8 +14,6 @@ import { TranslationService } from '@core/services/translation.service';
   standalone: true,
   imports: [
     CommonModule,
-    ButtonComponent,
-    CardComponent,
     SpecialtyFormComponent,
     SpecialtyDetailModalComponent
   ],

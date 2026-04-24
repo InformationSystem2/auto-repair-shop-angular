@@ -32,7 +32,9 @@ export class OfferService {
     return this.http.get<Offer[]>(`${this.apiUrl}/my-active`);
   }
 
-  completeOffer(offerId: string): Observable<OfferResponse> {
-    return this.http.post<OfferResponse>(`${this.apiUrl}/${offerId}/complete`, {});
+  completeOffer(offerId: string, cost?: number): Observable<OfferResponse> {
+    return this.http.post<OfferResponse>(`${this.apiUrl}/${offerId}/complete`, {
+      cost: cost
+    });
   }
 }

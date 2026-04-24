@@ -18,14 +18,12 @@ import { TechnicianDetailModalComponent } from './components/technician-detail-m
   imports: [
     CommonModule, 
     ReactiveFormsModule, 
-    ButtonComponent, 
     DialogComponent,
     DialogOverlayComponent,
     DialogContentComponent,
     DialogHeaderComponent,
     DialogTitleComponent,
     TechnicianFormComponent,
-    CardComponent,
     TechniciansTableComponent,
     TechnicianDetailModalComponent
   ],

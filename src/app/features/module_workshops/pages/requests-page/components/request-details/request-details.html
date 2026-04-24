@@ -1,4 +1,4 @@
-<div class="relative w-full h-full flex flex-col overflow-hidden bg-slate-900/5 dark:bg-transparent">
+<div class="relative w-full h-full flex flex-col overflow-hidden" style="background-color: var(--ds-bg);">
   
   <!-- TOP: MAP COMPONENT (Full Background) -->
   <div class="absolute inset-0 z-0" *ngIf="selectedOffer">
@@ -9,152 +9,220 @@
         [incidentLng]="selectedOffer.incident.longitude">
     </app-leaflet-map>
     <!-- Dark gradient overlay at the bottom of the map to blend with the card -->
-    <div class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-slate-900/40 to-transparent pointer-events-none z-[1]"></div>
+    <div class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t pointer-events-none z-[1]" style="background-image: linear-gradient(to top, var(--ds-bg), transparent);"></div>
   </div>
 
   <!-- EMPTY STATE OVERLAY (Only if no offer selected) -->
-  <div *ngIf="!selectedOffer" class="absolute inset-0 bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-sm flex items-center justify-center z-50">
-    <div class="text-center p-8">
-       <div class="w-24 h-24 bg-white dark:bg-slate-800 shadow-xl shadow-indigo-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-         </svg>
-       </div>
-       <h3 class="text-2xl font-bold text-slate-800 dark:text-white tracking-tight">{{ i18n.translate('requests.details.ready_title') }}</h3>
-       <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium max-w-sm">{{ i18n.translate('requests.details.ready_desc') }}</p>
+  @if (!selectedOffer) {
+    <div class="absolute inset-0 backdrop-blur-sm flex items-center justify-center z-50" style="background-color: color-mix(in srgb, var(--ds-bg) 80%, transparent);">
+      <div class="text-center p-8">
+         <div class="w-20 h-20 shadow-xl rounded-full flex items-center justify-center mx-auto mb-6" style="background-color: var(--ds-card); border: 1px solid var(--ds-border);">
+           <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+           </svg>
+         </div>
+         <h3 class="text-xl font-bold" style="color: var(--ds-text);">{{ i18n.translate('requests.details.ready_title') }}</h3>
+         <p class="text-sm mt-2 opacity-60 max-w-sm mx-auto" style="color: var(--ds-subtext);">{{ i18n.translate('requests.details.ready_desc') }}</p>
+      </div>
     </div>
-  </div>
+  }
 
   <!-- SLIDING DETAILS CARD (Absolute Overlay) -->
   <ng-container *ngIf="selectedOffer as offer">
-    <div class="absolute bottom-0 left-0 right-0 z-20 flex flex-col bg-white dark:bg-slate-800/95 rounded-t-[2.5rem] shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.3)] transition-all duration-700 ease-in-out border-t border-white/20 dark:border-slate-700/50"
-         [style.transform]="isExpanded ? 'translateY(0)' : 'translateY(calc(100% - 85px))'"
-         style="max-height: 85%; min-height: 85px;">
+    <div class="absolute bottom-0 left-0 right-0 z-20 flex flex-col shadow-2xl transition-all duration-700 ease-in-out border-t"
+         [style.transform]="isExpanded ? 'translateY(0)' : 'translateY(calc(100% - 80px))'"
+         [style.background-color]="'var(--ds-card)'"
+         [style.border-color]="'var(--ds-border)'"
+         style="max-height: 85%; min-height: 80px; border-radius: 2rem 2rem 0 0;">
        
        <!-- INTERACTIVE HEADER: Clicking anywhere here toggles the panel -->
        <div class="w-full px-8 flex flex-col items-center cursor-pointer group/header" 
             [ngClass]="isExpanded ? 'pt-4 pb-2' : 'pt-3 pb-3'"
             (click)="togglePanel()">
-          <!-- HANDLE BAR: More compact in minimized state -->
-          <div class="w-16 h-1.5 bg-slate-200 dark:bg-slate-700 group-hover/header:bg-indigo-400 dark:group-hover/header:bg-indigo-500 rounded-full transition-all duration-300 shadow-sm"
-               [ngClass]="isExpanded ? 'mb-6' : 'mb-2'"></div>
+          <!-- HANDLE BAR -->
+          <div class="w-12 h-1 rounded-full transition-all duration-300"
+               [style.background-color]="'var(--ds-border)'"
+               [ngClass]="isExpanded ? 'mb-4' : 'mb-2'"></div>
           
           <!-- TITLE SECTION -->
-          <h1 class="w-full font-extrabold text-slate-900 dark:text-white tracking-tight transition-all duration-500 text-left"
-              [ngClass]="isExpanded ? 'text-3xl mb-4' : 'text-lg mb-0'">
+          <h1 class="w-full font-bold tracking-tight transition-all duration-500 text-left"
+              [style.color]="'var(--ds-text)'"
+              [ngClass]="isExpanded ? 'text-2xl mb-2' : 'text-base mb-0'">
             {{ offer.incident.ai_category ? (i18n.translate('requests.categories.' + offer.incident.ai_category) || offer.incident.ai_category) : i18n.translate('requests.details.unknown_category') }}
           </h1>
        </div>
 
-       <div class="flex-1 flex flex-col md:flex-row gap-8 overflow-y-auto custom-scrollbar transition-all duration-500 px-8 pb-8 pr-10"
+       <div class="flex-1 flex flex-col md:flex-row gap-6 overflow-y-auto custom-scrollbar transition-all duration-500 px-8 pb-8 pr-10"
             [ngStyle]="{'opacity': isExpanded ? '1' : '0', 'pointer-events': isExpanded ? 'auto' : 'none'}">
           
           <!-- INFO COLUMN -->
           <div class="flex-1 flex flex-col min-h-0">
-                <div class="bg-indigo-50/50 dark:bg-indigo-900/10 border border-indigo-100/50 dark:border-indigo-500/10 rounded-3xl p-6 text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed shadow-sm">
-                  <div class="flex items-center gap-3 mb-3 text-indigo-700 dark:text-indigo-400">
-                     <div class="p-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
-                     </div>
-                     <span class="font-bold text-base tracking-tight">{{ i18n.translate('requests.details.ai_diagnosis') }}</span>
+                <div class="rounded-2xl p-6 text-sm leading-relaxed border" style="background-color: var(--ds-surface0); border-color: var(--ds-border-sub);">
+                  <div class="flex items-center gap-2 mb-4" style="color: var(--ds-blue);">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                     <span class="font-bold uppercase tracking-widest text-[10px]">{{ i18n.translate('requests.details.ai_diagnosis') }}</span>
                   </div>
-                  <div class="whitespace-pre-wrap max-h-[250px] overflow-y-auto custom-scrollbar pr-2">
-                    {{ offer.incident.ai_summary || offer.incident.description }}
+                  <div class="whitespace-pre-wrap max-h-[300px] overflow-y-auto custom-scrollbar pr-2 opacity-80" style="color: var(--ds-text);">
+                    <p class="mb-4">{{ offer.incident.vertex_analysis?.tecnico?.diagnostico_tecnico || offer.incident.ai_summary || offer.incident.description }}</p>
+                    
+                    @if (offer.incident.vertex_analysis?.tecnico?.procedimiento_recomendado) {
+                      <div class="mt-4 pt-4 border-t" style="border-color: var(--ds-border-sub);">
+                        <span class="font-bold text-[10px] uppercase block mb-2" style="color: var(--ds-blue);">Procedimiento Recomendado</span>
+                        <p class="text-xs opacity-70">{{ offer.incident.vertex_analysis.tecnico.procedimiento_recomendado }}</p>
+                      </div>
+                    }
+
+                    @if (offer.incident.vertex_analysis?.tecnico?.herramientas_sugeridas?.length > 0) {
+                      <div class="mt-4 pt-4 border-t" style="border-color: var(--ds-border-sub);">
+                        <span class="font-bold text-[10px] uppercase block mb-2" style="color: var(--ds-blue);">Herramientas Sugeridas</span>
+                        <div class="flex flex-wrap gap-2">
+                          <span *ngFor="let tool of offer.incident.vertex_analysis.tecnico.herramientas_sugeridas" 
+                                class="px-2 py-1 rounded-md text-[10px] font-medium" 
+                                style="background-color: var(--ds-surface1); color: var(--ds-text); border: 1px solid var(--ds-border-sub);">
+                            {{ tool }}
+                          </span>
+                        </div>
+                      </div>
+                    }
                   </div>
                 </div>
                 
                 <!-- IMAGE GALLERY -->
-                <div *ngIf="offer.incident.evidence_urls && offer.incident.evidence_urls.length > 0" class="mt-6">
-                  <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 ml-1">{{ i18n.translate('requests.details.evidence_title') || 'Evidencia' }}</h4>
-                  <div class="flex gap-4 overflow-x-auto custom-scrollbar pb-3">
-                    <div *ngFor="let url of offer.incident.evidence_urls" 
-                         (click)="viewImage(url)"
-                         class="relative group shrink-0 w-32 h-32 rounded-2xl overflow-hidden cursor-zoom-in border-2 border-transparent hover:border-indigo-500 transition-all duration-300 shadow-md">
-                      <img [src]="url" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Evidence">
-                      <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                        </svg>
+                @if (offer.incident.evidence_urls && offer.incident.evidence_urls.length > 0) {
+                  <div class="mt-6">
+                    <h4 class="text-[10px] font-bold uppercase tracking-widest mb-3 ml-1" style="color: var(--ds-subtext);">{{ i18n.translate('requests.details.evidence_title') }}</h4>
+                    <div class="flex gap-3 overflow-x-auto custom-scrollbar pb-2">
+                      <div *ngFor="let url of offer.incident.evidence_urls" 
+                            (click)="viewImage(url)"
+                            class="relative group shrink-0 w-32 h-32 rounded-xl overflow-hidden cursor-zoom-in border transition-all duration-300"
+                            style="border-color: var(--ds-border-sub);">
+                        <img [src]="url" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Evidence">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                          </svg>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                }
              </div>
 
           <!-- ACTION COLUMN -->
-          <div class="w-full md:w-[340px] flex flex-col gap-4 pb-4 shrink-0 transition-opacity duration-300"
+          <div class="w-full md:w-[320px] flex flex-col gap-4 shrink-0 transition-opacity duration-300"
                [style.opacity]="isExpanded ? '1' : '0'">
              
-             <ng-container *ngIf="activeTab === 'new'">
-                <div class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-3xl border border-slate-100 dark:border-slate-700/50 shadow-inner">
-                  <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1">{{ i18n.translate('requests.details.eta_label') }}</label>
+             @if (activeTab === 'new') {
+                <div class="p-5 rounded-2xl border" style="background-color: var(--ds-surface0); border-color: var(--ds-border-sub);">
+                  <label class="block text-[10px] font-bold uppercase tracking-widest mb-2 ml-1" style="color: var(--ds-subtext);">{{ i18n.translate('requests.details.eta_label') }}</label>
                   <div class="relative">
-                    <input type="number" [(ngModel)]="estimatedArrivalMin" class="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white font-black text-xl rounded-2xl focus:ring-4 focus:ring-indigo-500/20 dark:focus:ring-indigo-500/40 focus:border-indigo-500 block p-4 transition-all outline-none" min="5" max="180">
-                    <span class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">{{ i18n.translate('requests.details.min_suffix') }}</span>
+                    <input type="number" [(ngModel)]="estimatedArrivalMin" 
+                      class="w-full bg-transparent border-b text-xl font-bold p-1 transition-all outline-none" 
+                      [style.border-color]="'var(--ds-border-sub)'"
+                      [style.color]="'var(--ds-text)'"
+                      min="5" max="180">
+                    <span class="absolute right-1 bottom-1 font-bold text-[10px] uppercase opacity-40" style="color: var(--ds-subtext);">{{ i18n.translate('requests.details.min_suffix') }}</span>
                   </div>
+                </div>
+
+                <!-- TECHNICIAN SELECTOR -->
+                <div class="p-5 rounded-2xl border" style="background-color: var(--ds-surface0); border-color: var(--ds-border-sub);">
+                  <label class="block text-[10px] font-bold uppercase tracking-widest mb-2 ml-1" style="color: var(--ds-subtext);">{{ i18n.translate('requests.details.technician_assigned') }}</label>
+                  @if (loadingTechnicians) {
+                    <div class="text-xs italic py-1 opacity-60" style="color: var(--ds-subtext);">{{ i18n.translate('requests.details.loading_technicians') }}</div>
+                  } @else if (availableTechnicians.length === 0) {
+                    <div class="text-[10px] font-bold py-1" style="color: var(--ds-red);">
+                      ⚠️ {{ i18n.translate('requests.details.no_technicians') }}
+                    </div>
+                  } @else {
+                    <select [(ngModel)]="selectedTechnicianId"
+                      class="w-full bg-transparent text-sm font-bold p-1 outline-none cursor-pointer border-b"
+                      [style.border-color]="'var(--ds-border-sub)'"
+                      [style.color]="'var(--ds-text)'">
+                      <option *ngFor="let tech of availableTechnicians" [value]="tech.id" class="bg-slate-900">
+                        {{ tech.name }} {{ tech.last_name }}
+                      </option>
+                    </select>
+                  }
                 </div>
 
                 <!-- REJECT GROUP -->
-                <div class="flex flex-col gap-2">
-                  <div class="flex items-center gap-2">
-                    <select [(ngModel)]="rejectionReason" class="flex-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-bold rounded-2xl focus:ring-2 focus:ring-rose-500/20 px-4 py-3.5 outline-none cursor-pointer appearance-none shadow-sm">
-                      <option value="busy">{{ i18n.translate('requests.details.rejection_reason.busy') }}</option>
-                      <option value="far_from_zone">{{ i18n.translate('requests.details.rejection_reason.far') }}</option>
-                      <option value="no_parts">{{ i18n.translate('requests.details.rejection_reason.no_parts') }}</option>
-                    </select>
-                    <button (click)="onReject()" [disabled]="isProcessing" class="px-6 bg-white dark:bg-slate-700 hover:bg-rose-50 dark:hover:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-slate-200 dark:border-slate-600 hover:border-rose-200 dark:hover:border-rose-500/30 font-black py-3.5 rounded-2xl transition-all active:scale-[0.98] disabled:opacity-50 shadow-sm">
-                      {{ i18n.translate('requests.details.reject_btn') }}
-                    </button>
-                  </div>
+                <div class="flex gap-2">
+                  <select [(ngModel)]="rejectionReason" 
+                    class="flex-1 bg-transparent text-xs font-bold p-3 rounded-lg border outline-none"
+                    style="background-color: var(--ds-surface0); border-color: var(--ds-border-sub); color: var(--ds-text);">
+                    <option value="busy" class="bg-slate-900">{{ i18n.translate('requests.details.rejection_reason.busy') }}</option>
+                    <option value="far_from_zone" class="bg-slate-900">{{ i18n.translate('requests.details.rejection_reason.far') }}</option>
+                    <option value="no_parts" class="bg-slate-900">{{ i18n.translate('requests.details.rejection_reason.no_parts') }}</option>
+                  </select>
+                  <button (click)="onReject()" [disabled]="isProcessing" class="px-4 ds-btn-ghost text-xs h-10" style="color: var(--ds-red); border-color: var(--ds-red);">
+                    {{ i18n.translate('requests.details.reject_btn') }}
+                  </button>
                 </div>
 
                 <!-- ACCEPT -->
-                <button (click)="onAccept()" [disabled]="isProcessing" class="group relative w-full flex justify-center items-center gap-3 bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white font-black py-5 rounded-[1.5rem] shadow-xl shadow-indigo-500/20 hover:shadow-indigo-500/40 transition-all duration-300 transform active:scale-[0.98] disabled:opacity-50 mt-2">
-                   <svg *ngIf="isProcessing" class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                   <svg *ngIf="!isProcessing" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" /></svg>
-                   <span class="tracking-widest uppercase text-sm font-black">{{ i18n.translate('requests.details.accept_btn') }}</span>
+                <button (click)="onAccept()" [disabled]="isProcessing || !selectedTechnicianId || availableTechnicians.length === 0" 
+                  class="ds-btn-primary w-full h-14 flex justify-center items-center gap-3 shadow-lg shadow-indigo-500/20">
+                   @if (isProcessing) {
+                     <div class="ds-spinner w-5 h-5"></div>
+                   } @else {
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" /></svg>
+                   }
+                   <span class="tracking-widest uppercase text-xs font-bold">{{ i18n.translate('requests.details.accept_btn') }}</span>
                 </button>
-             </ng-container>
+             }
 
-             <ng-container *ngIf="activeTab === 'active'">
-                <div class="bg-indigo-50 dark:bg-indigo-900/10 p-6 rounded-[2rem] border border-indigo-100 dark:border-indigo-500/10 flex flex-col gap-3 shadow-inner">
-                   <div class="flex items-center gap-3">
-                      <div class="relative flex h-3 w-3">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
-                      </div>
-                      <span class="font-black text-indigo-900 dark:text-indigo-400 uppercase tracking-tighter">{{ i18n.translate('requests.details.active_badge') || 'Servicio en Curso' }}</span>
+             @if (activeTab === 'active') {
+                <div class="p-6 rounded-2xl border flex flex-col gap-3 text-center" style="background-color: var(--ds-surface0); border-color: var(--ds-border-sub);">
+                   <div class="flex items-center justify-center gap-2 mb-1">
+                      <span class="ds-live-dot"></span>
+                      <span class="font-bold uppercase tracking-widest text-[10px]" style="color: var(--ds-blue);">{{ i18n.translate('requests.details.active_badge') }}</span>
                    </div>
-                   <div class="bg-white dark:bg-slate-800/80 p-4 rounded-2xl text-center shadow-sm">
-                      <div class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-1">ETA reporte</div>
-                      <div class="text-2xl font-black text-indigo-600 dark:text-indigo-400">{{ offer.estimated_arrival_min }} <span class="text-xs text-slate-400">min</span></div>
-                   </div>
+                   <div class="text-[10px] uppercase tracking-widest opacity-40" style="color: var(--ds-subtext);">{{ i18n.translate('requests.details.active_eta') }}</div>
+                   <div class="text-4xl font-bold tracking-tighter" style="color: var(--ds-blue);">{{ offer.estimated_arrival_min }} <span class="text-xs opacity-40 ml-1">{{ i18n.translate('requests.details.min_suffix') }}</span></div>
                 </div>
 
-                <!-- COMPLETE -->
-                <button (click)="onComplete()" [disabled]="isProcessing" class="group relative w-full flex justify-center items-center gap-3 bg-emerald-500 hover:bg-emerald-600 text-white font-black py-5 rounded-[1.5rem] shadow-xl shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all duration-300 transform active:scale-[0.98] disabled:opacity-50 mt-4">
-                   <svg *ngIf="isProcessing" class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                   <svg *ngIf="!isProcessing" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
-                   <span class="tracking-widest uppercase text-sm">Completar Servicio</span>
+                <div class="p-5 rounded-2xl border mb-2" style="background-color: var(--ds-surface0); border-color: var(--ds-border-sub);">
+                  <label class="block text-[10px] font-bold uppercase tracking-widest mb-2 ml-1" style="color: var(--ds-subtext);">Costo del Servicio (BOB)</label>
+                  <div class="relative">
+                    <input type="number" [(ngModel)]="assignedCost" 
+                      class="w-full bg-transparent border-b text-xl font-bold p-1 transition-all outline-none" 
+                      [style.border-color]="'var(--ds-border-sub)'"
+                      [style.color]="'var(--ds-text)'"
+                      placeholder="0.00" min="0">
+                  </div>
+                </div>
+
+               <!-- COMPLETE -->
+                <button (click)="onComplete()" [disabled]="isProcessing" class="ds-btn-primary w-full h-14 flex justify-center items-center gap-3 shadow-lg shadow-indigo-500/20">
+                   @if (isProcessing) {
+                     <div class="ds-spinner w-5 h-5"></div>
+                   } @else {
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                   }
+                   <span class="tracking-widest uppercase text-xs font-bold">{{ i18n.translate('requests.details.complete_btn') }}</span>
                 </button>
-             </ng-container>
+             }
           </div>
        </div>
     </div>
   </ng-container>
 
   <!-- FULLSCREEN IMAGE VIEWER MODAL -->
-  <div *ngIf="selectedImageUrl" 
-       class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/90 backdrop-blur-xl animate-in fade-in duration-300 p-4 sm:p-12"
-       (click)="closeImage()">
-    <button (click)="closeImage()" class="absolute top-8 right-8 text-white/70 hover:text-white transition-colors">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
-    <img [src]="selectedImageUrl" 
-         class="max-w-full max-h-full object-contain rounded-3xl shadow-2xl animate-in zoom-in-95 duration-500 border border-white/10" 
-         alt="Evidence Full"
-         (click)="$event.stopPropagation()">
-  </div>
+  @if (selectedImageUrl) {
+    <div class="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-2xl animate-in fade-in duration-300 p-8"
+         style="background-color: rgba(0,0,0,0.9);"
+         (click)="closeImage()">
+      <button (click)="closeImage()" class="absolute top-8 right-8 opacity-40 hover:opacity-100 transition-opacity">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <img [src]="selectedImageUrl" 
+           class="max-w-full max-h-full object-contain rounded-2xl shadow-2xl animate-in zoom-in-95 duration-500 border" 
+           [style.border-color]="'var(--ds-border-sub)'"
+           alt="Evidence Full"
+           (click)="$event.stopPropagation()">
+    </div>
+  }
 </div>
