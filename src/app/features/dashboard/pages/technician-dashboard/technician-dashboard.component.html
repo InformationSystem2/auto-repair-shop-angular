@@ -3,63 +3,155 @@
     <h1 class="text-2xl font-bold" style="color: var(--ds-text);">{{ i18n.translate('dashboard.technician.title') }}</h1>
     <p class="text-sm mt-0.5" style="color: var(--ds-subtext);">{{ i18n.translate('dashboard.technician.subtitle') }}</p>
   </div>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-fr">
-    <app-stat-card
-      [label]="i18n.translate('dashboard.technician.pending_tasks')"
-      value="8"
-      colorClass="bg-amber-500/10 group-hover:bg-amber-500/20"
-      [trend]="{ text: i18n.translate('dashboard.technician.trend_urgent'), positive: false }" />
-    <app-stat-card
-      [label]="i18n.translate('dashboard.technician.in_progress')"
-      value="2"
-      colorClass="bg-indigo-500/10 group-hover:bg-indigo-500/20" />
-    <app-stat-card
-      [label]="i18n.translate('dashboard.technician.completed_today')"
-      value="5"
-      colorClass="bg-emerald-500/10 group-hover:bg-emerald-500/20"
-      [trend]="{ text: i18n.translate('dashboard.technician.trend_good'), positive: true }" />
-  </div>
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <div class="rounded-xl p-5 overflow-hidden" style="background-color: var(--ds-card); border: 1px solid var(--ds-border); box-shadow: 0 4px 20px var(--ds-shadow);">
-      <h3 class="text-lg font-semibold mb-4" style="color: var(--ds-text);">{{ i18n.translate('dashboard.technician.assigned_tasks') }}</h3>
-      <div class="space-y-4">
-        @for (i of [1,2,3]; track i) {
-          <div class="flex items-center justify-between p-4 rounded-xl transition-all cursor-pointer group" style="background-color: var(--ds-card-hi); border: 1px solid var(--ds-border-sub);">
-            <div class="flex items-center gap-4">
-              <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-colors" style="background-color: var(--ds-surface0); color: var(--ds-blue);">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
+
+  @if (loading()) {
+    <div class="flex items-center justify-center h-48">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2" style="border-color: var(--ds-blue);"></div>
+    </div>
+  } @else if (error()) {
+    <div class="rounded-xl p-4 text-center" style="background-color: var(--ds-card); border: 1px solid var(--ds-border);">
+      <p style="color: var(--ds-red);">{{ error() }}</p>
+    </div>
+  } @else if (stats(); as s) {
+
+    <!-- Stat Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-fr">
+      <app-stat-card
+        [label]="i18n.translate('dashboard.technician.pending_tasks')"
+        [value]="s.assigned_count"
+        colorClass="bg-amber-500/10 group-hover:bg-amber-500/20"
+        [trend]="s.assigned_count > 0 ? { text: 'Por atender', positive: false } : null" />
+      <app-stat-card
+        [label]="i18n.translate('dashboard.technician.in_progress')"
+        [value]="s.in_progress_count"
+        colorClass="bg-indigo-500/10 group-hover:bg-indigo-500/20" />
+      <app-stat-card
+        [label]="i18n.translate('dashboard.technician.completed_today')"
+        [value]="s.completed_today"
+        colorClass="bg-emerald-500/10 group-hover:bg-emerald-500/20"
+        [trend]="s.completed_today > 0 ? { text: 'Hoy', positive: true } : null" />
+    </div>
+
+    <!-- Active incidents + Profile -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Active incidents list -->
+      <div class="lg:col-span-2 rounded-xl p-5 overflow-hidden" style="background-color: var(--ds-card); border: 1px solid var(--ds-border); box-shadow: 0 4px 20px var(--ds-shadow);">
+        <h3 class="text-lg font-semibold mb-4" style="color: var(--ds-text);">{{ i18n.translate('dashboard.technician.assigned_tasks') }}</h3>
+        @if (s.active_incidents.length === 0) {
+          <div class="flex flex-col items-center justify-center py-10 text-center">
+            <svg class="w-10 h-10 mb-3" style="color: var(--ds-subtext);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="text-sm" style="color: var(--ds-subtext);">Sin incidentes activos</p>
+          </div>
+        } @else {
+          <div class="space-y-3">
+            @for (inc of s.active_incidents; track inc.id) {
+              <div class="flex items-center justify-between p-4 rounded-xl transition-all" style="background-color: var(--ds-card-hi); border: 1px solid var(--ds-border-sub);">
+                <div class="flex items-center gap-4">
+                  <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: var(--ds-surface0); color: var(--ds-blue);">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium" style="color: var(--ds-text);">{{ inc.client_name }}</p>
+                    <p class="text-xs" style="color: var(--ds-subtext);">{{ categoryLabel(inc.ai_category) }} · {{ inc.created_at | date:'dd MMM, HH:mm' }}</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  @if (inc.ai_priority) {
+                    <span [class]="priorityBadgeClass(inc.ai_priority)" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                      {{ inc.ai_priority }}
+                    </span>
+                  }
+                  <span [class]="statusBadgeClass(inc.status)" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                    {{ inc.status === 'in_progress' ? 'En curso' : 'Asignado' }}
+                  </span>
+                </div>
               </div>
-              <div>
-                <p class="text-sm font-medium" style="color: var(--ds-text);">{{ i18n.translate('dashboard.technician.task_example') }}</p>
-                <p class="text-xs" style="color: var(--ds-subtext);">{{ i18n.translate('dashboard.technician.assigned_ago') }}</p>
-              </div>
-            </div>
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ds-badge ds-badge-yellow">
-              {{ i18n.translate('dashboard.technician.pending') }}
-            </span>
+            }
           </div>
         }
       </div>
-    </div>
-    <div class="rounded-xl p-5 flex flex-col items-center justify-center text-center" style="background-color: var(--ds-card); border: 1px solid var(--ds-border); box-shadow: 0 4px 20px var(--ds-shadow);">
-      <div class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 p-1 mb-4">
-        <div class="w-full h-full rounded-full flex items-center justify-center text-2xl font-bold" style="background-color: var(--ds-bg); color: var(--ds-text);">
-          T1
+
+      <!-- Technician profile -->
+      <div class="rounded-xl p-5 flex flex-col items-center justify-center text-center" style="background-color: var(--ds-card); border: 1px solid var(--ds-border); box-shadow: 0 4px 20px var(--ds-shadow);">
+        <div class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 p-1 mb-4">
+          <div class="w-full h-full rounded-full flex items-center justify-center text-2xl font-bold" style="background-color: var(--ds-bg); color: var(--ds-text);">
+            {{ initials(s.workshop_name) }}
+          </div>
+        </div>
+        <h4 class="text-lg font-bold" style="color: var(--ds-text);">{{ s.workshop_name }}</h4>
+        <div class="mt-1 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full" [class]="s.is_available ? 'bg-emerald-500' : 'bg-red-500'"></span>
+          <span class="text-sm" style="color: var(--ds-subtext);">{{ s.is_available ? 'Disponible' : 'No disponible' }}</span>
+        </div>
+
+        <div class="mt-5 w-full space-y-4">
+          <!-- Productivity -->
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span style="color: var(--ds-subtext);">{{ i18n.translate('dashboard.technician.productivity') }}</span>
+              <span style="color: var(--ds-blue);">{{ s.productivity }}%</span>
+            </div>
+            <div class="w-full rounded-full h-1.5" style="background-color: var(--ds-surface0);">
+              <div class="h-1.5 rounded-full transition-all" [style.width.%]="s.productivity" style="background-color: var(--ds-blue);"></div>
+            </div>
+          </div>
+
+          <!-- Rating -->
+          <div class="flex justify-between text-sm">
+            <span style="color: var(--ds-subtext);">Calificación promedio</span>
+            <span class="font-semibold" style="color: var(--ds-text);">{{ s.avg_rating > 0 ? (s.avg_rating | number:'1.1-1') + ' ★' : 'Sin calificaciones' }}</span>
+          </div>
+
+          <!-- Totals -->
+          <div class="flex justify-between text-sm">
+            <span style="color: var(--ds-subtext);">Total completados</span>
+            <span class="font-semibold" style="color: var(--ds-text);">{{ s.completed_total }}</span>
+          </div>
         </div>
       </div>
-      <h4 class="text-lg font-bold" style="color: var(--ds-text);">{{ i18n.translate('dashboard.technician.tech_profile') }}</h4>
-      <p class="text-sm mt-1" style="color: var(--ds-subtext);">{{ i18n.translate('dashboard.technician.specialization') }}</p>
-      <div class="mt-6 w-full space-y-3">
-        <div class="flex justify-between text-xs">
-          <span style="color: var(--ds-subtext);">{{ i18n.translate('dashboard.technician.productivity') }}</span>
-          <span style="color: var(--ds-blue);">85%</span>
-        </div>
-        <div class="w-full rounded-full h-1.5" style="background-color: var(--ds-surface0);">
-          <div class="h-1.5 rounded-full" style="width: 85%; background-color: var(--ds-blue);"></div>
+    </div>
+
+    <!-- Recent completed -->
+    @if (s.recent_completed.length > 0) {
+      <div class="rounded-xl p-5 overflow-hidden" style="background-color: var(--ds-card); border: 1px solid var(--ds-border); box-shadow: 0 4px 20px var(--ds-shadow);">
+        <h3 class="text-lg font-semibold mb-4" style="color: var(--ds-text);">Servicios recientes completados</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left" style="color: var(--ds-subtext); border-bottom: 1px solid var(--ds-border);">
+                <th class="pb-3 pr-4 font-medium">Cliente</th>
+                <th class="pb-3 pr-4 font-medium">Categoría</th>
+                <th class="pb-3 pr-4 font-medium">Monto</th>
+                <th class="pb-3 pr-4 font-medium">Calificación</th>
+                <th class="pb-3 font-medium">Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of s.recent_completed; track row.id) {
+                <tr style="border-bottom: 1px solid var(--ds-border-sub);">
+                  <td class="py-3 pr-4" style="color: var(--ds-text);">{{ row.client_name }}</td>
+                  <td class="py-3 pr-4" style="color: var(--ds-subtext);">{{ categoryLabel(row.ai_category) }}</td>
+                  <td class="py-3 pr-4 font-medium" style="color: var(--ds-text);">Bs {{ row.amount | number:'1.2-2' }}</td>
+                  <td class="py-3 pr-4">
+                    @if (row.rating_score) {
+                      <span style="color: var(--ds-yellow);">{{ row.rating_score }} ★</span>
+                    } @else {
+                      <span style="color: var(--ds-subtext);">—</span>
+                    }
+                  </td>
+                  <td class="py-3 text-xs" style="color: var(--ds-subtext);">{{ row.completed_at | date:'dd MMM yyyy' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
         </div>
       </div>
-    </div>
-  </div>
+    }
+
+  }
 </div>

@@ -2,7 +2,8 @@
   class="flex flex-col h-full w-[17rem] bg-[#eff1f5]/80 dark:bg-[#1a1b26]/80 backdrop-blur-2xl border-r border-white/60 dark:border-slate-800/80 shadow-[4px_0_24px_rgba(0,0,0,0.02)] select-none fixed inset-y-0 left-0 lg:static transform transition-all duration-300 z-50 shrink-0"
   [class.-translate-x-full]="!uiService.sidebarOpen()"
   [class.translate-x-0]="uiService.sidebarOpen()"
-  [class.lg:translate-x-0]="true">
+  [class.lg:translate-x-0]="!uiService.desktopCollapsed()"
+  [class.lg:hidden]="uiService.desktopCollapsed()">
 
   <!-- Brand (With Close button for mobile) -->
   <div class="flex items-center justify-between px-7 py-6 border-b border-slate-200/50 dark:border-slate-800/50">
