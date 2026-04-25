@@ -6,9 +6,13 @@ import { Injectable, signal } from '@angular/core';
 export class UIService {
   private readonly _sidebarOpen = signal(false);
   private readonly _darkMode = signal<boolean>(this._resolveInitialTheme());
+  private readonly _desktopCollapsed = signal<boolean>(
+    typeof window !== 'undefined' && window.localStorage.getItem('sidebar_collapsed') === 'true'
+  );
 
   readonly sidebarOpen = this._sidebarOpen.asReadonly();
   readonly darkMode = this._darkMode.asReadonly();
+  readonly desktopCollapsed = this._desktopCollapsed.asReadonly();
 
   constructor() {
     this._applyTheme();
@@ -24,6 +28,14 @@ export class UIService {
 
   openSidebar(): void {
     this._sidebarOpen.set(true);
+  }
+
+  toggleDesktopSidebar(): void {
+    const next = !this._desktopCollapsed();
+    this._desktopCollapsed.set(next);
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('sidebar_collapsed', String(next));
+    }
   }
 
   toggleDarkMode(): void {

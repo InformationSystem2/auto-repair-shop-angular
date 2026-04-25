@@ -27,6 +27,19 @@ export interface WorkshopDashboardData {
   technician_locations: { id: string; name: string; is_available: boolean; latitude: number | null; longitude: number | null }[];
 }
 
+export interface TechnicianDashboardData {
+  assigned_count: number;
+  in_progress_count: number;
+  completed_today: number;
+  completed_total: number;
+  avg_rating: number;
+  productivity: number;
+  is_available: boolean;
+  workshop_name: string;
+  active_incidents: { id: string; client_name: string; ai_category: string | null; ai_priority: string | null; status: string; incident_lat: number | null; incident_lng: number | null; created_at: string }[];
+  recent_completed: { id: string; client_name: string; ai_category: string | null; amount: number; rating_score: number | null; completed_at: string }[];
+}
+
 export interface ClientDashboardData {
   total_spent: number;
   service_count: number;
@@ -47,6 +60,10 @@ export class DashboardService {
 
   getWorkshopStats(): Observable<WorkshopDashboardData> {
     return this.http.get<WorkshopDashboardData>(`${this.base}/workshop`);
+  }
+
+  getTechnicianStats(): Observable<TechnicianDashboardData> {
+    return this.http.get<TechnicianDashboardData>(`${this.base}/technician`);
   }
 
   getClientStats(): Observable<ClientDashboardData> {

@@ -12,6 +12,22 @@
     </svg>
   </button>
 
+  <!-- Desktop Sidebar Toggle -->
+  <button
+    (click)="uiService.toggleDesktopSidebar()"
+    class="hidden lg:flex p-2.5 -ml-3 rounded-xl text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:text-slate-400 dark:hover:text-indigo-400 dark:hover:bg-indigo-500/10 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+    [title]="uiService.desktopCollapsed() ? 'Mostrar menú' : 'Ocultar menú'">
+    @if (uiService.desktopCollapsed()) {
+      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+      </svg>
+    } @else {
+      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7M19 19l-7-7 7-7" />
+      </svg>
+    }
+  </button>
+
   <!-- Page title (projected) -->
   <div class="flex-1 min-w-0 ml-4 sm:ml-0 flex items-center">
     <ng-content />
@@ -46,14 +62,22 @@
       {{ i18n.currentLang() }}
     </button>
 
-    <!-- Notification placeholder -->
-    <button class="relative p-2.5 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-white dark:text-slate-400 dark:hover:text-indigo-400 dark:hover:bg-slate-800 hover:shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/50 border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
-      <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-pink-500 border-2 border-white dark:border-[#1a1b26] rounded-full animate-pulse"></span>
-      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-      </svg>
-    </button>
+    <!-- Requests Link -->
+    @if (canViewRequests()) {
+      <a
+        [routerLink]="'/app/requests'"
+        (click)="notificationService.markAsRead(); uiService.closeSidebar()"
+        class="relative p-2.5 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-white dark:text-slate-400 dark:hover:text-indigo-400 dark:hover:bg-slate-800 hover:shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/50 border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
+        [title]="i18n.translate('nav.requests')">
+        @if (notificationService.hasNewNotifications()) {
+          <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-pink-500 border-2 border-white dark:border-[#1a1b26] rounded-full animate-pulse"></span>
+        }
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+      </a>
+    }
 
     <div class="w-px h-6 bg-slate-200 dark:bg-slate-800 hidden sm:block mx-1"></div>
 
