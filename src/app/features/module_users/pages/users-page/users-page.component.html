@@ -1,22 +1,21 @@
-<div class="space-y-1 animate-in fade-in slide-in-from-bottom-8 duration-700 max-w-7xl mx-auto">
-
+<div class="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-7xl mx-auto">
+  
   <!-- Header -->
-  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
     <div>
-      <h1
-        class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 tracking-tight">{{ i18n.translate('users.title') }}</h1>
-      <p
-        class="text-indigo-600 dark:text-indigo-400 font-bold tracking-wide mt-2 text-sm uppercase">{{ i18n.translate('users.subtitle') }}</p>
+      <h1 class="text-3xl font-black tracking-tight" style="color:var(--ds-text)">
+        {{ i18n.translate('users.title') }}
+      </h1>
+      <p class="text-xs font-bold tracking-widest uppercase mt-1" style="color:var(--ds-mauve)">
+        {{ i18n.translate('users.subtitle') }}
+      </p>
     </div>
-
-
-    <button appButton (click)="openCreate()"
-            class="relative inline-flex items-center justify-center px-6 py-3 text-sm font-bold text-white transition-all duration-300 bg-indigo-600 rounded-2xl hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/40 hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-indigo-500/30 overflow-hidden group border-0">
-      <div class="absolute inset-0 w-0 bg-white/20 transition-all duration-[300ms] ease-out group-hover:w-full"></div>
-      <span class="relative flex items-center">
-        <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-        </svg>
+    
+    <button (click)="openCreate()" class="ds-btn-primary px-6 h-12 flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+      </svg>
+      <span class="font-bold uppercase tracking-widest text-[10px]">
         {{ i18n.translate('users.new_user') }}
       </span>
     </button>
@@ -28,16 +27,11 @@
     (filterChange)="search.set($event.search); selectedRoleId.set($event.roleId)" />
 
   <!-- Table Container -->
-  <app-card
-    class="flex bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/60 dark:border-slate-800/80
-      rounded-[2rem] shadow-xl shadow-slate-200/40 dark:shadow-none min-h-[400px] overflow-hidden p-0 mt-3">
+  <div class="ds-card overflow-hidden mt-3">
     <div class="w-full">
       @if (loading()) {
         <div class="flex justify-center items-center py-24">
-          <svg class="animate-spin w-10 h-10 text-indigo-500" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
+          <div class="ds-spinner"></div>
         </div>
       } @else {
         <app-users-table
@@ -47,7 +41,7 @@
           (view)="onViewDetail($event)" />
       }
     </div>
-  </app-card>
+  </div>
 
   <!-- Modal Form -->
   @if (showModal()) {

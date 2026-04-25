@@ -1,10 +1,6 @@
 import { Component, inject, input, output, signal, effect, ChangeDetectionStrategy } from '@angular/core';
 import { UserService } from '@users/services/user.service';
 import { User } from '@users/models/user.model';
-import { BadgeComponent } from '@ui/badge/badge.component';
-import { AvatarComponent, AvatarFallbackComponent, AvatarImageDirective } from '@ui/avatar/avatar.component';
-import { TimeAgoPipe } from '@shared/pipes/time-ago.pipe';
-import { InitialsPipe } from '@shared/pipes/initials.pipe';
 import { DatePipe } from '@angular/common';
 import { TranslationService } from '@core/services/translation.service';
 
@@ -12,11 +8,6 @@ import { TranslationService } from '@core/services/translation.service';
   selector: 'app-user-detail-modal',
   standalone: true,
   imports: [
-    BadgeComponent,
-    AvatarComponent,
-    AvatarFallbackComponent,
-    TimeAgoPipe,
-    InitialsPipe,
     DatePipe
   ],
   templateUrl: './user-detail-modal.component.html',
