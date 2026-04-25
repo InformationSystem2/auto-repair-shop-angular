@@ -18,9 +18,7 @@ import { TranslationService } from '@core/services/translation.service';
     CommonModule,
     RolesTableComponent,
     RoleFormComponent,
-    RoleDetailModalComponent,
-    ButtonComponent,
-    CardComponent
+    RoleDetailModalComponent
   ],
   templateUrl: './roles-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

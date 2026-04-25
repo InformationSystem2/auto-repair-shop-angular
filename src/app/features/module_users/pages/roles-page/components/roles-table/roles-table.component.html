@@ -1,18 +1,17 @@
 <div class="overflow-x-auto">
-  <table class="min-w-full border-separate border-spacing-0 text-sm">
+  <table class="w-full">
     <thead>
-    <tr
-      class="text-left text-xs uppercase tracking-widest text-slate-400 dark:text-slate-500 bg-slate-50/50 dark:bg-slate-800/30">
-      <th class="px-6 py-4 font-black">{{ i18n.translate('roles.table.name') }}</th>
-      <th class="px-6 py-4 font-black">{{ i18n.translate('roles.table.description') }}</th>
-      <th class="px-6 py-4 font-black">{{ i18n.translate('roles.table.permissions') }}</th>
-      <th class="px-6 py-4 font-black text-right rounded-tr-2xl">{{ i18n.translate('common.actions') }}</th>
-    </tr>
+      <tr>
+        <th class="ds-th w-[20%]">{{ i18n.translate('roles.table.name') }}</th>
+        <th class="ds-th w-[25%]">{{ i18n.translate('roles.table.description') }}</th>
+        <th class="ds-th w-[45%]">{{ i18n.translate('roles.table.permissions') }}</th>
+        <th class="ds-th w-[10%] text-right">{{ i18n.translate('common.actions') }}</th>
+      </tr>
     </thead>
-    <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50">
+    <tbody>
       @for (role of roles(); track role.id) {
-        <tr class="align-middle transition-all duration-300 hover:bg-white dark:hover:bg-slate-800/80 group">
-          <td class="px-6 py-4">
+        <tr class="ds-tr group">
+          <td class="ds-td">
             <div class="flex items-center gap-2">
               <div
                 class="hidden sm:flex items-center justify-center w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-500/20 shadow-sm group-hover:scale-110 transition-transform duration-300">
@@ -21,31 +20,29 @@
                         d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
-              <p class="font-bold text-[0.95rem] text-slate-900 dark:text-white truncate">{{ role.name }}</p>
+              <p class="font-bold text-[13px] truncate" style="color:var(--ds-text)">{{ role.name }}</p>
             </div>
           </td>
-          <td
-            class="px-6 py-4 font-medium text-slate-500 dark:text-slate-400 max-w-xs truncate">{{ role.description ?? i18n.translate('roles.form.no_desc') }}
+          <td class="ds-td text-[11px] truncate" style="color:var(--ds-subtext)">
+            {{ role.description ?? i18n.translate('roles.form.no_desc') }}
           </td>
-          <td class="px-6 py-4">
-            <div class="flex flex-wrap gap-2 max-w-xs">
+          <td class="ds-td">
+            <div class="flex flex-wrap gap-1.5">
               @for (perm of role.permissions; track perm.id; let i = $index) {
                 @if (i < 3) {
-                  <app-badge variant="secondary"
-                             class="inline-flex items-center px-2 py-1 rounded-md text-[0.65rem] font-bold uppercase tracking-widest bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
-                             [title]="perm.description">{{ perm.action }}
-                  </app-badge>
+                  <span class="ds-badge ds-badge-neutral" [title]="perm.description">
+                    {{ perm.action }}
+                  </span>
                 }
               }
               @if (role.permissions.length > 3) {
-                <app-badge variant="outline"
-                           class="inline-flex items-center px-2 py-1 rounded-md text-[0.65rem] font-black uppercase tracking-widest bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400">
+                <span class="ds-badge ds-badge-mauve">
                   +{{ role.permissions.length - 3 }}
-                </app-badge>
+                </span>
               }
             </div>
           </td>
-          <td class="px-6 py-4 text-right">
+          <td class="ds-td text-right">
             <app-table-row-actions
               [viewTitle]="i18n.translate('common.view')"
               [editTitle]="i18n.translate('common.edit')"
@@ -57,14 +54,13 @@
         </tr>
       } @empty {
         <tr>
-          <td colspan="7" class="px-6 py-16 text-center">
-            <div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
-              <svg class="w-12 h-12 mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <td colspan="4" class="ds-td text-center py-20">
+            <div class="flex flex-col items-center justify-center opacity-40">
+              <svg class="w-12 h-12 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                       d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
-              <p class="font-bold text-lg text-slate-600 dark:text-slate-300">{{ i18n.translate('roles.no_roles') }}</p>
-              <p class="text-sm mt-1">{{ i18n.translate('common.adjust_filters') }}</p>
+              <p class="font-bold uppercase tracking-[0.2em] text-[10px]">{{ i18n.translate('roles.no_roles') }}</p>
             </div>
           </td>
         </tr>
