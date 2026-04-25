@@ -2,8 +2,6 @@ import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@ang
 import { CommonModule } from '@angular/common';
 import { SpecialtyService } from '../../services/specialty.service';
 import { Specialty, SpecialtyCreate, SpecialtyUpdate } from '../../models/specialty.model';
-import { ButtonComponent } from '@ui/button/button.component';
-import { CardComponent } from '@ui/card/card.component';
 import { SpecialtyFormComponent } from './components/specialty-form/specialty-form.component';
 import { SpecialtyDetailModalComponent } from './components/specialty-detail-modal/specialty-detail-modal.component';
 import { ToastService } from '@core/services/toast.service';
@@ -34,11 +32,14 @@ export class SpecialtiesPageComponent implements OnInit {
   readonly selectedSpecialty = signal<Specialty | null>(null);
 
   ngOnInit(): void {
-    this.loadSpecialties();
+    this.loadSpecialties(true);
   }
 
-  loadSpecialties(): void {
-    this.loading.set(true);
+  loadSpecialties(isInitial = false): void {
+    if (isInitial || this.specialties().length === 0) {
+      this.loading.set(true);
+    }
+    
     this.specialtySvc.getAll().subscribe({
       next: (data) => {
         this.specialties.set(data);
@@ -54,14 +55,12 @@ export class SpecialtiesPageComponent implements OnInit {
   }
 
   openEdit(specialty: Specialty): void {
-    this.loading.set(true);
     this.specialtySvc.getById(specialty.id).subscribe({
       next: (data) => {
         this.editingSpecialty.set(data);
         this.showModal.set(true);
-        this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {},
     });
   }
 
@@ -70,14 +69,12 @@ export class SpecialtiesPageComponent implements OnInit {
   }
 
   openDetail(specialty: Specialty): void {
-    this.loading.set(true);
     this.specialtySvc.getById(specialty.id).subscribe({
       next: (data) => {
         this.selectedSpecialty.set(data);
         this.showDetailModal.set(true);
-        this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {},
     });
   }
 
