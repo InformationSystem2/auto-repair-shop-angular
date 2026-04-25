@@ -10,6 +10,7 @@ RUN npm ci
 # Copy source
 COPY . .
 
+# Angular Environment Variable Injection (Build-time)
 ARG API_URL=https://auto-repair-shop-fastapi-776780812382.southamerica-west1.run.app/api
 RUN echo "Inyectando API_URL: ${API_URL}" && \
     sed -i "s|apiUrl:.*|apiUrl: '${API_URL}',|g" src/environments/environment.prod.ts && \
