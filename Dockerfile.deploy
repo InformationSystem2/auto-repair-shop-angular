@@ -10,9 +10,9 @@ RUN npm ci
 # Copy source
 COPY . .
 
-ARG API_URL=https://si2-sgd-hc-backend-623982872710.southamerica-west1.run.app/api
+ARG API_URL=https://auto-repair-shop-fastapi-776780812382.southamerica-west1.run.app/api
 RUN echo "Inyectando API_URL: ${API_URL}" && \
-    sed -i "s|apiUrl:.*|apiUrl: '${API_URL}'|g" src/environments/environment.prod.ts && \
+    sed -i "s|apiUrl:.*|apiUrl: '${API_URL}',|g" src/environments/environment.prod.ts && \
     echo "Contenido de environment.prod.ts corregido:" && \
     cat src/environments/environment.prod.ts && \
     grep -q "'${API_URL}'" src/environments/environment.prod.ts || (echo "ERROR CRÍTICO: La URL no se inyectó en environment.prod.ts" && exit 1)
@@ -27,11 +27,12 @@ FROM nginx:stable-alpine
 ENV PORT=8080
 
 # Configure Nginx via the template (envsubst will run on this)
-COPY nginx.conf /etc/nginx/templates/default.conf.template
+# Path: /etc/nginx/templates/ is handled by the official nginx image
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 
 # Copy built assets from builder
 # Path: dist/[project-name]/browser for Angular Application builder
-COPY --from=builder /app/dist/sgd-hc-front/browser /usr/share/nginx/html
+COPY --from=builder /app/dist/auto-repair-shop-angular/browser /usr/share/nginx/html
 
 EXPOSE 8080
 
