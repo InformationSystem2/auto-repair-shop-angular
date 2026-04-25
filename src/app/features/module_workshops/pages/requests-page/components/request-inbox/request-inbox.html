@@ -1,0 +1,91 @@
+<!-- HEADER -->
+<div class="px-6 py-6 flex flex-col gap-4 border-b" style="border-color: var(--ds-border);">
+  <div class="flex justify-between items-center">
+     <h2 class="text-xl font-bold" style="color: var(--ds-text);">
+       {{ i18n.translate('requests.title') }}
+     </h2>
+     <button (click)="onRefresh()" class="w-9 h-9 flex items-center justify-center rounded-lg ds-btn-ghost transition-all">
+       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+       </svg>
+     </button>
+  </div>
+  
+  <div class="flex p-1 rounded-lg w-full border" style="background-color: var(--ds-surface0); border-color: var(--ds-border-sub);">
+    <button (click)="setTab('new')"
+            [style.background-color]="activeTab === 'new' ? 'var(--ds-card)' : 'transparent'"
+            [style.color]="activeTab === 'new' ? 'var(--ds-text)' : 'var(--ds-subtext)'"
+            class="flex-1 py-2 px-3 rounded-md text-[10px] uppercase font-bold tracking-widest transition-all relative">
+      {{ i18n.translate('requests.tabs.new') }}
+      @if (activeTab === 'new') {
+        <div class="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,1)]"></div>
+      }
+    </button>
+    <button (click)="setTab('active')"
+            [style.background-color]="activeTab === 'active' ? 'var(--ds-card)' : 'transparent'"
+            [style.color]="activeTab === 'active' ? 'var(--ds-text)' : 'var(--ds-subtext)'"
+            class="flex-1 py-2 px-3 rounded-md text-[10px] uppercase font-bold tracking-widest transition-all relative">
+      {{ i18n.translate('requests.tabs.active') }}
+      @if (activeTab === 'active') {
+        <div class="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,1)]"></div>
+      }
+    </button>
+  </div>
+</div>
+
+<!-- LIST CONTAINER -->
+<div class="flex-1 overflow-y-auto px-4 py-4 space-y-3 custom-scrollbar">
+  
+  <!-- EMPTY STATE -->
+  @if (!isProcessing && offers.length === 0) {
+    <div class="h-full flex flex-col items-center justify-center text-center px-6">
+      <div class="w-16 h-16 flex items-center justify-center mb-4 rounded-xl" style="background-color: var(--ds-surface0);">
+         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+        </svg>
+      </div>
+      <h3 class="text-lg font-bold" style="color: var(--ds-text);">{{ i18n.translate('requests.no_requests') }}</h3>
+      <p class="text-xs mt-1 font-bold uppercase tracking-widest opacity-40" style="color: var(--ds-subtext);">{{ i18n.translate('requests.no_requests_desc') }}</p>
+    </div>
+  }
+
+  <!-- ITEMS -->
+  @for (offer of offers; track offer.offer_id) {
+    <div (click)="onSelect(offer)"
+         class="relative p-5 cursor-pointer rounded-xl transition-all border group"
+         [style.background-color]="selectedOffer?.offer_id === offer.offer_id ? 'var(--ds-card-hi)' : 'transparent'"
+         [style.border-color]="selectedOffer?.offer_id === offer.offer_id ? 'var(--ds-blue)' : 'var(--ds-border-sub)'"
+         [class.shadow-lg]="selectedOffer?.offer_id === offer.offer_id"
+         [class.hover:border-indigo-500/30]="selectedOffer?.offer_id !== offer.offer_id">
+      
+      <div class="flex justify-between items-start mb-3">
+        <span class="ds-badge" [ngClass]="getSeverityClasses(offer.incident.ai_priority)">
+          <span class="w-1 h-1 rounded-full" [ngClass]="getSeverityDot(offer.incident.ai_priority)"></span>
+          {{ i18n.translate('requests.priority.' + (offer.incident.ai_priority.toLowerCase() || 'medium')) }}
+        </span>
+        <span class="text-[10px] font-bold flex items-center gap-1.5 opacity-60 uppercase" style="color: var(--ds-subtext);">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+          {{ offer.distance_km | number:'1.1-1' }} km
+        </span>
+      </div>
+      
+      <h3 class="text-sm font-bold tracking-tight line-clamp-1 mb-1 transition-colors"
+          [style.color]="selectedOffer?.offer_id === offer.offer_id ? 'var(--ds-blue)' : 'var(--ds-text)'">
+        {{ offer.incident.ai_category ? (i18n.translate('requests.categories.' + offer.incident.ai_category) || offer.incident.ai_category) : i18n.translate('requests.details.unknown_category') }}
+      </h3>
+      <p class="text-xs line-clamp-2 leading-relaxed opacity-70" style="color: var(--ds-subtext);">{{ offer.incident.description }}</p>
+      
+      <div class="mt-4 pt-4 border-t flex items-center justify-between" style="border-color: var(--ds-border-sub);">
+        @if (offer.expires_in_seconds && offer.expires_in_seconds < 120) {
+          <div class="text-[10px] font-bold flex items-center gap-1.5 uppercase tracking-wider" style="color: var(--ds-red);">
+            <span class="ds-live-dot" style="background-color: var(--ds-red);"></span>
+            {{ i18n.translate('requests.expires_in', { seconds: offer.expires_in_seconds.toString() }) }}
+          </div>
+        }
+        <div class="text-[9px] font-bold uppercase tracking-widest ml-auto opacity-40" style="color: var(--ds-subtext);">
+           {{ i18n.translate('requests.just_now') }}
+        </div>
+      </div>
+    </div>
+  }
+</div>

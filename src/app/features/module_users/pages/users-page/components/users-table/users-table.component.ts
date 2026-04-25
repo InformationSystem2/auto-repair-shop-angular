@@ -1,8 +1,6 @@
 import { Component, input, output, inject, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { User } from '@users/models/user.model';
-import { BadgeComponent } from '@ui/badge/badge.component';
-import { AvatarComponent, AvatarFallbackComponent } from '@ui/avatar/avatar.component';
 import { TableRowActionsComponent } from '@ui/table-row-actions/table-row-actions.component';
 import { TranslationService } from '@core/services/translation.service';
 
@@ -11,9 +9,6 @@ import { TranslationService } from '@core/services/translation.service';
   standalone: true,
   imports: [
     DatePipe,
-    BadgeComponent,
-    AvatarComponent,
-    AvatarFallbackComponent,
     TableRowActionsComponent
   ],
   templateUrl: './users-table.component.html',

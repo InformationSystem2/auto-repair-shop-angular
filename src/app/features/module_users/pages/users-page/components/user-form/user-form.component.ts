@@ -3,9 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angula
 import { User, UserCreate, UserUpdate } from '@users/models/user.model';
 import { RoleDetail } from '@users/models/role.model';
 import { AuthService } from '@core/auth/auth.service';
-import { CheckboxComponent } from '@ui/checkbox/checkbox.component';
 import { SwitchComponent } from '@ui/switch/switch.component';
-import { InputDirective } from '@ui/input/input.component';
 import { TranslationService } from '@core/services/translation.service';
 
 @Component({
@@ -13,9 +11,7 @@ import { TranslationService } from '@core/services/translation.service';
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    CheckboxComponent,
-    SwitchComponent,
-    InputDirective
+    SwitchComponent
   ],
   templateUrl: './user-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

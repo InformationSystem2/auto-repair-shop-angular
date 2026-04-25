@@ -18,8 +18,7 @@ import { CardComponent } from '@ui/card/card.component';
     CommonModule, 
     ReactiveFormsModule, 
     WorkshopsFilterComponent, 
-    WorkshopsTableComponent,
-    CardComponent
+    WorkshopsTableComponent
   ],
   templateUrl: './workshops-page.component.html',
 })

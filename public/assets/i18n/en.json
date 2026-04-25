@@ -63,7 +63,8 @@
     "main_menu": "Main Menu",
     "logout": "Logout",
     "app_name": "Help",
-    "app_subtitle": "Mechanic"
+    "app_subtitle": "Mechanic",
+    "requests": "Request Management"
   },
   "login": {
     "title": "Welcome",
@@ -352,7 +353,8 @@
       "technician": "Technician",
       "email": "Email",
       "phone": "Phone",
-      "status": "Status"
+      "status": "Status",
+      "name": "Name"
     },
     "new_tech": "New Technician",
     "edit_tech": "Edit Technician",
@@ -398,5 +400,59 @@
     "month": "month",
     "months": "months",
     "year": "year",
-    "years": "years"  }
+    "years": "years"  },
+  "requests": {
+    "title": "Active S.O.S",
+    "subtitle": "Emergencies in your coverage area",
+    "no_requests": "All quiet",
+    "no_requests_desc": "No new emergencies for now.",
+    "expires_in": "Expires in {{seconds}}s",
+    "just_now": "Just now",
+    "categories": {
+      "battery": "Battery",
+      "tire": "Tire/Wheel",
+      "collision": "Collision/Rollover",
+      "engine": "Engine",
+      "ac": "A/C",
+      "transmission": "Transmission",
+      "towing": "Towing",
+      "locksmith": "Locksmith",
+      "general": "General",
+      "uncertain": "Uncertain"
+    },
+    "priority": {
+      "critical": "CRITICAL",
+      "high": "HIGH",
+      "medium": "MEDIUM",
+      "low": "LOW"
+    },
+    "details": {
+       "ready_title": "Ready to dispatch",
+       "ready_desc": "Select an S.O.S from the left panel to analyze it.",
+       "ai_diagnosis": "AI Diagnosis",
+       "eta_label": "ETA (Estimated minutes)",
+       "min_suffix": "min",
+       "rejection_reason": {
+         "label": "Reason (if rejecting)",
+         "busy": "I'm busy",
+         "far": "Out of zone",
+         "no_parts": "No spare parts"
+       },
+       "accept_btn": "DISPATCH NOW",
+       "unknown_category": "Unspecified Breakdown",
+       "active_badge": "Service in Progress",
+       "evidence_title": "Photographic Evidence",
+       "technician_assigned": "Technician assigned",
+       "loading_technicians": "Loading technicians...",
+       "no_technicians": "No technicians available now",
+       "complete_btn": "Complete Service",
+       "reject_btn": "REJECT REQUEST",
+       "active_eta": "ETA report"
+    },
+    "map": {
+      "my_workshop": "My Workshop",
+      "fixed_location": "Fixed location.",
+      "client_location": "Client Location"
+    }
+  }
 }

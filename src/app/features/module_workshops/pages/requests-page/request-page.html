@@ -1,0 +1,38 @@
+<div class="p-6 md:p-8 max-w-[1600px] mx-auto h-[calc(100vh-6rem)] min-h-[600px] flex flex-col animate-in fade-in duration-700 relative z-10" style="background-color: var(--ds-bg);">
+  
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold" style="color: var(--ds-text);">{{ i18n.translate('requests.title') }}</h1>
+    <p class="text-sm mt-0.5" style="color: var(--ds-subtext);">{{ i18n.translate('requests.subtitle') }}</p>
+  </div>
+
+  <div class="flex-1 flex gap-6 min-h-0 overflow-hidden">
+    
+    <!-- LEFT PANEL: INBOX LIST -->
+    <div class="w-full sm:w-[400px] flex flex-col rounded-xl overflow-hidden shadow-2xl relative z-[20]" 
+         style="background-color: var(--ds-card); border: 1px solid var(--ds-border);">
+      <app-request-inbox class="block w-full h-full"
+        [offers]="activeTab === 'new' ? offers : activeOffers"
+        [selectedOffer]="selectedOffer"
+        [isProcessing]="isProcessing"
+        [activeTab]="activeTab"
+        (select)="handleSelectOffer($event)"
+        (refresh)="loadOffers()"
+        (tabChange)="handleTabChange($event)">
+      </app-request-inbox>
+    </div>
+
+    <!-- RIGHT PANEL: DETAILS & MAP -->
+    <div class="flex-1 hidden sm:flex flex-col rounded-xl overflow-hidden shadow-2xl relative z-[10]" 
+         style="background-color: var(--ds-card); border: 1px solid var(--ds-border);">
+      <app-request-details class="block w-full h-full"
+        [selectedOffer]="selectedOffer"
+        [isProcessing]="isProcessing"
+        [activeTab]="activeTab"
+        (accept)="handleAcceptOffer($event)"
+        (reject)="handleRejectOffer($event)"
+        (complete)="handleCompleteOffer($event)">
+      </app-request-details>
+    </div>
+    
+  </div>
+</div>

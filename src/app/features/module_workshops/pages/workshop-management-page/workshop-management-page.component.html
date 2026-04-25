@@ -1,231 +1,206 @@
-<div class="p-6 max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-700">
+<div class="p-6 md:p-8 max-w-7xl mx-auto animate-in fade-in duration-700 relative z-10" style="background-color: var(--ds-bg);">
   
-  <!-- Header with Back Button -->
-  <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+  <!-- Header -->
+  <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
     <div class="flex items-center gap-6">
       <button 
         (click)="goBack()"
-        class="group p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-indigo-500 shadow-sm transition-all"
+        class="w-10 h-10 flex items-center justify-center rounded-lg ds-btn-ghost transition-all"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
       </button>
       <div>
-        <div class="flex items-center gap-3 mb-1">
-          <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 tracking-tight">
+        <div class="flex items-center gap-3">
+          <h1 class="text-2xl font-bold" style="color: var(--ds-text);">
             {{ (isAdminMode()) ? i18n.translate('workshops.management_title') : i18n.translate('nav.workshop_profile') }}
           </h1>
-          <app-badge *ngIf="workshop()" [variant]="workshop()?.is_verified ? 'success' : 'warning'" class="h-fit">
-            <span class="text-[0.6rem] font-black uppercase tracking-widest">
+          <span *ngIf="workshop()" 
+                class="ds-badge" 
+                [class.ds-badge-green]="workshop()?.is_verified"
+                [class.ds-badge-yellow]="!workshop()?.is_verified">
               {{ workshop()?.is_verified ? i18n.translate('common.verified') : i18n.translate('common.pending') }}
-            </span>
-          </app-badge>
+          </span>
         </div>
-        <p class="text-indigo-600 dark:text-indigo-400 font-bold tracking-wide mt-1 text-sm uppercase">
+        <p class="text-sm mt-0.5" style="color: var(--ds-subtext);">
           {{ (isAdminMode()) ? i18n.translate('workshops.management_desc') : i18n.translate('workshops.profile_desc') }}
         </p>
       </div>
     </div>
   </div>
 
-  <div *ngIf="loading()" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-    <div class="lg:col-span-8 space-y-8">
-      <div class="h-96 bg-slate-100 dark:bg-slate-900 animate-pulse rounded-[2.5rem]"></div>
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="space-y-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div *ngFor="let i of [1,2,3,4]" class="h-24 bg-white/5 animate-pulse rounded-xl"></div>
     </div>
-    <div class="lg:col-span-4 space-y-8">
-      <div class="h-48 bg-slate-100 dark:bg-slate-900 animate-pulse rounded-[2.5rem]"></div>
-      <div class="h-96 bg-slate-100 dark:bg-slate-900 animate-pulse rounded-[2.5rem]"></div>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div class="lg:col-span-8 h-96 bg-white/5 animate-pulse rounded-xl"></div>
+      <div class="lg:col-span-4 h-96 bg-white/5 animate-pulse rounded-xl"></div>
     </div>
   </div>
 
-  <div *ngIf="!loading() && workshop()" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <div *ngIf="!loading() && workshop()" class="space-y-8 items-start animate-in fade-in slide-in-from-bottom-4 duration-700">
     
-    <!-- Left Column: Primary Forms & Admin Info -->
-    <div class="lg:col-span-8 space-y-10">
-      
-      <!-- Main Info Form (Shared) -->
-      <app-workshop-info-form 
-        [form]="form" 
-        [workshop]="workshop()" 
-        [saving]="saving()" 
-        (save)="onSubmit()">
-      </app-workshop-info-form>
+    <!-- Top Row: Performance Stats -->
+    <app-workshop-stats 
+      [rating]="workshop()?.rating_avg || '0.0'" 
+      [totalServices]="workshop()?.total_services || 0"
+      [technicianCount]="workshop()?.technicians_count || 0"
+      [rejectionCount]="workshop()?.rejection_count || 0"
+      [rejectionRate]="workshop()?.rejection_rate || 0">
+    </app-workshop-stats>
 
-      <!-- Owner Quick Glance (Admin Only mode) -->
-      <app-card *ngIf="isAdminMode()" class="bg-indigo-50/30 dark:bg-indigo-500/5 border-none shadow-none rounded-[2.5rem]">
-        <div class="p-10">
-          <h2 class="text-[0.65rem] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.3em] mb-8 flex items-center gap-3">
-            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+    <div class="py-2"></div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Left Column: Primary Forms & Admin Info -->
+      <div class="lg:col-span-7 xl:col-span-8 space-y-8">
+        
+        <!-- Main Info Form (Shared) -->
+        <app-workshop-info-form 
+          [form]="form" 
+          [workshop]="workshop()" 
+          [saving]="saving()" 
+          (save)="onSubmit()">
+        </app-workshop-info-form>
+
+        <!-- Owner Quick Glance (Admin Only mode) -->
+        <div *ngIf="isAdminMode()" class="rounded-xl p-8" style="background-color: var(--ds-card); border: 1px solid var(--ds-border); box-shadow: 0 4px 20px var(--ds-shadow);">
+          <h2 class="text-xs font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style="color: var(--ds-subtext);">
+            <span class="w-1.5 h-1.5 rounded-full" style="background-color: var(--ds-blue);"></span>
             {{ i18n.translate('workshops.owner_info') }}
           </h2>
           
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            <div class="space-y-2">
-              <label class="text-[0.65rem] font-black uppercase text-slate-400 tracking-widest">{{ i18n.translate('common.name') }}</label>
-              <p class="text-sm font-black text-slate-800 dark:text-white">{{ workshop()?.owner_name }}</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div class="space-y-1">
+              <label class="text-[10px] font-bold uppercase tracking-widest" style="color: var(--ds-overlay0);">{{ i18n.translate('common.name') }}</label>
+              <p class="text-sm font-bold" style="color: var(--ds-text);">{{ workshop()?.owner_name }}</p>
             </div>
-            <div class="space-y-2">
-              <label class="text-[0.65rem] font-black uppercase text-slate-400 tracking-widest">{{ i18n.translate('login.username') }}</label>
-              <p class="text-sm font-black text-slate-800 dark:text-white truncate">{{ workshop()?.owner_email }}</p>
+            <div class="space-y-1">
+              <label class="text-[10px] font-bold uppercase tracking-widest" style="color: var(--ds-overlay0);">{{ i18n.translate('login.username') }}</label>
+              <p class="text-sm font-bold truncate" style="color: var(--ds-text);">{{ workshop()?.owner_email }}</p>
             </div>
-            <div class="space-y-2">
-              <label class="text-[0.65rem] font-black uppercase text-slate-400 tracking-widest">{{ i18n.translate('users.form.phone') }}</label>
-              <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <p class="text-sm font-black text-slate-800 dark:text-white">{{ workshop()?.owner_phone }}</p>
-              </div>
+            <div class="space-y-1">
+              <label class="text-[10px] font-bold uppercase tracking-widest" style="color: var(--ds-overlay0);">{{ i18n.translate('users.form.phone') }}</label>
+              <p class="text-sm font-bold" style="color: var(--ds-text);">{{ workshop()?.owner_phone }}</p>
             </div>
           </div>
         </div>
-      </app-card>
 
-      <!-- Admin Controls (Admin Only) -->
-      <app-card *ngIf="isAdmin()" class="border-none shadow-2xl shadow-slate-200/50 dark:shadow-none overflow-hidden rounded-[2.5rem]">
-        <div class="p-10">
-          <div class="flex items-center gap-4 mb-12">
-            <div class="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200 dark:shadow-none">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <!-- Admin Controls (Admin Only) -->
+        <div *ngIf="isAdmin()" class="rounded-xl p-8" style="background-color: var(--ds-card); border: 1px solid var(--ds-border); box-shadow: 0 4px 20px var(--ds-shadow);">
+          <div class="flex items-center gap-4 mb-8">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center text-white" style="background-color: var(--ds-blue);">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </div>
             <div>
-              <h2 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-indigo-800 dark:from-white dark:to-slate-400 tracking-tight">{{ i18n.translate('workshops.admin_config') }}</h2>
-              <p class="text-indigo-600 dark:text-indigo-400 font-bold tracking-wide mt-1 text-xs uppercase">{{ i18n.translate('workshops.admin_config_desc') }}</p>
+              <h2 class="text-xl font-bold" style="color: var(--ds-text);">{{ i18n.translate('workshops.admin_config') }}</h2>
+              <p class="text-xs" style="color: var(--ds-subtext);">{{ i18n.translate('workshops.admin_config_desc') }}</p>
             </div>
           </div>
           
-          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-10">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
-              
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
               <!-- Left: Commission Rate -->
-              <div class="space-y-4">
-                <label class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">{{ i18n.translate('workshops.commission_rate_label') }}</label>
-                <div class="relative group">
+              <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-wider" style="color: var(--ds-subtext);">{{ i18n.translate('workshops.commission_rate_label') }}</label>
+                <div class="relative">
                   <input 
                     type="number" 
                     formControlName="commission_rate"
-                    class="w-full pl-6 pr-14 py-4 rounded-2xl bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none font-black text-3xl shadow-inner"
+                    class="w-full pl-4 pr-10 py-3 rounded-lg border text-2xl font-bold outline-none transition-all"
+                    style="background-color: var(--ds-card-hi); border-color: var(--ds-border-sub); color: var(--ds-text);"
                   >
-                  <span class="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-500 transition-colors font-black text-2xl">%</span>
+                  <span class="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-lg" style="color: var(--ds-overlay0);">%</span>
                 </div>
               </div>
 
               <!-- Right: Status list with Switches -->
-              <div class="space-y-4">
-                <label class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">{{ i18n.translate('workshops.status_label') }}</label>
+              <div class="space-y-3">
+                <label class="text-xs font-bold uppercase tracking-wider" style="color: var(--ds-subtext);">{{ i18n.translate('workshops.status_label') }}</label>
                 
-                <div class="space-y-3">
-                  <!-- Verification Toggle -->
-                  <div class="flex items-center justify-between p-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 transition-all">
-                    <div class="space-y-0.5">
-                      <span class="text-[0.55rem] font-black uppercase tracking-widest text-slate-400 block">{{ i18n.translate('common.verification') }}</span>
-                      <span class="text-sm font-black" [class.text-emerald-600]="form.get('is_verified')?.value" [class.text-amber-600]="!form.get('is_verified')?.value">
-                         {{ form.get('is_verified')?.value ? i18n.translate('common.verified') : i18n.translate('common.pending') }}
-                      </span>
-                    </div>
-                    <app-switch formControlName="is_verified"></app-switch>
+                <!-- Verification Toggle -->
+                <div class="flex items-center justify-between p-3 rounded-lg border" style="background-color: var(--ds-card-hi); border-color: var(--ds-border-sub);">
+                  <div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest block" style="color: var(--ds-overlay0);">{{ i18n.translate('common.verification') }}</span>
+                    <span class="text-sm font-bold" [style.color]="form.get('is_verified')?.value ? 'var(--ds-blue)' : 'var(--ds-yellow)'">
+                       {{ form.get('is_verified')?.value ? i18n.translate('common.verified') : i18n.translate('common.pending') }}
+                    </span>
                   </div>
+                  <app-switch formControlName="is_verified"></app-switch>
+                </div>
 
-                  <!-- Visibility Toggle -->
-                  <div class="flex items-center justify-between p-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 transition-all">
-                    <div class="space-y-0.5">
-                      <span class="text-[0.55rem] font-black uppercase tracking-widest text-slate-400 block">{{ i18n.translate('common.visibility') }}</span>
-                      <span class="text-sm font-black" [class.text-indigo-600]="form.get('is_available')?.value" [class.text-slate-400]="!form.get('is_available')?.value">
-                         {{ form.get('is_available')?.value ? i18n.translate('common.active') : i18n.translate('common.inactive') }}
-                      </span>
-                    </div>
-                    <app-switch formControlName="is_available"></app-switch>
+                <!-- Visibility Toggle -->
+                <div class="flex items-center justify-between p-3 rounded-lg border" style="background-color: var(--ds-card-hi); border-color: var(--ds-border-sub);">
+                  <div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest block" style="color: var(--ds-overlay0);">{{ i18n.translate('common.visibility') }}</span>
+                    <span class="text-sm font-bold" [style.color]="form.get('is_available')?.value ? 'var(--ds-blue)' : 'var(--ds-overlay0)'">
+                       {{ form.get('is_available')?.value ? i18n.translate('common.active') : i18n.translate('common.inactive') }}
+                    </span>
                   </div>
+                  <app-switch formControlName="is_available"></app-switch>
                 </div>
               </div>
             </div>
 
             <div class="flex justify-end pt-4" *ngIf="isAdminMode()">
-              <button 
-                appButton
-                type="submit" 
-                variant="default"
-                class="px-12 h-14 rounded-2xl shadow-xl shadow-indigo-600/20"
-                [disabled]="saving() || form.invalid"
-              >
-                <span class="font-black uppercase tracking-widest text-xs">
-                  {{ saving() ? i18n.translate('common.saving') : i18n.translate('common.save') }}
-                </span>
+              <button class="ds-btn-primary px-10 h-10" [disabled]="saving() || form.invalid">
+                {{ saving() ? i18n.translate('common.saving') : i18n.translate('common.save') }}
               </button>
             </div>
           </form>
         </div>
-      </app-card>
 
-      <!-- Danger Zone (Admin Only) -->
-      <app-card *ngIf="isAdmin() && isAdminMode()" class="border-2 border-dashed border-rose-200 dark:border-rose-500/20 bg-rose-50/20 dark:bg-rose-500/5 rounded-[2.5rem] overflow-hidden">
-        <div class="p-10">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-8">
-            <div class="flex items-center gap-6">
-              <div class="w-14 h-14 rounded-[1.5rem] bg-rose-100 dark:bg-rose-500/20 flex items-center justify-center text-rose-600 shadow-inner">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        <!-- Danger Zone (Admin Only) -->
+        <div *ngIf="isAdmin() && isAdminMode()" class="rounded-xl p-8 border border-dashed" style="border-color: var(--ds-red); background-color: color-mix(in srgb, var(--ds-red) 5%, transparent);">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: color-mix(in srgb, var(--ds-red) 15%, transparent); color: var(--ds-red);">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               </div>
               <div>
-                <h3 class="text-rose-600 dark:text-rose-400 font-black tracking-[0.2em] uppercase text-xs mb-1.5">{{ i18n.translate('common.irreversible_delete') }}</h3>
-                <p class="text-slate-500 dark:text-slate-400 text-xs font-medium leading-relaxed">{{ i18n.translate('workshops.delete_permanently_desc') }}</p>
+                <h3 class="font-bold text-sm uppercase tracking-wider" style="color: var(--ds-red);">{{ i18n.translate('common.irreversible_delete') }}</h3>
+                <p class="text-xs font-medium" style="color: var(--ds-subtext);">{{ i18n.translate('workshops.delete_permanently_desc') }}</p>
               </div>
             </div>
-            <button 
-              appButton
-              variant="destructive"
-              class="px-8 h-12 rounded-2xl font-black uppercase tracking-widest text-xs"
-              (click)="deleteWorkshop()"
-            >
+            <button class="ds-btn-ghost px-6 h-9" (click)="deleteWorkshop()" style="color: var(--ds-red); border-color: var(--ds-red);">
               {{ i18n.translate('common.delete') }}
             </button>
           </div>
         </div>
-      </app-card>
-    </div>
-
-    <!-- Right Column: Stats & Specialties -->
-    <div class="lg:col-span-4 space-y-10">
-      
-      <!-- Performance Stats -->
-      <div>
-        <app-workshop-stats 
-          [rating]="workshop()?.rating_avg || '0.0'" 
-          [totalServices]="workshop()?.total_services || 0"
-          [technicianCount]="workshop()?.technicians_count || 0"
-          [rejectionCount]="workshop()?.rejection_count || 0"
-          [rejectionRate]="workshop()?.rejection_rate || 0">
-        </app-workshop-stats>
       </div>
 
-      <!-- Specialties Selection (Shared) -->
-      <div>
+      <!-- Right Column: Specialties & Guidance -->
+      <div class="lg:col-span-5 xl:col-span-4 space-y-8">
+        <!-- Specialties Selection (Shared) -->
         <app-workshop-specialties-selector 
           [availableSpecialties]="availableSpecialties()" 
           [selectedIds]="form.get('specialty_ids')?.value || []"
           (toggle)="onSpecialtyToggle($event)">
         </app-workshop-specialties-selector>
-      </div>
 
-      <!-- Verification Hint (Owner Mode) -->
-      <app-card *ngIf="!isAdmin() && !workshop()?.is_verified" class="bg-amber-50/50 dark:bg-amber-500/5 border border-amber-100 dark:border-amber-500/20 rounded-[2rem] overflow-hidden">
-        <div class="p-8">
-          <div class="flex gap-5">
-            <div class="w-10 h-10 shrink-0 rounded-2xl bg-amber-500 flex items-center justify-center text-white shadow-lg shadow-amber-200 dark:shadow-none">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <!-- Verification Hint (Owner Mode) -->
+        <div *ngIf="!isAdmin() && !workshop()?.is_verified" class="rounded-xl p-6 border animate-in slide-in-from-right-4 duration-1000" style="background-color: color-mix(in srgb, var(--ds-yellow) 5%, transparent); border-color: var(--ds-yellow);">
+          <div class="flex gap-4">
+            <div class="w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-white" style="background-color: var(--ds-yellow);">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
               </svg>
             </div>
             <div>
-              <h4 class="text-sm font-black text-amber-800 dark:text-amber-400 uppercase tracking-tight mb-2">{{ i18n.translate('workshops.pending_verification') }}</h4>
-              <p class="text-[0.7rem] text-amber-700/70 dark:text-amber-400/60 leading-relaxed font-bold">{{ i18n.translate('workshops.not_visible_desc') }}</p>
+              <h4 class="text-xs font-bold uppercase tracking-tight mb-1" style="color: var(--ds-yellow);">{{ i18n.translate('workshops.pending_verification') }}</h4>
+              <p class="text-[10px] font-medium" style="color: var(--ds-subtext);">{{ i18n.translate('workshops.not_visible_desc') }}</p>
             </div>
           </div>
         </div>
-      </app-card>
+      </div>
     </div>
   </div>
 </div>

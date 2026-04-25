@@ -8,8 +8,6 @@ import { UsersToolbarComponent } from './components/users-toolbar/users-toolbar.
 import { UsersTableComponent } from './components/users-table/users-table.component';
 import { UserFormComponent } from './components/user-form/user-form.component';
 import { UserDetailModalComponent } from './components/user-detail-modal/user-detail-modal.component';
-import { ButtonComponent } from '@ui/button/button.component';
-import { CardComponent } from '@ui/card/card.component';
 import { AlertDialogComponent } from '@ui/alert-dialog/alert-dialog.component';
 import { ToastService } from '@core/services/toast.service';
 import { TranslationService } from '@core/services/translation.service';
@@ -23,8 +21,6 @@ import { TranslationService } from '@core/services/translation.service';
     UsersTableComponent,
     UserFormComponent,
     UserDetailModalComponent,
-    ButtonComponent,
-    CardComponent,
     AlertDialogComponent
   ],
   templateUrl: './users-page.component.html',

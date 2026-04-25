@@ -8,7 +8,6 @@ import { AuthService } from '@core/auth/auth.service';
 import { Workshop, WorkshopUpdate, WorkshopAdminUpdate } from '../../models/workshop.model';
 import { Specialty } from '../../models/specialty.model';
 import { ButtonComponent } from '@ui/button/button.component';
-import { CardComponent } from '@ui/card/card.component';
 import { BadgeComponent } from '@ui/badge/badge.component';
 import { ToastService } from '@core/services/toast.service';
 import { TranslationService } from '@core/services/translation.service';
@@ -25,9 +24,6 @@ import { WorkshopStatsComponent } from './components/workshop-stats/workshop-sta
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    BadgeComponent,
-    ButtonComponent,
-    CardComponent,
     WorkshopInfoFormComponent,
     WorkshopSpecialtiesSelectorComponent,
     WorkshopStatsComponent,

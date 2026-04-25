@@ -2,13 +2,12 @@ import { Component, computed, inject, input, output, signal, effect, ChangeDetec
 import { DatePipe } from '@angular/common';
 import { RoleService } from '@users/services/role.service';
 import { RoleDetail } from '@users/models/role.model';
-import { BadgeComponent } from '@ui/badge/badge.component';
-import { ButtonComponent } from '@ui/button/button.component';
 import { groupPermissions } from '../../../../utils/permission-groups';
 import { TranslationService } from '@core/services/translation.service';
 @Component({
   selector: 'app-role-detail-modal',
-  imports: [DatePipe, BadgeComponent, ButtonComponent],
+  standalone: true,
+  imports: [DatePipe],
   templateUrl: './role-detail-modal.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

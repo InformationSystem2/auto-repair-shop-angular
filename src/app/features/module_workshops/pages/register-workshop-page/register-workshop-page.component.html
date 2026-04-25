@@ -1,73 +1,69 @@
-<div class="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 relative overflow-hidden transition-colors duration-500 py-12">
-
-  <!-- Background glow -->
-  <div class="absolute inset-0 pointer-events-none">
-    <div class="absolute -top-32 -left-32 w-[30rem] h-[30rem] bg-indigo-500/20 dark:bg-indigo-600/30 rounded-full blur-[100px] animate-pulse"></div>
-    <div class="absolute -bottom-32 -right-32 w-[30rem] h-[30rem] bg-cyan-400/20 dark:bg-cyan-500/20 rounded-full blur-[100px] animate-pulse" style="animation-delay: 1s;"></div>
+<div class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden transition-colors duration-500 py-12" style="background-color: var(--ds-bg);">
+  
+  <!-- Background Glows (Dashboard Style) -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden">
+    <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full blur-[120px] opacity-30" style="background-color: var(--ds-mauve);"></div>
+    <div class="absolute -bottom-24 -right-24 w-96 h-96 rounded-full blur-[120px] opacity-20" style="background-color: var(--ds-blue);"></div>
   </div>
 
-  <div class="relative w-full max-w-2xl mx-4 animate-in fade-in zoom-in-95 duration-700">
-    <!-- Logo & Title -->
-    <div class="flex flex-col items-center mb-8">
-      <div class="flex items-center justify-center w-14 h-14 rounded-2xl
-                  bg-gradient-to-br from-indigo-500 to-cyan-400
-                  shadow-lg shadow-indigo-500/40 mb-4">
-        <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <div class="relative w-full max-w-2xl animate-in fade-in zoom-in-95 duration-1000">
+    
+    <!-- Brand Section -->
+    <div class="flex flex-col items-center mb-10 text-center">
+      <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 relative group" 
+           style="background: linear-gradient(135deg, var(--ds-mauve) 0%, var(--ds-blue) 100%); box-shadow: 0 0 40px rgba(187, 154, 247, 0.3);">
+        <div class="absolute inset-0 rounded-2xl blur-lg opacity-40 group-hover:opacity-60 transition-opacity" style="background: inherit;"></div>
+        <svg class="w-8 h-8 text-white relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
         </svg>
       </div>
-      <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+      
+      <h1 class="text-3xl font-black tracking-tighter" style="color: var(--ds-text);">
         {{ i18n.translate('workshops.register_title') }}
       </h1>
-      <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">
+      <p class="text-[10px] font-bold uppercase tracking-[0.2em] mt-3 opacity-60" style="color: var(--ds-subtext);">
         {{ i18n.translate('workshops.register_hero') }}
       </p>
     </div>
 
-    <!-- Form Card -->
-    <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-3xl border border-white/60 dark:border-slate-800/80 rounded-[2.5rem] p-8 md:p-10
-                shadow-2xl shadow-slate-200/50 dark:shadow-[0_0_50px_-15px_rgba(0,0,0,0.7)] overflow-hidden">
+    <!-- Main Card (Tokyo Night Style) -->
+    <div class="rounded-[2rem] p-8 md:p-10 border border-white/20 relative overflow-hidden shadow-2xl backdrop-blur-xl" 
+         style="background-color: var(--ds-card); box-shadow: 0 25px 50px -12px var(--ds-shadow), inset 0 0 0 1px rgba(255,255,255,0.1);">
       
-      <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 opacity-90"></div>
+      <div class="absolute top-0 left-0 right-0 h-1.5 opacity-50" style="background: linear-gradient(90deg, var(--ds-mauve), var(--ds-blue));"></div>
 
-      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-8">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-10">
         
-        <!-- Main Form -->
-        <div>
+        <!-- Main Form Content -->
+        <div class="relative z-10">
           <app-registration-form [form]="form"></app-registration-form>
         </div>
+
         <!-- Commission Toggle -->
-        <div>
+        <div class="relative z-10 pt-4 border-t border-dashed" style="border-color: var(--ds-border-sub);">
           <app-commission-toggle 
             [accepted]="commissionAccepted()" 
             (changed)="commissionAccepted.set($event)">
           </app-commission-toggle>
         </div>
+
         <!-- Actions -->
-        <div class="pt-2 flex flex-col gap-4">
+        <div class="flex flex-col items-center gap-6 relative z-10">
           <button
             type="submit"
             [disabled]="loading() || !commissionAccepted()"
-            class="w-full relative inline-flex items-center justify-center h-14 px-8 text-sm font-bold text-white transition-all duration-300 bg-slate-900 dark:bg-indigo-600 rounded-2xl 
-                   hover:bg-slate-800 dark:hover:bg-indigo-500 hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-indigo-500/30 
-                   disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:shadow-none disabled:cursor-not-allowed group overflow-hidden">
-            <div class="absolute inset-0 w-0 bg-white/10 transition-all duration-300 group-hover:w-full"></div>
-            <span class="relative flex items-center gap-2">
-              <ng-container *ngIf="loading(); else buttonLabel">
-                <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                </svg>
-                {{ i18n.translate('workshops.register_processing') }}
-              </ng-container>
-              <ng-template #buttonLabel>
-                {{ i18n.translate('workshops.register_btn') }}
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-              </ng-template>
-            </span>
+            class="ds-btn-primary w-full h-14 flex items-center justify-center gap-4 shadow-lg shadow-indigo-500/20 active:scale-[0.98] transition-all">
+            @if (loading()) {
+              <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              <span class="font-bold uppercase tracking-widest text-xs">{{ i18n.translate('workshops.register_processing') }}</span>
+            } @else {
+              <span class="font-black uppercase tracking-[0.15em] text-xs">{{ i18n.translate('workshops.register_btn') }}</span>
+              <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            }
           </button>
 
-          <a routerLink="/login" class="text-xs text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 font-bold transition-colors">
+          <a routerLink="/login" class="text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:opacity-100 opacity-40 flex items-center gap-2 group" style="color: var(--ds-blue);">
+            <svg class="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
             {{ i18n.translate('workshops.already_have_workshop') }}
           </a>
         </div>

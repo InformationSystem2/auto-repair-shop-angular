@@ -13,6 +13,10 @@ export class TechnicianService {
     return this.http.get<Technician[]>(this.apiUrl);
   }
 
+  getAvailable(): Observable<Technician[]> {
+    return this.http.get<Technician[]>(`${this.apiUrl}available`);
+  }
+
   getById(id: string): Observable<Technician> {
     return this.http.get<Technician>(`${this.apiUrl}${id}`);
   }

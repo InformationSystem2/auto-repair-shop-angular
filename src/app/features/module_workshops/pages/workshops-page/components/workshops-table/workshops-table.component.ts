@@ -8,7 +8,7 @@ import { TableRowActionsComponent } from '@ui/table-row-actions/table-row-action
 @Component({
   selector: 'app-workshops-table',
   standalone: true,
-  imports: [CommonModule, BadgeComponent, TableRowActionsComponent],
+  imports: [CommonModule],
   templateUrl: './workshops-table.component.html'
 })
 export class WorkshopsTableComponent {

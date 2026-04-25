@@ -12,8 +12,6 @@ import { TranslationService } from '@core/services/translation.service';
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    CheckboxComponent,
-    InputDirective,
   ],
   templateUrl: './role-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
