@@ -156,6 +156,42 @@
           </form>
         </div>
 
+        <!-- Cooldown (Admin Only) -->
+        <div *ngIf="isAdmin() && isAdminMode()" class="rounded-xl p-8" style="background-color: var(--ds-card); border: 1px solid var(--ds-border); box-shadow: 0 4px 20px var(--ds-shadow);">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: color-mix(in srgb, var(--ds-yellow) 15%, transparent); color: var(--ds-yellow);">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-sm uppercase tracking-wider" style="color: var(--ds-yellow);">Cooldown de asignación</h3>
+                <div class="flex items-center gap-4 mt-1">
+                  <p class="text-xs font-medium" style="color: var(--ds-subtext);">
+                    Puntos de actividad: <span class="font-bold" [style.color]="(workshop()?.activity_points ?? 50) >= 30 ? 'var(--ds-green)' : 'var(--ds-red)'">{{ workshop()?.activity_points ?? 50 }}</span>
+                  </p>
+                  <p class="text-xs font-medium" style="color: var(--ds-subtext);">
+                    Rechazos: <span class="font-bold" style="color: var(--ds-text);">{{ workshop()?.rejection_count ?? 0 }}</span>
+                  </p>
+                  @if (workshop()?.last_rejection_at) {
+                    <p class="text-xs font-medium" style="color: var(--ds-subtext);">
+                      Último rechazo: <span class="font-bold" style="color: var(--ds-yellow);">{{ workshop()?.last_rejection_at | date:'dd/MM HH:mm' }}</span>
+                    </p>
+                  }
+                </div>
+              </div>
+            </div>
+            <button
+              class="ds-btn-ghost px-6 h-9 shrink-0"
+              (click)="clearCooldown()"
+              [disabled]="clearingCooldown()"
+              style="color: var(--ds-yellow); border-color: var(--ds-yellow);">
+              {{ clearingCooldown() ? 'Limpiando...' : 'Limpiar Cooldown' }}
+            </button>
+          </div>
+        </div>
+
         <!-- Danger Zone (Admin Only) -->
         <div *ngIf="isAdmin() && isAdminMode()" class="rounded-xl p-8 border border-dashed" style="border-color: var(--ds-red); background-color: color-mix(in srgb, var(--ds-red) 5%, transparent);">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">

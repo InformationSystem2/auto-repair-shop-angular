@@ -45,6 +45,7 @@ export class WorkshopManagementPageComponent implements OnInit {
   readonly availableSpecialties = signal<Specialty[]>([]);
   readonly loading = signal(true);
   readonly saving = signal(false);
+  readonly clearingCooldown = signal(false);
   
   // Context Detection
   readonly isAdmin = this.authSvc.isAdmin;
@@ -165,6 +166,26 @@ export class WorkshopManagementPageComponent implements OnInit {
   private handleError(): void {
     this.saving.set(false);
     this.toastSvc.error(this.i18n.translate('errors.generic'));
+  }
+
+  clearCooldown(): void {
+    const data = this.workshop();
+    if (!data) return;
+    this.clearingCooldown.set(true);
+    this.workshopSvc.clearCooldown(data.id).subscribe({
+      next: (res) => {
+        this.clearingCooldown.set(false);
+        const msg = res.offers_cleared > 0
+          ? `Cooldown limpiado (${res.offers_cleared} oferta${res.offers_cleared > 1 ? 's' : ''} afectada${res.offers_cleared > 1 ? 's' : ''})`
+          : 'Este taller no tenía cooldown activo';
+        this.toastSvc.success(msg);
+        this.loadData(data.id);
+      },
+      error: () => {
+        this.clearingCooldown.set(false);
+        this.toastSvc.error(this.i18n.translate('errors.generic'));
+      }
+    });
   }
 
   deleteWorkshop(): void {

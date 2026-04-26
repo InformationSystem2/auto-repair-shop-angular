@@ -39,22 +39,22 @@
         [label]="i18n.translate('dashboard.admin.total_revenue')"
         [value]="'$' + fmt(data()?.total_revenue ?? 0)"
         colorClass="bg-emerald-500"
-        [trend]="{ text: i18n.translate('dashboard.admin.trend_revenue'), positive: true }"/>
+        [trend]="revenueTrend()"/>
       <app-stat-card
         [label]="i18n.translate('dashboard.admin.platform_profit')"
         [value]="'$' + fmt(data()?.platform_profit ?? 0)"
         colorClass="bg-indigo-500"
-        [trend]="{ text: i18n.translate('dashboard.admin.trend_revenue'), positive: true }"/>
+        [trend]="profitTrend()"/>
       <app-stat-card
         [label]="i18n.translate('dashboard.admin.active_users')"
         [value]="fmt(data()?.active_users ?? 0)"
         colorClass="bg-cyan-500"
-        [trend]="{ text: i18n.translate('dashboard.admin.trend_users'), positive: true }"/>
+        [trend]="usersTrend()"/>
       <app-stat-card
         [label]="i18n.translate('dashboard.admin.ai_success_rate')"
         [value]="(data()?.ai_success_rate ?? 0).toFixed(1) + '%'"
         colorClass="bg-violet-500"
-        [trend]="{ text: i18n.translate('dashboard.admin.trend_ai'), positive: true }"/>
+        [trend]="aiTrend()"/>
     </div>
 
     <!-- Heatmap + Donut -->
@@ -214,7 +214,6 @@
                 <th class="ds-th">{{ i18n.translate('dashboard.admin.col_workshop') }}</th>
                 <th class="ds-th">{{ i18n.translate('dashboard.admin.col_city') }}</th>
                 <th class="ds-th">{{ i18n.translate('dashboard.admin.col_date') }}</th>
-                <th class="ds-th"></th>
               </tr>
             </thead>
             <tbody>
@@ -226,12 +225,6 @@
                   </td>
                   <td class="ds-td text-[11px]" style="color:var(--ds-subtext)">{{ ws.city }}</td>
                   <td class="ds-td text-[11px]" style="color:var(--ds-overlay0)">{{ fmtDate(ws.created_at) }}</td>
-                  <td class="ds-td">
-                    <div class="flex gap-1.5">
-                      <button class="ds-btn-primary">{{ i18n.translate('dashboard.admin.approve') }}</button>
-                      <button class="ds-btn-ghost">{{ i18n.translate('dashboard.admin.reject_btn') }}</button>
-                    </div>
-                  </td>
                 </tr>
               }
             </tbody>

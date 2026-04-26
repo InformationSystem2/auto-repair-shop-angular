@@ -6,6 +6,12 @@ import { ToastService } from '../services/toast.service';
 import { TranslationService } from '../services/translation.service';
 import { AuthService } from '../auth/auth.service';
 
+/** URLs de polling/background que no deben mostrar toast al fallar. */
+const SILENT_URL_PATTERNS = [
+  '/incidents/pending',
+  '/auth/fcm-token',
+];
+
 /**
  * Centrally handles HTTP errors returned by the API.
  * Shows a toast message and handles specific codes like 401.
@@ -16,8 +22,19 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const authSvc = inject(AuthService);
   const router = inject(Router);
 
+  const isSilent = SILENT_URL_PATTERNS.some(p => req.url.includes(p));
+
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
+      // Peticiones de background: solo redirigir en 401, sin toast
+      if (isSilent) {
+        if (error.status === 401) {
+          authSvc.logout();
+          router.navigateByUrl('/login');
+        }
+        return throwError(() => error);
+      }
+
       let errorMessage = '';
 
       if (error.status === 401) {

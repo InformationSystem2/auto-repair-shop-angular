@@ -16,6 +16,7 @@ export interface Workshop {
   commission_rate: number;
   rating_avg: number | null;
   total_services: number;
+  activity_points: number;
   rejection_count: number;
   last_rejection_at: string | null;
   rejection_rate: number;

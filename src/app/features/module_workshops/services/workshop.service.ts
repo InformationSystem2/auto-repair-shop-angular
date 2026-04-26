@@ -39,6 +39,12 @@ export class WorkshopService {
     return this.http.put<Workshop>(`${this.apiUrl}${id}`, payload);
   }
 
+  clearCooldown(id: string): Observable<{ workshop_id: string; workshop_name: string; offers_cleared: number }> {
+    return this.http.post<{ workshop_id: string; workshop_name: string; offers_cleared: number }>(
+      `${this.apiUrl}${id}/clear-cooldown`, {}
+    );
+  }
+
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}${id}`);
   }
