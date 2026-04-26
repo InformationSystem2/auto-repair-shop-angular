@@ -23,6 +23,7 @@ export interface Workshop {
   created_at: string;
   updated_at: string;
   specialties: Specialty[];
+  paypal_email?: string | null;
   owner_name?: string;
   owner_email?: string;
   owner_phone?: string;
@@ -52,6 +53,7 @@ export interface WorkshopUpdate {
   latitude?: number | null;
   longitude?: number | null;
   specialty_ids?: number[];
+  paypal_email?: string | null;
 }
 
 export interface WorkshopAdminUpdate extends WorkshopUpdate {
