@@ -16,7 +16,7 @@ RUN echo "Inyectando API_URL: ${API_URL}" && \
     sed -i "s|apiUrl:.*|apiUrl: '${API_URL}',|g" src/environments/environment.prod.ts && \
     echo "Contenido de environment.prod.ts corregido:" && \
     cat src/environments/environment.prod.ts && \
-    grep -q "'${API_URL}'" src/environments/environment.prod.ts || (echo "ERROR CRÍTICO: La URL no se inyectó en environment.prod.ts" && exit 1)
+    grep -q "'${API_URL}'" src/environments/environment.prod.ts || (echo "ERROR CRÍTICO: La URL del backend no se inyectó en environment.prod.ts" && exit 1)
 
 # Build for production
 RUN npm run build -- --configuration production
