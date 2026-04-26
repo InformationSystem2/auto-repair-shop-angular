@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
 import { AuthSession, LoginResponse } from '@security/models/auth.model';
 import { User } from '@users/models/user.model';
+import { PushNotificationService } from '@core/services/push-notification.service';
 
 const TOKEN_KEY = 'ars_token';
 const SESSION_KEY = 'ars_session';
@@ -14,6 +15,7 @@ const SESSION_KEY = 'ars_session';
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly push = inject(PushNotificationService);
 
   // ── Signals ──────────────────────────────────────────────────────────────
   private readonly _session = signal<AuthSession | null>(this._loadSession());
@@ -52,6 +54,8 @@ export class AuthService {
           };
           this._storeSession(session);
           this._session.set(session);
+          // Registrar token FCM ahora que tenemos JWT válido
+          this.push.requestPermissionAndRegisterToken();
         })
       );
   }

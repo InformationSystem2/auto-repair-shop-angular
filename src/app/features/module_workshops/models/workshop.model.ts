@@ -16,12 +16,14 @@ export interface Workshop {
   commission_rate: number;
   rating_avg: number | null;
   total_services: number;
+  activity_points: number;
   rejection_count: number;
   last_rejection_at: string | null;
   rejection_rate: number;
   created_at: string;
   updated_at: string;
   specialties: Specialty[];
+  paypal_email?: string | null;
   owner_name?: string;
   owner_email?: string;
   owner_phone?: string;
@@ -51,6 +53,7 @@ export interface WorkshopUpdate {
   latitude?: number | null;
   longitude?: number | null;
   specialty_ids?: number[];
+  paypal_email?: string | null;
 }
 
 export interface WorkshopAdminUpdate extends WorkshopUpdate {

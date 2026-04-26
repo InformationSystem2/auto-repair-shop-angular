@@ -70,4 +70,17 @@ export class WorkshopsPageComponent implements OnInit {
       error: () => {}
     });
   }
+
+  clearCooldown(workshop: Workshop): void {
+    this.workshopSvc.clearCooldown(workshop.id).subscribe({
+      next: (res) => {
+        const msg = res.offers_cleared > 0
+          ? `Cooldown de "${res.workshop_name}" limpiado (${res.offers_cleared} oferta${res.offers_cleared > 1 ? 's' : ''})`
+          : `"${res.workshop_name}" no tenía cooldown activo`;
+        this.toastSvc.success(msg);
+        this.loadWorkshops();
+      },
+      error: () => this.toastSvc.error(this.i18n.translate('errors.generic'))
+    });
+  }
 }

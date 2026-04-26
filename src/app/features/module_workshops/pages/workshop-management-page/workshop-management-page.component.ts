@@ -45,6 +45,8 @@ export class WorkshopManagementPageComponent implements OnInit {
   readonly availableSpecialties = signal<Specialty[]>([]);
   readonly loading = signal(true);
   readonly saving = signal(false);
+  readonly clearingCooldown = signal(false);
+  readonly savingPaypal = signal(false);
   
   // Context Detection
   readonly isAdmin = this.authSvc.isAdmin;
@@ -64,6 +66,10 @@ export class WorkshopManagementPageComponent implements OnInit {
     commission_rate: [0, [Validators.required, Validators.min(0)]],
     is_verified: [false],
     is_available: [true]
+  });
+
+  readonly paypalForm = this.fb.group({
+    paypal_email: ['', [Validators.email]],
   });
 
   ngOnInit(): void {
@@ -110,6 +116,7 @@ export class WorkshopManagementPageComponent implements OnInit {
       is_verified: data.is_verified,
       is_available: data.is_available
     });
+    this.paypalForm.patchValue({ paypal_email: data.paypal_email ?? '' });
   }
 
   onSpecialtyToggle(id: number): void {
@@ -165,6 +172,47 @@ export class WorkshopManagementPageComponent implements OnInit {
   private handleError(): void {
     this.saving.set(false);
     this.toastSvc.error(this.i18n.translate('errors.generic'));
+  }
+
+  savePaypalEmail(): void {
+    if (this.paypalForm.invalid) return;
+    const data = this.workshop();
+    if (!data) return;
+
+    this.savingPaypal.set(true);
+    const email = this.paypalForm.value.paypal_email?.trim() || null;
+    this.workshopSvc.updateMyWorkshop({ paypal_email: email }).subscribe({
+      next: (updated) => {
+        this.workshop.set(updated);
+        this.paypalForm.patchValue({ paypal_email: updated.paypal_email ?? '' });
+        this.savingPaypal.set(false);
+        this.toastSvc.success(email ? 'PayPal configurado correctamente' : 'PayPal desvinculado');
+      },
+      error: () => {
+        this.savingPaypal.set(false);
+        this.toastSvc.error(this.i18n.translate('errors.generic'));
+      }
+    });
+  }
+
+  clearCooldown(): void {
+    const data = this.workshop();
+    if (!data) return;
+    this.clearingCooldown.set(true);
+    this.workshopSvc.clearCooldown(data.id).subscribe({
+      next: (res) => {
+        this.clearingCooldown.set(false);
+        const msg = res.offers_cleared > 0
+          ? `Cooldown limpiado (${res.offers_cleared} oferta${res.offers_cleared > 1 ? 's' : ''} afectada${res.offers_cleared > 1 ? 's' : ''})`
+          : 'Este taller no tenía cooldown activo';
+        this.toastSvc.success(msg);
+        this.loadData(data.id);
+      },
+      error: () => {
+        this.clearingCooldown.set(false);
+        this.toastSvc.error(this.i18n.translate('errors.generic'));
+      }
+    });
   }
 
   deleteWorkshop(): void {

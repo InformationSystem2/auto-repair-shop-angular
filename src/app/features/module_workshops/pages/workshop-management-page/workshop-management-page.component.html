@@ -156,6 +156,100 @@
           </form>
         </div>
 
+        <!-- Cooldown (Admin Only) -->
+        <div *ngIf="isAdmin() && isAdminMode()" class="rounded-xl p-8" style="background-color: var(--ds-card); border: 1px solid var(--ds-border); box-shadow: 0 4px 20px var(--ds-shadow);">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: color-mix(in srgb, var(--ds-yellow) 15%, transparent); color: var(--ds-yellow);">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-sm uppercase tracking-wider" style="color: var(--ds-yellow);">Cooldown de asignación</h3>
+                <div class="flex items-center gap-4 mt-1">
+                  <p class="text-xs font-medium" style="color: var(--ds-subtext);">
+                    Puntos de actividad: <span class="font-bold" [style.color]="(workshop()?.activity_points ?? 50) >= 30 ? 'var(--ds-green)' : 'var(--ds-red)'">{{ workshop()?.activity_points ?? 50 }}</span>
+                  </p>
+                  <p class="text-xs font-medium" style="color: var(--ds-subtext);">
+                    Rechazos: <span class="font-bold" style="color: var(--ds-text);">{{ workshop()?.rejection_count ?? 0 }}</span>
+                  </p>
+                  @if (workshop()?.last_rejection_at) {
+                    <p class="text-xs font-medium" style="color: var(--ds-subtext);">
+                      Último rechazo: <span class="font-bold" style="color: var(--ds-yellow);">{{ workshop()?.last_rejection_at | date:'dd/MM HH:mm' }}</span>
+                    </p>
+                  }
+                </div>
+              </div>
+            </div>
+            <button
+              class="ds-btn-ghost px-6 h-9 shrink-0"
+              (click)="clearCooldown()"
+              [disabled]="clearingCooldown()"
+              style="color: var(--ds-yellow); border-color: var(--ds-yellow);">
+              {{ clearingCooldown() ? 'Limpiando...' : 'Limpiar Cooldown' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- PayPal Payout (Owner Only) -->
+        <div *ngIf="!isAdminMode()" class="rounded-xl p-8" style="background-color: var(--ds-card); border: 1px solid var(--ds-border); box-shadow: 0 4px 20px var(--ds-shadow);">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center text-white" style="background: linear-gradient(135deg, #003087 0%, #009CDE 100%);">
+              <svg viewBox="0 0 24 24" class="h-5 w-5 fill-current">
+                <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788.06-.26.76-4.852.816-5.09a.932.932 0 0 1 .923-.788h.58c3.76 0 6.705-1.528 7.565-5.946.36-1.847.174-3.388-.777-4.471z"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold" style="color: var(--ds-text);">Cuenta PayPal para cobros</h2>
+              <p class="text-xs" style="color: var(--ds-subtext);">Al recibir un pago, la comisión se descuenta automáticamente y el resto se transfiere a tu cuenta PayPal.</p>
+            </div>
+          </div>
+
+          <!-- Estado actual -->
+          <div class="mb-5 flex items-center gap-3 p-3 rounded-lg" [ngStyle]="{'background-color': workshop()?.paypal_email ? 'color-mix(in srgb, var(--ds-green) 10%, transparent)' : 'color-mix(in srgb, var(--ds-yellow) 8%, transparent)', 'border': '1px solid ' + (workshop()?.paypal_email ? 'color-mix(in srgb, var(--ds-green) 30%, transparent)' : 'color-mix(in srgb, var(--ds-yellow) 30%, transparent)')}">
+            <span class="w-2 h-2 rounded-full flex-shrink-0" [ngStyle]="{'background-color': workshop()?.paypal_email ? 'var(--ds-green)' : 'var(--ds-yellow)'}"></span>
+            <span class="text-xs font-semibold" [ngStyle]="{'color': workshop()?.paypal_email ? 'var(--ds-green)' : 'var(--ds-yellow)'}">
+              {{ workshop()?.paypal_email ? 'Vinculado: ' + workshop()?.paypal_email : 'Sin cuenta PayPal vinculada — los pagos quedan retenidos en la plataforma' }}
+            </span>
+          </div>
+
+          <form [formGroup]="paypalForm" (ngSubmit)="savePaypalEmail()" class="flex gap-3 items-start">
+            <div class="flex-1 space-y-1">
+              <input
+                type="email"
+                formControlName="paypal_email"
+                placeholder="tu-cuenta@paypal.com"
+                class="w-full px-4 py-2.5 rounded-lg border text-sm outline-none transition-all"
+                style="background-color: var(--ds-card-hi); border-color: var(--ds-border-sub); color: var(--ds-text);"
+              >
+              <p *ngIf="paypalForm.get('paypal_email')?.invalid && paypalForm.get('paypal_email')?.dirty"
+                 class="text-[11px]" style="color: var(--ds-red);">
+                Ingresa un email válido
+              </p>
+              <p class="text-[11px]" style="color: var(--ds-overlay0);">
+                Comisión actual: <strong style="color: var(--ds-text);">{{ workshop()?.commission_rate }}%</strong> —
+                recibirás el <strong style="color: var(--ds-green);">{{ 100 - (workshop()?.commission_rate ?? 0) }}%</strong> de cada servicio
+              </p>
+            </div>
+            <button
+              type="submit"
+              class="ds-btn-primary h-10 px-5 shrink-0"
+              [disabled]="savingPaypal() || paypalForm.invalid">
+              {{ savingPaypal() ? 'Guardando…' : (workshop()?.paypal_email ? 'Actualizar' : 'Vincular') }}
+            </button>
+            <button
+              *ngIf="workshop()?.paypal_email"
+              type="button"
+              class="ds-btn-ghost h-10 px-4 shrink-0"
+              (click)="paypalForm.setValue({paypal_email: ''}); savePaypalEmail()"
+              [disabled]="savingPaypal()"
+              style="color: var(--ds-subtext);">
+              Desvincular
+            </button>
+          </form>
+        </div>
+
         <!-- Danger Zone (Admin Only) -->
         <div *ngIf="isAdmin() && isAdminMode()" class="rounded-xl p-8 border border-dashed" style="border-color: var(--ds-red); background-color: color-mix(in srgb, var(--ds-red) 5%, transparent);">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">

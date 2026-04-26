@@ -91,6 +91,17 @@ export class AdminDashboardComponent {
   readonly pendingWorkshops  = computed(() => this.data()?.pending_workshops ?? []);
   readonly cancelledServices = computed(() => this.data()?.cancelled_services ?? []);
 
+  readonly revenueTrend = computed(() => this._trendLabel(this.data()?.revenue_trend_pct ?? 0));
+  readonly profitTrend  = computed(() => this._trendLabel(this.data()?.profit_trend_pct ?? 0));
+  readonly usersTrend   = computed(() => this._trendLabel(this.data()?.users_trend_pct ?? 0));
+  readonly aiTrend      = computed(() => this._trendLabel(this.data()?.ai_trend_pct ?? 0, true));
+
+  private _trendLabel(pct: number, isPoints = false): { text: string; positive: boolean } {
+    const sign = pct >= 0 ? '+' : '';
+    const suffix = isPoints ? 'pp vs mes anterior' : '% vs mes anterior';
+    return { text: `${sign}${pct.toFixed(1)}${suffix}`, positive: pct >= 0 };
+  }
+
   // ── SVG helpers ──────────────────────────────────────────────────────────
   private _toSvgPoints(values: number[]): string {
     if (!values.length) return '0,180 600,180';

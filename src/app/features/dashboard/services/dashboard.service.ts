@@ -13,6 +13,10 @@ export interface AdminDashboardData {
   monthly_growth: { month: string; workshops: number; clients: number }[];
   pending_workshops: { id: string; name: string; owner_name: string; city: string; created_at: string }[];
   cancelled_services: { client_name: string; workshop_name: string; ai_category: string | null; created_at: string }[];
+  revenue_trend_pct: number;
+  profit_trend_pct: number;
+  users_trend_pct: number;
+  ai_trend_pct: number;
 }
 
 export interface WorkshopDashboardData {

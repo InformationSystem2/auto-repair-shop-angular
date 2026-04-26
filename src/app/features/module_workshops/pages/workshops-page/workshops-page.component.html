@@ -22,10 +22,11 @@
   <div class="rounded-xl overflow-hidden shadow-2xl" 
        style="background-color: var(--ds-card); border: 1px solid var(--ds-border); box-shadow: 0 4px 20px var(--ds-shadow);" 
        *ngIf="!loading()">
-    <app-workshops-table 
-      [workshops]="filteredWorkshops()" 
+    <app-workshops-table
+      [workshops]="filteredWorkshops()"
       (view)="onWorkshopSelect($event)"
-      (verify)="verifyWorkshop($event)">
+      (verify)="verifyWorkshop($event)"
+      (clearCooldown)="clearCooldown($event)">
     </app-workshops-table>
   </div>
 
