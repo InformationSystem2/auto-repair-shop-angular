@@ -60,6 +60,10 @@ export class AuthService {
       );
   }
 
+  registerPushToken(): void {
+    this.push.requestPermissionAndRegisterToken();
+  }
+
   // ── Me ────────────────────────────────────────────────────────────────────
   me(): Observable<User> {
     return this.http.get<User>(`${environment.apiUrl}/auth/me`);
