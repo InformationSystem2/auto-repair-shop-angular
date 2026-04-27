@@ -5,7 +5,7 @@
     <div class="flex flex-col items-center justify-center py-24 gap-4">
       <div class="ds-spinner"></div>
       <p class="text-xs font-semibold tracking-widest uppercase" style="color:var(--ds-subtext)">
-        Cargando dashboard…
+        {{ i18n.translate('common.loading') }}
       </p>
     </div>
   }
@@ -16,8 +16,8 @@
       <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="var(--ds-red)" stroke-width="1.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
       </svg>
-      <p class="text-sm font-semibold" style="color:var(--ds-text)">No se pudo cargar el dashboard</p>
-      <p class="text-xs" style="color:var(--ds-subtext)">Verifica tu conexión o intenta más tarde</p>
+      <p class="text-sm font-semibold" style="color:var(--ds-text)">{{ i18n.translate('dashboard.admin.error_loading') }}</p>
+      <p class="text-xs" style="color:var(--ds-subtext)">{{ i18n.translate('dashboard.admin.error_retry') }}</p>
     </div>
   }
 
@@ -73,13 +73,13 @@
           </div>
           <div class="flex items-center gap-3 text-xs font-semibold flex-wrap" style="color:var(--ds-subtext)">
             <span class="flex items-center gap-1.5">
-              <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--ds-blue);opacity:0.4"></span>Bajo
+              <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--ds-blue);opacity:0.4"></span>{{ i18n.translate('common.low') }}
             </span>
             <span class="flex items-center gap-1.5">
-              <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--ds-peach)"></span>Medio
+              <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--ds-peach)"></span>{{ i18n.translate('common.medium') }}
             </span>
             <span class="flex items-center gap-1.5">
-              <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--ds-red)"></span>Alto
+              <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--ds-red)"></span>{{ i18n.translate('common.high') }}
             </span>
           </div>
         </div>
@@ -91,7 +91,10 @@
         </div>
         <div class="flex justify-between mt-3 px-0.5 text-[9px] font-semibold tracking-widest uppercase"
              style="color:var(--ds-overlay0)">
-          <span>Oeste</span><span>Centro</span><span>Norte</span><span>Este</span>
+          <span>{{ i18n.translate('dashboard.admin.zones.west') }}</span>
+          <span>{{ i18n.translate('dashboard.admin.zones.center') }}</span>
+          <span>{{ i18n.translate('dashboard.admin.zones.north') }}</span>
+          <span>{{ i18n.translate('dashboard.admin.zones.east') }}</span>
         </div>
       </div>
 
@@ -114,7 +117,7 @@
                  style="background:var(--ds-card)">
               <span class="text-xl font-black leading-none" style="color:var(--ds-text)">{{ totalIncidents() }}</span>
               <span class="text-[9px] font-bold uppercase tracking-wider mt-0.5" style="color:var(--ds-subtext)">
-                incidentes
+                {{ i18n.translate('dashboard.admin.incident_count_label') }}
               </span>
             </div>
           </div>
@@ -200,11 +203,11 @@
           <h2 class="text-sm font-bold" style="color:var(--ds-text)">
             {{ i18n.translate('dashboard.admin.pending_workshops_title') }}
           </h2>
-          <span class="ds-badge ds-badge-yellow">{{ pendingWorkshops().length }} pendientes</span>
+          <span class="ds-badge ds-badge-yellow">{{ pendingWorkshops().length }} {{ i18n.translate('common.pending_plural') | lowercase }}</span>
         </div>
         @if (!pendingWorkshops().length) {
           <p class="text-xs text-center py-8 font-medium" style="color:var(--ds-subtext)">
-            Ningún taller pendiente ✓
+            {{ i18n.translate('dashboard.admin.no_pending_workshops') }}
           </p>
         }
         @if (pendingWorkshops().length) {
@@ -238,11 +241,11 @@
           <h2 class="text-sm font-bold" style="color:var(--ds-text)">
             {{ i18n.translate('dashboard.admin.cancelled_services_title') }}
           </h2>
-          <span class="ds-badge ds-badge-red">{{ cancelledServices().length }} cancelados</span>
+          <span class="ds-badge ds-badge-red">{{ cancelledServices().length }} {{ i18n.translate('common.cancelled_plural') | lowercase }}</span>
         </div>
         @if (!cancelledServices().length) {
           <p class="text-xs text-center py-8 font-medium" style="color:var(--ds-subtext)">
-            Sin servicios cancelados ✓
+            {{ i18n.translate('dashboard.admin.no_cancelled_services') }}
           </p>
         }
         @if (cancelledServices().length) {
@@ -251,8 +254,8 @@
               <tr>
                 <th class="ds-th">{{ i18n.translate('dashboard.admin.col_client') }}</th>
                 <th class="ds-th">{{ i18n.translate('dashboard.admin.col_workshop') }}</th>
-                <th class="ds-th">Categoría</th>
-                <th class="ds-th">Fecha</th>
+                <th class="ds-th">{{ i18n.translate('dashboard.workshop.col_type') }}</th>
+                <th class="ds-th">{{ i18n.translate('dashboard.admin.col_date') }}</th>
               </tr>
             </thead>
             <tbody>

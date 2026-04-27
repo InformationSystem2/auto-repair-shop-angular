@@ -29,6 +29,7 @@ export interface WorkshopDashboardData {
   daily_revenue: { day: string; revenue: number }[];
   emergency_inbox: { id: string; client_name: string; ai_category: string | null; ai_priority: string | null; incident_lat: number | null; incident_lng: number | null; created_at: string }[];
   technician_locations: { id: string; name: string; is_available: boolean; latitude: number | null; longitude: number | null }[];
+  recent_ratings: { id: string; client_name: string; score: number; response_time_score: number | null; quality_score: number | null; comment: string | null; created_at: string }[];
 }
 
 export interface TechnicianDashboardData {

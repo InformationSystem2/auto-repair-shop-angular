@@ -5,7 +5,7 @@
     <div class="flex flex-col items-center justify-center py-24 gap-4">
       <div class="ds-spinner"></div>
       <p class="text-xs font-semibold tracking-widest uppercase" style="color:var(--ds-subtext)">
-        Cargando tu taller…
+        {{ i18n.translate('dashboard.workshop.loading_workshop') }}
       </p>
     </div>
   }
@@ -16,7 +16,7 @@
       <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="var(--ds-red)" stroke-width="1.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
       </svg>
-      <p class="text-sm font-semibold" style="color:var(--ds-text)">No se pudo cargar el dashboard</p>
+      <p class="text-sm font-semibold" style="color:var(--ds-text)">{{ i18n.translate('dashboard.workshop.error_loading') }}</p>
     </div>
   }
 
@@ -70,7 +70,7 @@
           </p>
         </div>
         @if (!techWithBars().length) {
-          <p class="text-xs text-center py-6" style="color:var(--ds-subtext)">Sin técnicos registrados</p>
+          <p class="text-xs text-center py-6" style="color:var(--ds-subtext)">{{ i18n.translate('dashboard.workshop.no_techs') }}</p>
         }
         <div class="space-y-4">
           @for (tech of techWithBars(); track tech.id) {
@@ -106,7 +106,7 @@
           </h2>
           <div class="flex items-center gap-1.5 mt-1">
             <span class="ds-live-dot"></span>
-            <span class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--ds-green)">En vivo</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--ds-green)">{{ i18n.translate('dashboard.workshop.live_label') }}</span>
           </div>
         </div>
         <div class="flex items-center justify-center flex-1 py-2">
@@ -118,7 +118,7 @@
                 {{ busyCount() }}/{{ totalTechs() }}
               </span>
               <span class="text-[9px] font-bold uppercase tracking-wider mt-0.5" style="color:var(--ds-subtext)">
-                activos
+                {{ i18n.translate('dashboard.workshop.active_label') }}
               </span>
             </div>
           </div>
@@ -197,7 +197,7 @@
         </div>
         @if (!inbox().length) {
           <p class="text-xs text-center py-10 font-medium" style="color:var(--ds-subtext)">
-            No hay solicitudes pendientes ✓
+            {{ i18n.translate('dashboard.workshop.no_pending_requests') }}
           </p>
         }
         <div class="divide-y" style="border-color:var(--ds-border-sub)">
@@ -267,13 +267,13 @@
               </div>
               <span class="text-[8px] font-bold px-1.5 py-0.5 rounded mt-0.5 text-white"
                     [style.background]="blip.is_available ? 'var(--ds-green)' : 'var(--ds-peach)'">
-                {{ blip.is_available ? 'LIBRE' : 'OCUPADO' }}
+                {{ blip.is_available ? i18n.translate('dashboard.workshop.status_free') : i18n.translate('dashboard.workshop.status_busy') }}
               </span>
             </div>
           }
           @if (!techBlips().length) {
             <div class="absolute inset-0 flex items-center justify-center">
-              <p class="text-xs font-medium" style="color:var(--ds-subtext)">Sin técnicos registrados</p>
+              <p class="text-xs font-medium" style="color:var(--ds-subtext)">{{ i18n.translate('dashboard.workshop.no_techs') }}</p>
             </div>
           }
           <!-- City label -->
@@ -284,6 +284,11 @@
         </div>
       </div>
 
+    </div>
+
+    <!-- Recent Reviews -->
+    <div class="mt-5">
+      <app-workshop-reviews [reviews]="data()?.recent_ratings ?? []"></app-workshop-reviews>
     </div>
 
   } <!-- end data loaded -->

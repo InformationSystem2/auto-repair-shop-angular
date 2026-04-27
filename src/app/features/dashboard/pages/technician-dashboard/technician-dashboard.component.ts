@@ -25,7 +25,7 @@ export class TechnicianDashboardComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('Error al cargar el dashboard');
+        this.error.set(this.i18n.translate('dashboard.technician.error_loading'));
         this.loading.set(false);
       },
     });
@@ -45,8 +45,8 @@ export class TechnicianDashboardComponent implements OnInit {
   }
 
   categoryLabel(cat: string | null): string {
-    if (!cat) return 'Sin categoría';
-    return cat.charAt(0).toUpperCase() + cat.slice(1);
+    if (!cat) return this.i18n.translate('dashboard.technician.no_category');
+    return this.i18n.translate('requests.categories.' + cat.toLowerCase()) || cat;
   }
 
   initials(name: string): string {
