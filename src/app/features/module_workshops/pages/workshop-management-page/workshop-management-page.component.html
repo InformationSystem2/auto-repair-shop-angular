@@ -166,17 +166,17 @@
                 </svg>
               </div>
               <div>
-                <h3 class="font-bold text-sm uppercase tracking-wider" style="color: var(--ds-yellow);">Cooldown de asignación</h3>
+                <h3 class="font-bold text-sm uppercase tracking-wider" style="color: var(--ds-yellow);">{{ i18n.translate('workshops.cooldown_label') }}</h3>
                 <div class="flex items-center gap-4 mt-1">
                   <p class="text-xs font-medium" style="color: var(--ds-subtext);">
-                    Puntos de actividad: <span class="font-bold" [style.color]="(workshop()?.activity_points ?? 50) >= 30 ? 'var(--ds-green)' : 'var(--ds-red)'">{{ workshop()?.activity_points ?? 50 }}</span>
+                    {{ i18n.translate('workshops.activity_points_label') }}: <span class="font-bold" [style.color]="(workshop()?.activity_points ?? 50) >= 30 ? 'var(--ds-green)' : 'var(--ds-red)'">{{ workshop()?.activity_points ?? 50 }}</span>
                   </p>
                   <p class="text-xs font-medium" style="color: var(--ds-subtext);">
-                    Rechazos: <span class="font-bold" style="color: var(--ds-text);">{{ workshop()?.rejection_count ?? 0 }}</span>
+                    {{ i18n.translate('workshops.cooldown_days_label') }}: <span class="font-bold" style="color: var(--ds-blue)">{{ workshop()?.cooldown_days ?? 0 }}</span>
                   </p>
                   @if (workshop()?.last_rejection_at) {
                     <p class="text-xs font-medium" style="color: var(--ds-subtext);">
-                      Último rechazo: <span class="font-bold" style="color: var(--ds-yellow);">{{ workshop()?.last_rejection_at | date:'dd/MM HH:mm' }}</span>
+                      {{ i18n.translate('workshops.last_rejection_label') }}: <span class="font-bold" style="color: var(--ds-overlay0);">{{ workshop()?.last_rejection_at | date:'dd/MM/yyyy HH:mm' }}</span>
                     </p>
                   }
                 </div>
@@ -187,7 +187,7 @@
               (click)="clearCooldown()"
               [disabled]="clearingCooldown()"
               style="color: var(--ds-yellow); border-color: var(--ds-yellow);">
-              {{ clearingCooldown() ? 'Limpiando...' : 'Limpiar Cooldown' }}
+              {{ clearingCooldown() ? i18n.translate('workshops.cooldown.cleaning') : i18n.translate('workshops.cooldown.clean_btn') }}
             </button>
           </div>
         </div>
@@ -201,8 +201,8 @@
               </svg>
             </div>
             <div>
-              <h2 class="text-xl font-bold" style="color: var(--ds-text);">Cuenta PayPal para cobros</h2>
-              <p class="text-xs" style="color: var(--ds-subtext);">Al recibir un pago, la comisión se descuenta automáticamente y el resto se transfiere a tu cuenta PayPal.</p>
+              <h2 class="text-xl font-bold" style="color: var(--ds-text);">{{ i18n.translate('workshops.paypal_title') }}</h2>
+              <p class="text-xs" style="color: var(--ds-subtext);">{{ i18n.translate('workshops.paypal_desc') }}</p>
             </div>
           </div>
 
@@ -210,7 +210,7 @@
           <div class="mb-5 flex items-center gap-3 p-3 rounded-lg" [ngStyle]="{'background-color': workshop()?.paypal_email ? 'color-mix(in srgb, var(--ds-green) 10%, transparent)' : 'color-mix(in srgb, var(--ds-yellow) 8%, transparent)', 'border': '1px solid ' + (workshop()?.paypal_email ? 'color-mix(in srgb, var(--ds-green) 30%, transparent)' : 'color-mix(in srgb, var(--ds-yellow) 30%, transparent)')}">
             <span class="w-2 h-2 rounded-full flex-shrink-0" [ngStyle]="{'background-color': workshop()?.paypal_email ? 'var(--ds-green)' : 'var(--ds-yellow)'}"></span>
             <span class="text-xs font-semibold" [ngStyle]="{'color': workshop()?.paypal_email ? 'var(--ds-green)' : 'var(--ds-yellow)'}">
-              {{ workshop()?.paypal_email ? 'Vinculado: ' + workshop()?.paypal_email : 'Sin cuenta PayPal vinculada — los pagos quedan retenidos en la plataforma' }}
+              {{ workshop()?.paypal_email ? i18n.translate('workshops.paypal.linked_status', {email: workshop()?.paypal_email || ''}) : i18n.translate('workshops.paypal.not_linked_status') }}
             </span>
           </div>
 
@@ -219,24 +219,24 @@
               <input
                 type="email"
                 formControlName="paypal_email"
-                placeholder="tu-cuenta@paypal.com"
+                [placeholder]="i18n.translate('workshops.paypal.email_placeholder')"
                 class="w-full px-4 py-2.5 rounded-lg border text-sm outline-none transition-all"
                 style="background-color: var(--ds-card-hi); border-color: var(--ds-border-sub); color: var(--ds-text);"
               >
               <p *ngIf="paypalForm.get('paypal_email')?.invalid && paypalForm.get('paypal_email')?.dirty"
                  class="text-[11px]" style="color: var(--ds-red);">
-                Ingresa un email válido
+                {{ i18n.translate('workshops.paypal.invalid_email') }}
               </p>
               <p class="text-[11px]" style="color: var(--ds-overlay0);">
-                Comisión actual: <strong style="color: var(--ds-text);">{{ workshop()?.commission_rate }}%</strong> —
-                recibirás el <strong style="color: var(--ds-green);">{{ 100 - (workshop()?.commission_rate ?? 0) }}%</strong> de cada servicio
+                {{ i18n.translate('workshops.paypal.current_commission') }} <strong style="color: var(--ds-text);">{{ workshop()?.commission_rate }}%</strong> —
+                {{ i18n.translate('workshops.paypal.receive_notice', {percent: (100 - (workshop()?.commission_rate ?? 0)).toString()}) }}
               </p>
             </div>
             <button
               type="submit"
               class="ds-btn-primary h-10 px-5 shrink-0"
               [disabled]="savingPaypal() || paypalForm.invalid">
-              {{ savingPaypal() ? 'Guardando…' : (workshop()?.paypal_email ? 'Actualizar' : 'Vincular') }}
+              {{ savingPaypal() ? i18n.translate('workshops.paypal.saving') : (workshop()?.paypal_email ? i18n.translate('workshops.paypal.update_btn') : i18n.translate('workshops.paypal.link_btn')) }}
             </button>
             <button
               *ngIf="workshop()?.paypal_email"
@@ -245,7 +245,7 @@
               (click)="paypalForm.setValue({paypal_email: ''}); savePaypalEmail()"
               [disabled]="savingPaypal()"
               style="color: var(--ds-subtext);">
-              Desvincular
+              {{ i18n.translate('workshops.paypal.unlink_btn') }}
             </button>
           </form>
         </div>

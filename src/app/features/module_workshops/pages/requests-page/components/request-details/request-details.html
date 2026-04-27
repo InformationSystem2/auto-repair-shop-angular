@@ -67,14 +67,14 @@
                     
                     @if (offer.incident.vertex_analysis?.tecnico?.procedimiento_recomendado) {
                       <div class="mt-4 pt-4 border-t" style="border-color: var(--ds-border-sub);">
-                        <span class="font-bold text-[10px] uppercase block mb-2" style="color: var(--ds-blue);">Procedimiento Recomendado</span>
+                        <span class="font-bold text-[10px] uppercase block mb-2" style="color: var(--ds-blue);">{{ i18n.translate('requests.ai_procedure') }}</span>
                         <p class="text-xs opacity-70">{{ offer.incident.vertex_analysis.tecnico.procedimiento_recomendado }}</p>
                       </div>
                     }
 
                     @if (offer.incident.vertex_analysis?.tecnico?.herramientas_sugeridas?.length > 0) {
                       <div class="mt-4 pt-4 border-t" style="border-color: var(--ds-border-sub);">
-                        <span class="font-bold text-[10px] uppercase block mb-2" style="color: var(--ds-blue);">Herramientas Sugeridas</span>
+                        <span class="font-bold text-[10px] uppercase block mb-2" style="color: var(--ds-blue);">{{ i18n.translate('requests.ai_tools') }}</span>
                         <div class="flex flex-wrap gap-2">
                           <span *ngFor="let tool of offer.incident.vertex_analysis.tecnico.herramientas_sugeridas" 
                                 class="px-2 py-1 rounded-md text-[10px] font-medium" 
@@ -183,7 +183,7 @@
                 </div>
 
                 <div class="p-5 rounded-2xl border mb-2" style="background-color: var(--ds-surface0); border-color: var(--ds-border-sub);">
-                  <label class="block text-[10px] font-bold uppercase tracking-widest mb-2 ml-1" style="color: var(--ds-subtext);">Costo del Servicio (BOB)</label>
+                  <label class="block text-[10px] font-bold uppercase tracking-widest mb-2 ml-1" style="color: var(--ds-subtext);">{{ i18n.translate('requests.service_cost_label') }}</label>
                   <div class="relative">
                     <input type="number" [(ngModel)]="assignedCost" 
                       class="w-full bg-transparent border-b text-xl font-bold p-1 transition-all outline-none" 
