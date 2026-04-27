@@ -38,6 +38,7 @@
     "verified_plural": "Verificados",
     "pending": "Pendiente",
     "pending_plural": "Pendientes",
+    "new_plural": "Nuevas",
     "view_details": "Ver Detalles",
     "saving": "Guardando...",
     "verification": "Verificación",
@@ -47,7 +48,11 @@
     "not_available": "No disponible",
     "required_field": "Campo obligatorio",
     "invalid_format": "Formato inválido",
-    "required_short": "Requerido"
+    "required_short": "Requerido",
+    "low": "Bajo",
+    "medium": "Medio",
+    "high": "Alto",
+    "cancelled_plural": "Cancelados"
   },
   "nav": {
     "dashboard_admin": "Dashboard Admin",
@@ -55,6 +60,8 @@
     "dashboard_technician": "Dashboard Técnico",
     "users": "Usuarios",
     "roles": "Roles",
+    "requests": "Solicitudes",
+    "reports": "Reportes",
     "profile": "Mi Perfil",
     "workshops": "Talleres",
     "workshop_profile": "Mi Taller",
@@ -167,7 +174,18 @@
       "approve": "Aprobar",
       "reject_btn": "Rechazar",
       "status_pending": "Pendiente",
-      "status_review": "En Revisión"
+      "status_review": "En Revisión",
+      "error_loading": "No se pudo cargar el dashboard",
+      "error_retry": "Verifica tu conexión o intenta más tarde",
+      "incident_count_label": "incidentes",
+      "no_pending_workshops": "Ningún taller pendiente ✓",
+      "no_cancelled_services": "Sin servicios cancelados ✓",
+      "zones": {
+        "west": "Oeste",
+        "center": "Centro",
+        "north": "Norte",
+        "east": "Este"
+      }
     },
     "workshop": {
       "title": "Mi Taller",
@@ -201,7 +219,22 @@
       "accept": "Aceptar",
       "reject_btn": "Rechazar",
       "live_map_title": "Ubicación de Técnicos en Vivo",
-      "live_map_subtitle": "GPS en tiempo real de tu flota"
+      "live_map_subtitle": "GPS en tiempo real de tu flota",
+      "error_loading": "No se pudo cargar el dashboard",
+      "no_techs": "Sin técnicos registrados",
+      "live_label": "En vivo",
+      "reviews_title": "Reseñas Recientes",
+      "no_reviews": "No hay reseñas aún.",
+      "loading_workshop": "Cargando tu taller…",
+      "active_label": "activos",
+      "no_pending_requests": "No hay solicitudes pendientes ✓",
+      "status_free": "LIBRE",
+      "status_busy": "OCUPADO",
+      "no_comment_text": "Sin comentario",
+      "time_label": "Tiempo",
+      "quality_label": "Calidad",
+      "show_comments": "Ver comentarios",
+      "hide_comments": "Ocultar comentarios"
     },
     "technician": {
       "title": "Panel del Técnico",
@@ -217,7 +250,16 @@
       "pending": "Pendiente",
       "tech_profile": "Perfil Técnico",
       "specialization": "Especialista en Motores y Transmisión",
-      "productivity": "Productividad"
+      "productivity": "Productividad",
+      "no_active_incidents": "Sin incidentes activos",
+      "avg_rating_label": "Calificación promedio",
+      "no_ratings": "Sin calificaciones",
+      "total_completed": "Total completados",
+      "recent_services_title": "Servicios recientes completados",
+      "in_progress_label": "En curso",
+      "assigned_label": "Asignado",
+      "no_category": "Sin categoría",
+      "error_loading": "Error al cargar el dashboard"
     }
   },
   "profile": {
@@ -255,7 +297,8 @@
       "name": "Nombre",
       "description": "Descripción",
       "permissions": "Permisos",
-      "updated_at": "Actualizado"
+      "updated_at": "Actualizado",
+      "total_perms_label": "Total Permisos"
     },
     "form": {
       "name_label": "Nombre del rol",
@@ -264,6 +307,116 @@
       "desc_placeholder": "Describe el propósito del rol",
       "min_length_error": "Debe tener al menos {{min}} caracteres.",
       "no_desc": "Sin descripción"
+    }
+  },
+  "reports": {
+    "title": "Mis Reportes",
+    "subtitle": "Crea y gestiona tus plantillas de reportes personalizados.",
+    "new_report": "Nuevo Reporte",
+    "shared_badge": "Compartido",
+    "fields_count": "campos",
+    "created_on": "Creado el",
+    "run": "Ejecutar",
+    "no_templates": "No hay reportes",
+    "no_templates_desc": "Aún no has creado ninguna plantilla de reporte.",
+    "create_first": "Crea tu primer reporte",
+    "builder": {
+      "title_new": "Nuevo Reporte",
+      "title_edit": "Editar Reporte",
+      "subtitle": "Configura los campos, filtros y el formato de tu reporte.",
+      "section_template": "Información Básica",
+      "name_label": "Nombre del Reporte",
+      "name_placeholder": "Ej: Reporte de Ventas Mensual",
+      "desc_label": "Descripción (Opcional)",
+      "desc_placeholder": "Explica brevemente qué datos contiene este reporte...",
+      "share_label": "Compartir con otros usuarios",
+      "section_type": "Tipo de Reporte",
+      "loading_catalog": "Cargando catálogo...",
+      "select_type": "Selecciona un tipo de reporte",
+      "section_fields": "Campos Seleccionados",
+      "select_all": "Todos",
+      "select_none": "Ninguno",
+      "section_dates": "Rango de Fechas",
+      "date_from": "Desde",
+      "date_to": "Hasta",
+      "section_filters": "Filtros",
+      "add_filter": "Añadir Filtro",
+      "filter_value_placeholder": "Valor...",
+      "remove_filter": "Eliminar",
+      "no_filters": "No hay filtros aplicados",
+      "section_sort": "Ordenamiento",
+      "sort_none": "Sin orden específico",
+      "sort_asc": "Ascendente",
+      "sort_desc": "Descendente",
+      "save_template": "Guardar Plantilla",
+      "saving": "Guardando...",
+      "clear": "Limpiar todo",
+      "preview": "Previsualizar",
+      "loading_preview": "Generando...",
+      "results": "Resultados",
+      "total_suffix": "registros encontrados",
+      "per_page": "por página",
+      "row_num": "Nº",
+      "no_results": "No se encontraron datos para los filtros seleccionados.",
+      "empty_state": "Previsualización del Reporte",
+      "empty_state_desc": "Selecciona un tipo de reporte y los campos deseados para ver una vista previa aquí."
+    },
+    "types": {
+      "incidents": "Incidentes",
+      "workshops": "Talleres",
+      "users": "Usuarios",
+      "payments": "Pagos"
+    }
+  },
+  "requests": {
+    "title": "Solicitudes de Auxilio",
+    "subtitle": "Gestiona las solicitudes entrantes y activas de tu taller.",
+    "no_requests": "No hay solicitudes",
+    "no_requests_desc": "No tienes solicitudes pendientes en este momento.",
+    "just_now": "Justo ahora",
+    "expires_in": "Expira en {{seconds}}s",
+    "service_cost_label": "Costo del Servicio (BOB)",
+    "ai_procedure": "Procedimiento Recomendado",
+    "ai_tools": "Herramientas Sugeridas",
+    "tabs": {
+      "new": "Nuevas",
+      "active": "En Curso"
+    },
+    "details": {
+      "ready_title": "¡Todo Listo!",
+      "ready_desc": "La solicitud ha sido aceptada y el mecánico está en camino.",
+      "unknown_category": "Sin categoría",
+      "ai_diagnosis": "Diagnóstico IA",
+      "evidence_title": "Evidencia del Incidente",
+      "eta_label": "Tiempo estimado de llegada (Min)",
+      "min_suffix": "min",
+      "technician_assigned": "Mecánico Asignado",
+      "loading_technicians": "Cargando mecánicos...",
+      "no_technicians": "No hay mecánicos disponibles",
+      "reject_btn": "Rechazar",
+      "accept_btn": "Aceptar Solicitud",
+      "active_badge": "Solicitud Activa",
+      "active_eta": "Llegada estimada",
+      "complete_btn": "Finalizar Servicio",
+      "rejection_reason": {
+        "busy": "Taller Ocupado",
+        "far": "Zona muy alejada",
+        "no_parts": "Sin repuestos necesarios"
+      }
+    },
+    "priority": {
+      "critical": "Crítica",
+      "high": "Alta",
+      "medium": "Media",
+      "low": "Baja"
+    },
+    "categories": {
+      "battery": "Batería",
+      "tire": "Llantas",
+      "engine": "Motor",
+      "towing": "Remolque",
+      "locksmith": "Cerrajería",
+      "general": "Mecánica General"
     }
   },
   "workshops": {
@@ -300,6 +453,29 @@
     "commission_notice_1": "Acepto que por cada servicio de asistencia prestado a través de la plataforma, se aplicará una",
     "commission_notice_2": "comisión del 10%",
     "commission_notice_3": "sobre el monto total pagado por el cliente, la cual será retenida automáticamente por la plataforma.",
+    "cooldown_label": "Cooldown de asignación",
+    "activity_points_label": "Puntos de actividad",
+    "cooldown_days_label": "Días de cooldown",
+    "rejections_label": "Rechazos",
+    "last_rejection_label": "Último rechazo",
+    "paypal_title": "Cuenta PayPal para cobros",
+    "paypal_desc": "Al recibir un pago, la comisión se descuenta automáticamente y el resto se transfiere a tu cuenta PayPal.",
+    "paypal": {
+      "linked_status": "Vinculado: {{email}}",
+      "not_linked_status": "Sin cuenta PayPal vinculada — los pagos quedan retenidos en la plataforma",
+      "email_placeholder": "tu-cuenta@paypal.com",
+      "invalid_email": "Ingresa un email válido",
+      "current_commission": "Comisión actual: ",
+      "receive_notice": "recibirás el {{percent}}% de cada servicio",
+      "saving": "Guardando...",
+      "update_btn": "Actualizar",
+      "link_btn": "Vincular",
+      "unlink_btn": "Desvincular"
+    },
+    "cooldown": {
+      "cleaning": "Limpiando...",
+      "clean_btn": "Limpiar Cooldown"
+    },
     "form": {
       "name": "Nombre Comercial",
       "name_placeholder": "Ej. Taller Mecánico Central",
@@ -340,6 +516,7 @@
     "edit_specialty": "Editar Especialidad",
     "specialty_detail_title": "Detalle de especialidad",
     "specialty_detail_subtitle": "Información completa de la especialidad seleccionada.",
+    "id_label": "ID Identificador",
     "no_workshops": "No hay talleres registrados",
     "no_specialties": "No hay especialidades registradas",
     "delete_confirm": "¿Estás seguro de eliminar la especialidad \"{{name}}\"?",

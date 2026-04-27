@@ -4,7 +4,7 @@
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
     <div>
       <h1 class="text-3xl font-black tracking-tight" style="color:var(--ds-text)">
-        Roles
+        {{ i18n.translate('roles.title') }}
       </h1>
       <p class="text-xs font-bold tracking-widest uppercase mt-1" style="color:var(--ds-mauve)">
         {{ i18n.translate('roles.description') }}
@@ -16,7 +16,7 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
       </svg>
       <span class="font-bold uppercase tracking-widest text-[10px]">
-        Nuevo rol
+        {{ i18n.translate('roles.new_role') }}
       </span>
     </button>
   </div>

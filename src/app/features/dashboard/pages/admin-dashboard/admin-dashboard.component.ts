@@ -25,9 +25,12 @@ const FALLBACK_COLORS = [
   'var(--ds-teal)', 'var(--ds-mauve)', 'var(--ds-red)', 'var(--ds-sapphire)',
 ];
 
+import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [StatCardComponent],
+  standalone: true,
+  imports: [CommonModule, StatCardComponent],
   templateUrl: './admin-dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

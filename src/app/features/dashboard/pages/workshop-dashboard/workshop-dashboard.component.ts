@@ -6,10 +6,12 @@ import { AuthService } from '@core/auth/auth.service';
 import { StatCardComponent } from '@dashboard/components/stat-card/stat-card.component';
 import { TranslationService } from '@core/services/translation.service';
 import { DashboardService } from '@dashboard/services/dashboard.service';
+import { WorkshopReviewsComponent } from './components/workshop-reviews.component';
 
 @Component({
   selector: 'app-workshop-dashboard',
-  imports: [StatCardComponent, DecimalPipe],
+  standalone: true,
+  imports: [StatCardComponent, DecimalPipe, WorkshopReviewsComponent],
   templateUrl: './workshop-dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -111,13 +113,8 @@ export class WorkshopDashboardComponent {
   }
 
   catLabel(cat: string | null): string {
-    if (!cat) return 'General';
-    const map: Record<string, string> = {
-      battery: 'Batería', tire: 'Llantas', engine: 'Motor',
-      towing: 'Remolque', ac: 'A/C', general: 'General',
-      transmission: 'Transmisión', locksmith: 'Cerrajería',
-    };
-    return map[cat] ?? cat;
+    if (!cat) return this.i18n.translate('requests.categories.general');
+    return this.i18n.translate('requests.categories.' + cat.toLowerCase()) || cat;
   }
 
   // ── Private SVG helpers ──────────────────────────────────────────────────

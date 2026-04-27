@@ -43,7 +43,7 @@
             <svg class="w-10 h-10 mb-3" style="color: var(--ds-subtext);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p class="text-sm" style="color: var(--ds-subtext);">Sin incidentes activos</p>
+            <p class="text-sm" style="color: var(--ds-subtext);">{{ i18n.translate('dashboard.technician.no_active_incidents') }}</p>
           </div>
         } @else {
           <div class="space-y-3">
@@ -67,7 +67,7 @@
                     </span>
                   }
                   <span [class]="statusBadgeClass(inc.status)" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                    {{ inc.status === 'in_progress' ? 'En curso' : 'Asignado' }}
+                    {{ inc.status === 'in_progress' ? i18n.translate('dashboard.technician.in_progress_label') : i18n.translate('dashboard.technician.assigned_label') }}
                   </span>
                 </div>
               </div>
@@ -86,7 +86,7 @@
         <h4 class="text-lg font-bold" style="color: var(--ds-text);">{{ s.workshop_name }}</h4>
         <div class="mt-1 flex items-center gap-1.5">
           <span class="w-2 h-2 rounded-full" [class]="s.is_available ? 'bg-emerald-500' : 'bg-red-500'"></span>
-          <span class="text-sm" style="color: var(--ds-subtext);">{{ s.is_available ? 'Disponible' : 'No disponible' }}</span>
+          <span class="text-sm" style="color: var(--ds-subtext);">{{ s.is_available ? i18n.translate('common.available') : i18n.translate('common.not_available') }}</span>
         </div>
 
         <div class="mt-5 w-full space-y-4">
@@ -103,13 +103,13 @@
 
           <!-- Rating -->
           <div class="flex justify-between text-sm">
-            <span style="color: var(--ds-subtext);">Calificación promedio</span>
-            <span class="font-semibold" style="color: var(--ds-text);">{{ s.avg_rating > 0 ? (s.avg_rating | number:'1.1-1') + ' ★' : 'Sin calificaciones' }}</span>
+            <span style="color: var(--ds-subtext);">{{ i18n.translate('dashboard.technician.avg_rating_label') }}</span>
+            <span class="font-semibold" style="color: var(--ds-text);">{{ s.avg_rating > 0 ? (s.avg_rating | number:'1.1-1') + ' ★' : i18n.translate('dashboard.technician.no_ratings') }}</span>
           </div>
 
           <!-- Totals -->
           <div class="flex justify-between text-sm">
-            <span style="color: var(--ds-subtext);">Total completados</span>
+            <span style="color: var(--ds-subtext);">{{ i18n.translate('dashboard.technician.total_completed') }}</span>
             <span class="font-semibold" style="color: var(--ds-text);">{{ s.completed_total }}</span>
           </div>
         </div>
@@ -119,16 +119,16 @@
     <!-- Recent completed -->
     @if (s.recent_completed.length > 0) {
       <div class="rounded-xl p-5 overflow-hidden" style="background-color: var(--ds-card); border: 1px solid var(--ds-border); box-shadow: 0 4px 20px var(--ds-shadow);">
-        <h3 class="text-lg font-semibold mb-4" style="color: var(--ds-text);">Servicios recientes completados</h3>
+        <h3 class="text-lg font-semibold mb-4" style="color: var(--ds-text);">{{ i18n.translate('dashboard.technician.recent_services_title') }}</h3>
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
             <thead>
               <tr class="text-left" style="color: var(--ds-subtext); border-bottom: 1px solid var(--ds-border);">
-                <th class="pb-3 pr-4 font-medium">Cliente</th>
-                <th class="pb-3 pr-4 font-medium">Categoría</th>
-                <th class="pb-3 pr-4 font-medium">Monto</th>
-                <th class="pb-3 pr-4 font-medium">Calificación</th>
-                <th class="pb-3 font-medium">Fecha</th>
+                <th class="pb-3 pr-4 font-medium">{{ i18n.translate('dashboard.workshop.col_client') }}</th>
+                <th class="pb-3 pr-4 font-medium">{{ i18n.translate('dashboard.workshop.col_type') }}</th>
+                <th class="pb-3 pr-4 font-medium">{{ i18n.translate('dashboard.admin.col_amount') }}</th>
+                <th class="pb-3 pr-4 font-medium">{{ i18n.translate('dashboard.workshop.avg_rating') }}</th>
+                <th class="pb-3 font-medium">{{ i18n.translate('dashboard.admin.col_date') }}</th>
               </tr>
             </thead>
             <tbody>
