@@ -1,4 +1,4 @@
-import { inject, Injectable, signal, effect } from '@angular/core';
+import { Injectable, signal, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
@@ -6,8 +6,6 @@ import { firstValueFrom } from 'rxjs';
   providedIn: 'root'
 })
 export class TranslationService {
-  private readonly http = inject(HttpClient);
-
   private readonly _lang = signal<string>(this.getInitialLang());
   private readonly _translations = signal<any>({});
   private readonly _cache = new Map<string, any>();
@@ -15,7 +13,7 @@ export class TranslationService {
   readonly currentLang = this._lang.asReadonly();
   readonly translations = this._translations.asReadonly();
 
-  constructor() {
+  constructor(private readonly http: HttpClient) {
     effect(() => {
       this.loadTranslations(this._lang());
     });

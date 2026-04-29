@@ -1,14 +1,29 @@
-<div class="p-6 md:p-8 max-w-[1600px] mx-auto h-[calc(100vh-6rem)] min-h-[600px] flex flex-col animate-in fade-in duration-700 relative z-10" style="background-color: var(--ds-bg);">
+<div class="p-4 sm:p-6 md:p-8 max-w-[1600px] mx-auto h-[calc(100vh-4rem)] sm:h-[calc(100vh-6rem)] min-h-[600px] flex flex-col animate-in fade-in duration-700 relative z-10" style="background-color: var(--ds-bg);">
   
-  <div class="mb-6">
-    <h1 class="text-2xl font-bold" style="color: var(--ds-text);">{{ i18n.translate('requests.title') }}</h1>
-    <p class="text-sm mt-0.5" style="color: var(--ds-subtext);">{{ i18n.translate('requests.subtitle') }}</p>
+  <div class="mb-4 sm:mb-6 flex items-center gap-3">
+    <!-- Back button: only visible on mobile when a request is selected -->
+    @if (selectedOffer) {
+      <button class="sm:hidden flex items-center justify-center w-9 h-9 rounded-lg ds-btn-ghost shrink-0"
+              (click)="selectedOffer = null">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+    }
+    <div>
+      <h1 class="text-xl sm:text-2xl font-bold" style="color: var(--ds-text);">{{ i18n.translate('requests.title') }}</h1>
+      <p class="text-xs sm:text-sm mt-0.5" style="color: var(--ds-subtext);">{{ i18n.translate('requests.subtitle') }}</p>
+    </div>
   </div>
 
-  <div class="flex-1 flex gap-6 min-h-0 overflow-hidden">
+  <div class="flex-1 flex gap-6 min-h-0 overflow-hidden relative">
     
     <!-- LEFT PANEL: INBOX LIST -->
-    <div class="w-full sm:w-[400px] flex flex-col rounded-xl overflow-hidden shadow-2xl relative z-[20]" 
+    <!-- On mobile: visible when no offer is selected. On desktop: always visible at fixed width. -->
+    <div class="flex flex-col rounded-xl overflow-hidden shadow-2xl relative z-[20] transition-all duration-300"
+         [class]="selectedOffer
+           ? 'hidden sm:flex sm:w-[400px]'
+           : 'flex w-full sm:w-[400px]'"
          style="background-color: var(--ds-card); border: 1px solid var(--ds-border);">
       <app-request-inbox class="block w-full h-full"
         [offers]="activeTab === 'new' ? offers : activeOffers"
@@ -22,7 +37,11 @@
     </div>
 
     <!-- RIGHT PANEL: DETAILS & MAP -->
-    <div class="flex-1 hidden sm:flex flex-col rounded-xl overflow-hidden shadow-2xl relative z-[10]" 
+    <!-- On mobile: full-screen when an offer is selected. On desktop: flex-1 always visible. -->
+    <div class="rounded-xl overflow-hidden shadow-2xl relative z-[10] transition-all duration-300"
+         [class]="selectedOffer
+           ? 'flex flex-1 flex-col w-full sm:flex-1'
+           : 'hidden sm:flex flex-1 flex-col'"
          style="background-color: var(--ds-card); border: 1px solid var(--ds-border);">
       <app-request-details class="block w-full h-full"
         [selectedOffer]="selectedOffer"

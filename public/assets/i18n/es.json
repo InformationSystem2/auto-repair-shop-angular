@@ -528,7 +528,15 @@
       "engine": "Motor",
       "towing": "Remolque",
       "locksmith": "Cerrajería",
-      "general": "Mecánica General"
+      "general": "Mecánica General",
+      "collision": "Colisión",
+      "ac": "Aire Acondicionado",
+      "transmission": "Transmisión"
+    },
+    "map": {
+      "client_location": "Ubicación del Cliente",
+      "workshop_location": "Ubicación del Taller",
+      "technician_location": "Ubicación del Técnico"
     }
   },
   "workshops": {

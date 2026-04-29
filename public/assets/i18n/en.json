@@ -528,7 +528,15 @@
       "engine": "Engine",
       "towing": "Towing",
       "locksmith": "Locksmith",
-      "general": "General Mechanics"
+      "general": "General Mechanics",
+      "collision": "Collision",
+      "ac": "Air Conditioning",
+      "transmission": "Transmission"
+    },
+    "map": {
+      "client_location": "Client Location",
+      "workshop_location": "Workshop Location",
+      "technician_location": "Technician Location"
     }
   },
   "workshops": {
