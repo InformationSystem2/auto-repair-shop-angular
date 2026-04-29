@@ -96,7 +96,7 @@ export class ReportBuilderComponent implements OnInit {
     ).subscribe((templates) => {
       const tpl = templates.find((t) => t.id === id);
       if (!tpl) {
-        this.toast.error('Plantilla no encontrada');
+        this.toast.error(this.i18n.translate('reports.toast.template_not_found'));
         return;
       }
       this.templateName.set(tpl.name);
@@ -172,7 +172,7 @@ export class ReportBuilderComponent implements OnInit {
   // ── Preview ───────────────────────────────────────────────────────────────
   previewReport(): void {
     if (!this.selectedReportType() || !this.selectedFields().length) {
-      this.toast.warning('Selecciona un tipo de reporte y al menos un campo');
+      this.toast.warning(this.i18n.translate('reports.toast.preview_select'));
       return;
     }
     this.loading.set(true);
@@ -183,7 +183,7 @@ export class ReportBuilderComponent implements OnInit {
         this.loading.set(false);
       },
       error: (err) => {
-        this.toast.error('Error al ejecutar el reporte', err?.error?.detail);
+        this.toast.error(this.i18n.translate('reports.toast.preview_error'), err?.error?.detail);
         this.loading.set(false);
       },
     });
@@ -230,11 +230,13 @@ export class ReportBuilderComponent implements OnInit {
     this.exporting.set(format);
     const columnLabelsOverride: Record<string, string> = {};
     for (const key of this.selectedFields()) {
-      columnLabelsOverride[key] = this.fieldI18nLabel(key);
+      const i18nKey = `reports.fields.${key}`;
+      const enLabel = this.i18n.translateInLang(i18nKey, 'en');
+      columnLabelsOverride[key] = enLabel === i18nKey ? this.fieldLabel(key) : enLabel;
     }
     const req = { ...this._buildRequest(), limit: 5000, offset: 0, column_labels_override: columnLabelsOverride };
-    const title = this.templateName() || 'reporte';
-    this.reportsService.exportReport(req, format, title, this.i18n.currentLang()).subscribe({
+    const title = this.templateName() || 'report';
+    this.reportsService.exportReport(req, format, title, 'en').subscribe({
       next: (blob) => {
         const ext = format === 'excel' ? 'xlsx' : format;
         const url = URL.createObjectURL(blob);
@@ -359,7 +361,7 @@ export class ReportBuilderComponent implements OnInit {
 
   formatCellValue(value: unknown): string {
     if (value === null || value === undefined) return '—';
-    if (typeof value === 'boolean') return value ? 'Sí' : 'No';
+    if (typeof value === 'boolean') return value ? this.i18n.translate('common.yes') : this.i18n.translate('common.no');
     return String(value);
   }
 }

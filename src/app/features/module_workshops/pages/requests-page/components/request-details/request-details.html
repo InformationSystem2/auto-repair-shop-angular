@@ -3,13 +3,26 @@
   <!-- TOP: MAP COMPONENT (Full Background) -->
   <div class="absolute inset-0 z-0" *ngIf="selectedOffer">
     <app-leaflet-map class="w-full h-full"
-        [workshopLat]="selectedOffer.workshop?.latitude ?? 0" 
+        [workshopLat]="selectedOffer.workshop?.latitude ?? 0"
         [workshopLng]="selectedOffer.workshop?.longitude ?? 0"
         [incidentLat]="selectedOffer.incident.latitude"
-        [incidentLng]="selectedOffer.incident.longitude">
+        [incidentLng]="selectedOffer.incident.longitude"
+        [technicianLat]="technicianLat"
+        [technicianLng]="technicianLng">
     </app-leaflet-map>
     <!-- Dark gradient overlay at the bottom of the map to blend with the card -->
     <div class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t pointer-events-none z-[1]" style="background-image: linear-gradient(to top, var(--ds-bg), transparent);"></div>
+
+    <!-- Live tracking badge (top-right corner of map) -->
+    @if (activeTab === 'active') {
+      <div class="absolute top-3 right-3 z-[5] flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg backdrop-blur-sm"
+           [style.background-color]="trackingConnected ? 'rgba(16,185,129,0.9)' : 'rgba(0,0,0,0.55)'"
+           style="color: white; border: 1px solid rgba(255,255,255,0.15);">
+        <span class="w-2 h-2 rounded-full"
+              [class]="trackingConnected ? 'bg-white animate-ping' : 'bg-gray-400'"></span>
+        <span>{{ trackingConnected ? '🔧 ' + (technicianName ?? 'Técnico') + ' · En ruta' : 'Esperando técnico...' }}</span>
+      </div>
+    }
   </div>
 
   <!-- EMPTY STATE OVERLAY (Only if no offer selected) -->

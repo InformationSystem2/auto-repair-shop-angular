@@ -6,7 +6,7 @@
     <div class="h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-80"></div>
 
     <!-- Header -->
-    <div class="px-8 pt-8 pb-6 border-b border-white/5">
+    <div class="px-8 pt-8 pb-6" style="border-bottom:1px solid var(--ds-border)">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-4">
           <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
@@ -23,7 +23,7 @@
             </p>
           </div>
         </div>
-        <button (click)="close.emit()" class="p-2 rounded-full hover:bg-white/5 transition-colors opacity-30 hover:opacity-100">
+        <button (click)="close.emit()" class="p-2 rounded-full transition-colors opacity-40 hover:opacity-100">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <path d="M18 6 6 18" /><path d="m6 6 12 12" />
           </svg>
@@ -42,8 +42,7 @@
           formControlName="name"
           type="text"
           [placeholder]="i18n.translate('roles.form.name_placeholder')"
-          class="w-full px-5 py-3.5 rounded-xl bg-white/5 border border-white/10 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/50 outline-none transition-all placeholder:opacity-20"
-          style="color:var(--ds-text)"
+          class="ds-input"
         />
         @if (hasError('name', 'required')) {
           <p class="text-[10px] font-bold text-rose-500 ml-1">{{ i18n.translate('roles.form.name_label') }} {{ i18n.translate('common.required') }}</p>
@@ -59,8 +58,7 @@
           formControlName="description"
           rows="3"
           [placeholder]="i18n.translate('roles.form.desc_placeholder')"
-          class="w-full px-5 py-3.5 rounded-xl bg-white/5 border border-white/10 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/50 outline-none transition-all placeholder:opacity-20 resize-none"
-          style="color:var(--ds-text)"
+          class="ds-textarea"
         ></textarea>
       </div>
 
@@ -69,26 +67,27 @@
         <label class="text-[0.65rem] font-black uppercase tracking-widest ml-1" style="color:var(--ds-subtext)">
           {{ i18n.translate('roles.assigned_perms') }}
         </label>
-        <div class="max-h-56 overflow-y-auto space-y-4 rounded-xl border border-white/5 bg-black/20 p-4 custom-scrollbar">
+        <div class="max-h-56 overflow-y-auto space-y-4 rounded-xl p-4" style="border:1px solid var(--ds-border);background:var(--ds-mantle)">
           @if (permissionGroups().length > 0) {
             @for (group of permissionGroups(); track group.packageName) {
-              <div class="space-y-2">
-                <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-indigo-400/80 px-1">
+              <div class="space-y-1">
+                <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest px-1" style="color:var(--ds-mauve)">
                   <span>{{ group.label }}</span>
                   <span class="ds-badge ds-badge-mauve !text-[8px]">{{ group.permissions.length }}</span>
                 </div>
-                <div class="grid grid-cols-1 gap-1">
+                <div class="grid grid-cols-1 gap-0.5">
                   @for (perm of group.permissions; track perm.id) {
-                    <label class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group">
-                      <input 
-                        type="checkbox"
-                        [checked]="isSelected(perm.id)"
-                        (change)="togglePerm(perm.id)"
-                        class="w-4 h-4 rounded-md bg-white/5 border-white/20 text-indigo-500 focus:ring-offset-0 focus:ring-indigo-500/50 transition-all cursor-pointer"
-                      >
+                    <label class="flex items-center gap-3 p-2 rounded-lg transition-colors cursor-pointer" style="hover:background:var(--ds-row-hover)" (click)="togglePerm(perm.id)">
+                      <div class="ds-checkbox-box" [class.checked]="isSelected(perm.id)">
+                        @if (isSelected(perm.id)) {
+                          <svg class="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        }
+                      </div>
                       <div class="flex flex-col min-w-0">
                         <span class="text-xs font-bold truncate" style="color:var(--ds-text)">{{ perm.name }}</span>
-                        <span class="text-[9px] opacity-40 truncate" style="color:var(--ds-subtext)">{{ perm.description || perm.action }}</span>
+                        <span class="text-[9px] opacity-50 truncate" style="color:var(--ds-subtext)">{{ perm.description || perm.action }}</span>
                       </div>
                     </label>
                   }
@@ -104,7 +103,7 @@
       </div>
 
       <!-- Actions -->
-      <div class="pt-6 border-t border-white/5 flex gap-3">
+      <div class="pt-6 flex gap-3" style="border-top:1px solid var(--ds-border)">
         <button type="button" (click)="close.emit()" class="ds-btn-ghost flex-1 h-12 rounded-xl">
           {{ i18n.translate('common.cancel') }}
         </button>
