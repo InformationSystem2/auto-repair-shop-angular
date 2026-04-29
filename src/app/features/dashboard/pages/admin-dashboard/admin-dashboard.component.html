@@ -57,44 +57,107 @@
         [trend]="aiTrend()"/>
     </div>
 
-    <!-- Heatmap + Donut -->
+    <!-- Platform Health + Donut -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-      <!-- Heatmap -->
-      <div class="lg:col-span-2 ds-card p-7">
-        <div class="flex items-start justify-between mb-5 flex-wrap gap-3">
-          <div>
-            <h2 class="text-sm font-bold" style="color:var(--ds-text)">
-              {{ i18n.translate('dashboard.admin.heatmap_title') }}
-            </h2>
-            <p class="text-xs mt-0.5" style="color:var(--ds-subtext)">
-              {{ i18n.translate('dashboard.admin.heatmap_subtitle') }}
+      <!-- Platform Health Panel -->
+      <div class="lg:col-span-2 ds-card p-7 flex flex-col gap-6">
+        <div>
+          <h2 class="text-sm font-bold" style="color:var(--ds-text)">
+            {{ i18n.translate('dashboard.admin.platform_health_title') }}
+          </h2>
+          <p class="text-xs mt-0.5" style="color:var(--ds-subtext)">
+            {{ i18n.translate('dashboard.admin.platform_health_subtitle') }}
+          </p>
+        </div>
+
+        <!-- Top metric row -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <!-- Active Workshops -->
+          <div class="ds-surface p-4 flex flex-col gap-1">
+            <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">
+              {{ i18n.translate('dashboard.admin.active_workshops') }}
+            </span>
+            <span class="text-3xl font-black" style="color:var(--ds-text)">
+              {{ data()?.active_workshops ?? 0 }}
+            </span>
+            <span class="ds-badge ds-badge-yellow w-fit">
+              {{ pendingWorkshops().length }} {{ i18n.translate('common.pending_plural') | lowercase }}
+            </span>
+          </div>
+
+          <!-- Verification Rate -->
+          <div class="ds-surface p-4 flex flex-col gap-1">
+            <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">
+              {{ i18n.translate('dashboard.admin.verif_rate') }}
+            </span>
+            <span class="text-3xl font-black" style="color:var(--ds-green)">
+              {{ workshopVerifRate() }}<span class="text-base">%</span>
+            </span>
+            <div class="h-1.5 rounded-full w-full mt-1" style="background:var(--ds-surface0)">
+              <div class="h-1.5 rounded-full transition-all duration-700"
+                   [style.width.%]="workshopVerifRate()"
+                   style="background:var(--ds-green)"></div>
+            </div>
+          </div>
+
+          <!-- Revenue Efficiency -->
+          <div class="ds-surface p-4 flex flex-col gap-1">
+            <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">
+              {{ i18n.translate('dashboard.admin.revenue_efficiency') }}
+            </span>
+            <span class="text-3xl font-black" style="color:var(--ds-mauve)">
+              {{ revenueEfficiency() }}<span class="text-base">%</span>
+            </span>
+            <div class="h-1.5 rounded-full w-full mt-1" style="background:var(--ds-surface0)">
+              <div class="h-1.5 rounded-full transition-all duration-700"
+                   [style.width.%]="revenueEfficiency()"
+                   style="background:var(--ds-mauve)"></div>
+            </div>
+          </div>
+
+          <!-- Cancelled count -->
+          <div class="ds-surface p-4 flex flex-col gap-1">
+            <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">
+              {{ i18n.translate('dashboard.admin.recent_cancellations') }}
+            </span>
+            <span class="text-3xl font-black" [style.color]="cancelledServices().length > 0 ? 'var(--ds-red)' : 'var(--ds-green)'">
+              {{ cancelledServices().length }}
+            </span>
+            <span class="ds-badge w-fit" [class]="cancelledServices().length > 0 ? 'ds-badge-red' : 'ds-badge-green'">
+              {{ cancelledServices().length > 0 ? i18n.translate('common.cancelled_plural') : i18n.translate('common.verified') }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Incident category bars -->
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-widest mb-3" style="color:var(--ds-subtext)">
+            {{ i18n.translate('dashboard.admin.distribution_subtitle') }}
+          </p>
+          @if (incidentBars().length > 0) {
+            <div class="space-y-2.5">
+              @for (bar of incidentBars(); track bar.cat) {
+                <div class="flex items-center gap-3">
+                  <span class="text-xs font-semibold w-24 flex-shrink-0 truncate" style="color:var(--ds-text)">
+                    {{ i18n.translate('requests.categories.' + bar.cat) }}
+                  </span>
+                  <div class="flex-1 h-2 rounded-full" style="background:var(--ds-surface0)">
+                    <div class="h-2 rounded-full transition-all duration-700"
+                         [style.width.%]="bar.percent"
+                         [style.background]="bar.color"></div>
+                  </div>
+                  <span class="text-[10px] font-bold tabular-nums w-14 text-right flex-shrink-0" style="color:var(--ds-subtext)">
+                    {{ bar.count }} ({{ bar.percent }}%)
+                  </span>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="text-xs text-center py-4" style="color:var(--ds-overlay0)">
+              {{ i18n.translate('common.no_results') }}
             </p>
-          </div>
-          <div class="flex items-center gap-3 text-xs font-semibold flex-wrap" style="color:var(--ds-subtext)">
-            <span class="flex items-center gap-1.5">
-              <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--ds-blue);opacity:0.4"></span>{{ i18n.translate('common.low') }}
-            </span>
-            <span class="flex items-center gap-1.5">
-              <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--ds-peach)"></span>{{ i18n.translate('common.medium') }}
-            </span>
-            <span class="flex items-center gap-1.5">
-              <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--ds-red)"></span>{{ i18n.translate('common.high') }}
-            </span>
-          </div>
-        </div>
-        <div class="grid gap-2" style="grid-template-columns:repeat(10,1fr)">
-          @for (cell of heatmapCells; track $index) {
-            <div class="aspect-square rounded-full hover:scale-125 transition-transform duration-150 cursor-default"
-                 [style.background]="heatCellBg(cell.intensity)"></div>
           }
-        </div>
-        <div class="flex justify-between mt-3 px-0.5 text-[9px] font-semibold tracking-widest uppercase"
-             style="color:var(--ds-overlay0)">
-          <span>{{ i18n.translate('dashboard.admin.zones.west') }}</span>
-          <span>{{ i18n.translate('dashboard.admin.zones.center') }}</span>
-          <span>{{ i18n.translate('dashboard.admin.zones.north') }}</span>
-          <span>{{ i18n.translate('dashboard.admin.zones.east') }}</span>
         </div>
       </div>
 

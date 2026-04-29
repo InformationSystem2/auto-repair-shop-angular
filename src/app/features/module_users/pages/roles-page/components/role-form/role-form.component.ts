@@ -2,9 +2,7 @@ import { Component, computed, inject, input, output, OnInit, signal, ChangeDetec
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
 import { RoleCreate, RoleDetail, RoleUpdate } from '@users/models/role.model';
 import { Permission } from '@users/models/permission.model';
-import { CheckboxComponent } from '@ui/checkbox/checkbox.component';
 import { groupPermissions } from '../../../../utils/permission-groups';
-import { InputDirective } from '@ui/input/input.component';
 import { TranslationService } from '@core/services/translation.service';
 
 @Component({

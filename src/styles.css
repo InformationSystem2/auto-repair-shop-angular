@@ -227,6 +227,60 @@ html.dark body {
 }
 @keyframes ds-spin { to { transform: rotate(360deg); } }
 
+@layer components {
+  /* ── Input / Textarea ──────────────────────────────── */
+  .ds-input,
+  .ds-textarea {
+    width: 100%;
+    padding: 0.625rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--ds-border);
+    background-color: var(--ds-bg);
+    color: var(--ds-text);
+    font-size: 0.875rem;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .ds-input::placeholder,
+  .ds-textarea::placeholder {
+    color: var(--ds-overlay0);
+    opacity: 0.7;
+  }
+  .ds-input:focus,
+  .ds-textarea:focus {
+    border-color: var(--ds-mauve);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ds-mauve) 15%, transparent);
+  }
+  .ds-input:disabled,
+  .ds-textarea:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .ds-textarea {
+    resize: none;
+  }
+
+  /* ── Checkbox ──────────────────────────────────────── */
+  .ds-checkbox-box {
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 0.375rem;
+    border: 1.5px solid var(--ds-border);
+    background-color: var(--ds-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background-color 0.15s, border-color 0.15s;
+    cursor: pointer;
+  }
+  .ds-checkbox-box.checked {
+    background-color: var(--ds-mauve);
+    border-color: var(--ds-mauve);
+  }
+}
+
 /* ── Pulse dot ────────────────────────────────────────── */
 .ds-live-dot {
   width: 0.5rem;

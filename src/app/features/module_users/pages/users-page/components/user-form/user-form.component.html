@@ -6,7 +6,7 @@
     <div class="h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-80"></div>
 
     <!-- Header -->
-    <div class="px-8 pt-8 pb-6 border-b border-white/5">
+    <div class="px-8 pt-8 pb-6" style="border-bottom:1px solid var(--ds-border)">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-4">
           <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
@@ -23,7 +23,7 @@
             </p>
           </div>
         </div>
-        <button (click)="close.emit()" class="p-2 rounded-full hover:bg-white/5 transition-colors opacity-30 hover:opacity-100">
+        <button (click)="close.emit()" class="p-2 rounded-full transition-colors opacity-40 hover:opacity-100" style="hover:background:var(--ds-mantle)">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <path d="M18 6 6 18" /><path d="m6 6 12 12" />
           </svg>
@@ -34,36 +34,36 @@
     <!-- Body -->
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-8 space-y-5">
       <div class="grid grid-cols-2 gap-4">
-        <div class="space-y-1.5">
-          <label class="text-[10px] font-bold uppercase tracking-widest ml-1 opacity-50" style="color:var(--ds-subtext)">
+        <div class="space-y-2">
+          <label class="text-[0.65rem] font-black uppercase tracking-widest ml-1" style="color:var(--ds-subtext)">
             {{ i18n.translate('users.form.first_name') }}
           </label>
           <input formControlName="name" type="text" class="ds-input" [placeholder]="i18n.translate('users.form.first_name')" />
         </div>
-        <div class="space-y-1.5">
-          <label class="text-[10px] font-bold uppercase tracking-widest ml-1 opacity-50" style="color:var(--ds-subtext)">
+        <div class="space-y-2">
+          <label class="text-[0.65rem] font-black uppercase tracking-widest ml-1" style="color:var(--ds-subtext)">
             {{ i18n.translate('users.form.last_name') }}
           </label>
           <input formControlName="last_name" type="text" class="ds-input" [placeholder]="i18n.translate('users.form.last_name')" />
         </div>
       </div>
 
-      <div class="space-y-1.5">
-        <label class="text-[10px] font-bold uppercase tracking-widest ml-1 opacity-50" style="color:var(--ds-subtext)">
+      <div class="space-y-2">
+        <label class="text-[0.65rem] font-black uppercase tracking-widest ml-1" style="color:var(--ds-subtext)">
           {{ i18n.translate('users.form.email') }}
         </label>
         <input formControlName="email" type="email" class="ds-input" placeholder="email@example.com" [attr.readonly]="editingUser() ? true : null" [class.opacity-50]="editingUser()" />
       </div>
 
       <div class="grid grid-cols-2 gap-4">
-        <div class="space-y-1.5">
-          <label class="text-[10px] font-bold uppercase tracking-widest ml-1 opacity-50" style="color:var(--ds-subtext)">
+        <div class="space-y-2">
+          <label class="text-[0.65rem] font-black uppercase tracking-widest ml-1" style="color:var(--ds-subtext)">
             {{ i18n.translate('users.form.phone') }}
           </label>
           <input formControlName="phone" type="text" class="ds-input" placeholder="+123..." />
         </div>
-        <div class="space-y-1.5">
-          <label class="text-[10px] font-bold uppercase tracking-widest ml-1 opacity-50" style="color:var(--ds-subtext)">
+        <div class="space-y-2">
+          <label class="text-[0.65rem] font-black uppercase tracking-widest ml-1" style="color:var(--ds-subtext)">
             {{ i18n.translate('users.form.password') }}
           </label>
           <input formControlName="password" type="password" class="ds-input" placeholder="••••••••" />
@@ -73,24 +73,20 @@
       <!-- Roles Section -->
       @if (!isWorkshopOwner()) {
         <div class="pt-2">
-          <label class="text-[10px] font-bold uppercase tracking-widest ml-1 opacity-50 block mb-3" style="color:var(--ds-subtext)">
+          <label class="text-[0.65rem] font-black uppercase tracking-widest ml-1 block mb-3" style="color:var(--ds-subtext)">
             {{ i18n.translate('users.assigned_roles') }}
           </label>
           <div class="ds-surface p-4 flex flex-wrap gap-3">
             @for (role of availableRoles(); track role.id) {
-              <label class="flex items-center gap-2 cursor-pointer group">
-                <div class="relative flex items-center justify-center">
-                  <input type="checkbox"
-                         [checked]="selectedRoleIds().includes(role.id)"
-                         (change)="toggleRole(role.id)"
-                         class="peer h-5 w-5 opacity-0 absolute cursor-pointer" />
-                  <div class="h-5 w-5 rounded-lg border-2 border-white/10 bg-white/5 transition-all group-hover:border-indigo-500/50 peer-checked:bg-indigo-500 peer-checked:border-indigo-500 flex items-center justify-center">
-                    <svg class="w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
-                      <path d="M5 13l4 4L19 7" />
+              <label class="flex items-center gap-2 cursor-pointer group" (click)="toggleRole(role.id)">
+                <div class="ds-checkbox-box" [ngClass]="{ 'checked': selectedRoleIds().includes(role.id) }">
+                  @if (selectedRoleIds().includes(role.id)) {
+                    <svg class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
-                  </div>
+                  }
                 </div>
-                <span class="text-xs font-bold transition-colors group-hover:text-white" [style.color]="selectedRoleIds().includes(role.id) ? 'var(--ds-text)' : 'var(--ds-subtext)'">
+                <span class="text-xs font-bold transition-colors" [style.color]="selectedRoleIds().includes(role.id) ? 'var(--ds-text)' : 'var(--ds-subtext)'">
                   {{ role.name }}
                 </span>
               </label>
@@ -113,7 +109,7 @@
       }
 
       <!-- Footer Actions -->
-      <div class="pt-6 border-t border-white/5 flex gap-3">
+      <div class="pt-6 flex gap-3" style="border-top:1px solid var(--ds-border)">
         <button type="button" (click)="close.emit()" class="ds-btn-ghost flex-1 h-12">
           {{ i18n.translate('common.cancel') }}
         </button>

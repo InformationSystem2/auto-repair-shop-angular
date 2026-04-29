@@ -1,5 +1,6 @@
 import { Component, inject, input, output, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
+import { NgClass } from '@angular/common';
 import { User, UserCreate, UserUpdate } from '@users/models/user.model';
 import { RoleDetail } from '@users/models/role.model';
 import { AuthService } from '@core/auth/auth.service';
@@ -11,6 +12,7 @@ import { TranslationService } from '@core/services/translation.service';
   standalone: true,
   imports: [
     ReactiveFormsModule,
+    NgClass,
     SwitchComponent
   ],
   templateUrl: './user-form.component.html',

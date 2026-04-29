@@ -89,8 +89,6 @@ export class AdminDashboardComponent {
   readonly workshopArea = computed(() => this._toArea(this.workshopGrowthPts()));
   readonly clientArea   = computed(() => this._toArea(this.clientGrowthPts()));
 
-  readonly heatmapCells = this._buildHeatmap();
-
   readonly pendingWorkshops  = computed(() => this.data()?.pending_workshops ?? []);
   readonly cancelledServices = computed(() => this.data()?.cancelled_services ?? []);
 
@@ -104,6 +102,33 @@ export class AdminDashboardComponent {
     const suffix = isPoints ? 'pp vs mes anterior' : '% vs mes anterior';
     return { text: `${sign}${pct.toFixed(1)}${suffix}`, positive: pct >= 0 };
   }
+
+  readonly workshopVerifRate = computed(() => {
+    const active = this.data()?.active_workshops ?? 0;
+    const pending = this.pendingWorkshops().length;
+    const total = active + pending;
+    return total > 0 ? Math.round((active / total) * 100) : 100;
+  });
+
+  readonly revenueEfficiency = computed(() => {
+    const rev  = this.data()?.total_revenue ?? 0;
+    const prof = this.data()?.platform_profit ?? 0;
+    return rev > 0 ? +(prof / rev * 100).toFixed(1) : 0;
+  });
+
+  readonly incidentBars = computed(() => {
+    const dist  = this.data()?.incident_distribution ?? {};
+    const total = Object.values(dist).reduce((a, b) => a + b, 0);
+    if (total === 0) return [];
+    return Object.entries(dist)
+      .map(([cat, count], idx) => ({
+        cat,
+        count,
+        percent: Math.round((count / total) * 100),
+        color: CAT_COLORS[cat] ?? FALLBACK_COLORS[idx % FALLBACK_COLORS.length],
+      }))
+      .sort((a, b) => b.count - a.count);
+  });
 
   // ── SVG helpers ──────────────────────────────────────────────────────────
   private _toSvgPoints(values: number[]): string {
@@ -120,32 +145,6 @@ export class AdminDashboardComponent {
     const x0 = pts[0].split(',')[0];
     const xN = pts[pts.length - 1].split(',')[0];
     return `M${points.replace(/ /g, ' L')} L${xN},180 L${x0},180 Z`;
-  }
-
-  // ── Heatmap ──────────────────────────────────────────────────────────────
-  private _buildHeatmap(): { intensity: number }[] {
-    const hotspots = [
-      { cx: 3, cy: 2 }, { cx: 4, cy: 2 }, { cx: 5, cy: 3 },
-      { cx: 7, cy: 5 }, { cx: 8, cy: 5 }, { cx: 7, cy: 6 },
-      { cx: 2, cy: 6 }, { cx: 1, cy: 7 },
-    ];
-    return Array.from({ length: 80 }, (_, idx) => {
-      const x = idx % 10;
-      const y = Math.floor(idx / 10);
-      let intensity = 0.08;
-      for (const hs of hotspots) {
-        const d = Math.sqrt((x - hs.cx) ** 2 + (y - hs.cy) ** 2);
-        intensity = Math.max(intensity, Math.max(0, 1 - d / 2.8));
-      }
-      return { intensity: Math.min(1, intensity) };
-    });
-  }
-
-  heatCellBg(intensity: number): string {
-    const pct = Math.round(intensity * 100);
-    if (intensity > 0.7) return `color-mix(in srgb, var(--ds-red) ${pct}%, transparent)`;
-    if (intensity > 0.35) return `color-mix(in srgb, var(--ds-peach) ${pct}%, transparent)`;
-    return `color-mix(in srgb, var(--ds-blue) ${Math.max(12, pct)}%, transparent)`;
   }
 
   // ── Formatters ──────────────────────────────────────────────────────────

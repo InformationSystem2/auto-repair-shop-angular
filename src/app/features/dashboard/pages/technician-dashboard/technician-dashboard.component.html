@@ -48,28 +48,54 @@
         } @else {
           <div class="space-y-3">
             @for (inc of s.active_incidents; track inc.id) {
-              <div class="flex items-center justify-between p-4 rounded-xl transition-all" style="background-color: var(--ds-card-hi); border: 1px solid var(--ds-border-sub);">
-                <div class="flex items-center gap-4">
-                  <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: var(--ds-surface0); color: var(--ds-blue);">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
+              <div class="flex flex-col gap-3 p-4 rounded-xl transition-all" style="background-color: var(--ds-card-hi); border: 1px solid var(--ds-border-sub);">
+                <!-- Incident info row -->
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: var(--ds-surface0); color: var(--ds-blue);">
+                      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p class="text-sm font-medium" style="color: var(--ds-text);">{{ inc.client_name }}</p>
+                      <p class="text-xs" style="color: var(--ds-subtext);">{{ categoryLabel(inc.ai_category) }} · {{ inc.created_at | date:'dd MMM, HH:mm' }}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p class="text-sm font-medium" style="color: var(--ds-text);">{{ inc.client_name }}</p>
-                    <p class="text-xs" style="color: var(--ds-subtext);">{{ categoryLabel(inc.ai_category) }} · {{ inc.created_at | date:'dd MMM, HH:mm' }}</p>
-                  </div>
-                </div>
-                <div class="flex items-center gap-2">
-                  @if (inc.ai_priority) {
-                    <span [class]="priorityBadgeClass(inc.ai_priority)" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                      {{ inc.ai_priority }}
+                  <div class="flex items-center gap-2">
+                    @if (inc.ai_priority) {
+                      <span [class]="priorityBadgeClass(inc.ai_priority)" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                        {{ inc.ai_priority }}
+                      </span>
+                    }
+                    <span [class]="statusBadgeClass(inc.status)" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                      {{ inc.status === 'in_progress' ? i18n.translate('dashboard.technician.in_progress_label') : i18n.translate('dashboard.technician.assigned_label') }}
                     </span>
-                  }
-                  <span [class]="statusBadgeClass(inc.status)" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                    {{ inc.status === 'in_progress' ? i18n.translate('dashboard.technician.in_progress_label') : i18n.translate('dashboard.technician.assigned_label') }}
-                  </span>
+                  </div>
                 </div>
+
+                <!-- Location sharing button -->
+                <button
+                  (click)="toggleSharing(inc.id)"
+                  class="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300"
+                  [style.background-color]="isSharingFor(inc.id) ? 'rgba(16,185,129,0.15)' : 'var(--ds-surface0)'"
+                  [style.border]="isSharingFor(inc.id) ? '1px solid rgba(16,185,129,0.5)' : '1px solid var(--ds-border-sub)'"
+                  [style.color]="isSharingFor(inc.id) ? '#10b981' : 'var(--ds-subtext)'">
+                  @if (isSharingFor(inc.id)) {
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Compartiendo ubicación — Toca para detener
+                  } @else {
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Compartir mi ubicación
+                  }
+                </button>
               </div>
             }
           </div>
