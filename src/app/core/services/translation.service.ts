@@ -1,4 +1,4 @@
-import { Injectable, signal, effect } from '@angular/core';
+import { Injectable, signal, effect, inject, EnvironmentInjector, runInInjectionContext } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
@@ -13,7 +13,10 @@ export class TranslationService {
   readonly currentLang = this._lang.asReadonly();
   readonly translations = this._translations.asReadonly();
 
-  constructor(private readonly http: HttpClient) {
+  constructor(
+    private readonly http: HttpClient,
+    private readonly envInjector: EnvironmentInjector
+  ) {
     effect(() => {
       this.loadTranslations(this._lang());
     });
@@ -65,7 +68,13 @@ export class TranslationService {
   private async ensureLangLoaded(lang: string): Promise<void> {
     if (this._cache.has(lang)) return;
     try {
-      const data = await firstValueFrom(this.http.get(`/assets/i18n/${lang}.json`));
+      // runInInjectionContext is required in production/AOT: functional interceptors
+      // (authInterceptor, errorInterceptor) call inject() when the HTTP observable
+      // is subscribed. Without this, Angular throws NG0200 because the async
+      // callback (effect / Promise) runs outside an active injection context.
+      const data = await runInInjectionContext(this.envInjector, () =>
+        firstValueFrom(this.http.get(`/assets/i18n/${lang}.json`))
+      );
       this._cache.set(lang, data);
     } catch (error) {
       console.error(`Could not load translations for ${lang}`, error);
@@ -78,3 +87,4 @@ export class TranslationService {
     if (data) this._translations.set(data);
   }
 }
+
