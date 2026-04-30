@@ -17,6 +17,10 @@ const SILENT_URL_PATTERNS = [
  * Shows a toast message and handles specific codes like 401.
  */
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
+  if (req.url.startsWith('/assets/')) {
+    return next(req);
+  }
+
   const toastSvc = inject(ToastService);
   const translationSvc = inject(TranslationService);
   const authSvc = inject(AuthService);
