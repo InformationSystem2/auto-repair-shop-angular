@@ -1,0 +1,60 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Overwrite production environment
+        env:
+          API_URL_PROD: ${{ secrets.API_URL_PROD }}
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_VAPID_KEY: ${{ secrets.FIREBASE_VAPID_KEY }}
+        run: |
+          test -n "$API_URL_PROD"
+          test -n "$FIREBASE_APP_ID"
+          test -n "$FIREBASE_VAPID_KEY"
+
+          cat > src/environments/environment.prod.ts << EOF
+          export const environment = {
+            production: true,
+            apiUrl: '${API_URL_PROD}',
+            firebase: {
+              apiKey: 'AIzaSyCGIfiGlWSsJEcniQbs5CdZ42ONAaUJ9Ok',
+              authDomain: 'project-5ed4e5c6-d00d-4ed4-86c.firebaseapp.com',
+              projectId: 'project-5ed4e5c6-d00d-4ed4-86c',
+              storageBucket: 'project-5ed4e5c6-d00d-4ed4-86c.firebasestorage.app',
+              messagingSenderId: '776780812382',
+              appId: '${FIREBASE_APP_ID}',
+              vapidKey: '${FIREBASE_VAPID_KEY}',
+            },
+          };
+          EOF
+
+      - name: Build production app
+        run: npm run build -- --configuration production
+
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: project-5ed4e5c6-d00d-4ed4-86c
+          channelId: live
