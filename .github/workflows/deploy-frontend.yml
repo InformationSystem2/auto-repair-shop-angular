@@ -58,5 +58,5 @@ jobs:
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          projectId: restobar-si1
+          projectId: project-5ed4e5c6-d00d-4ed4-86c
           channelId: live
