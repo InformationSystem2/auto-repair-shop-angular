@@ -1,4 +1,4 @@
-import { inject } from '@angular/core';
+import { inject, Injector } from '@angular/core';
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
@@ -18,14 +18,16 @@ const SILENT_URL_PATTERNS = [
  */
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastSvc = inject(ToastService);
-  const translationSvc = inject(TranslationService);
-  const authSvc = inject(AuthService);
+  const injector = inject(Injector);
   const router = inject(Router);
 
   const isSilent = SILENT_URL_PATTERNS.some(p => req.url.includes(p));
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
+      const authSvc = injector.get(AuthService);
+      const translationSvc = injector.get(TranslationService);
+
       // Peticiones de background: solo redirigir en 401, sin toast
       if (isSilent) {
         if (error.status === 401) {

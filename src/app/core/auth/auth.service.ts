@@ -24,12 +24,31 @@ export class AuthService {
   readonly isAuthenticated = computed(() => this._session() !== null);
   readonly currentUserName = computed(() => this._session()?.userName ?? null);
   readonly roles = computed(() => this._session()?.roles ?? []);
+  readonly permissions = computed(() => this._session()?.permissions ?? []);
   readonly isAdmin = computed(() =>
     this.roles().some((r) => r.name === 'admin')
   );
   readonly isWorkshopOwner = computed(() =>
     this.roles().some((r) => r.name === 'workshop_owner')
   );
+
+  // Helper helper to decode JWT payload locally
+  private _decodeTokenPayload(token: string): any {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        window
+          .atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      return JSON.parse(jsonPayload);
+    } catch {
+      return {};
+    }
+  }
 
   // ── Login ─────────────────────────────────────────────────────────────────
   login(username: string, password: string): Observable<LoginResponse> {
@@ -46,11 +65,15 @@ export class AuthService {
       })
       .pipe(
         tap((res) => {
+          const payload = this._decodeTokenPayload(res.access_token);
+          const permissions = payload.permissions || [];
+
           const session: AuthSession = {
             token: res.access_token,
             userId: res.user_id,
             userName: res.user_name,
             roles: res.roles,
+            permissions: permissions,
           };
           this._storeSession(session);
           this._session.set(session);
@@ -83,6 +106,10 @@ export class AuthService {
 
   hasRole(...roleNames: string[]): boolean {
     return this.roles().some((r) => roleNames.includes(r.name));
+  }
+
+  hasPermission(...permissionActions: string[]): boolean {
+    return this.permissions().some((p) => permissionActions.includes(p));
   }
 
   // ── Persistence ───────────────────────────────────────────────────────────

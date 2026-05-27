@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { UsersPageComponent } from './pages/users-page/users-page.component';
 import { RolesPageComponent } from './pages/roles-page/roles-page.component';
-import { roleGuard } from '@core/auth/auth.guard';
+import { permissionGuard } from '@core/auth/auth.guard';
 import { MainLayoutComponent } from '@layout/main-layout/main-layout.component';
 
 export const MODULE_USERS_ROUTES: Routes = [
@@ -12,12 +12,12 @@ export const MODULE_USERS_ROUTES: Routes = [
       { 
         path: 'users',
         component: UsersPageComponent,
-        canActivate: [roleGuard('admin')]
+        canActivate: [permissionGuard('users:read')]
       },
       {
         path: 'roles',
         component: RolesPageComponent,
-        canActivate: [roleGuard('admin')]
+        canActivate: [permissionGuard('roles:read')]
       }
     ]
   }
