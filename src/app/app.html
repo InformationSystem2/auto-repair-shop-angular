@@ -1,2 +1,10 @@
+@if (isOffline()) {
+  <div class="bg-red-600 text-white text-xs font-bold text-center py-2 z-50 flex items-center justify-center gap-2 shadow-md">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-3.536 5 5 0 015.657-4.95m0 0L9.828 9.828M3 3l18 18" />
+    </svg>
+    <span>Sin conexión a Internet. Trabajando en modo sin conexión.</span>
+  </div>
+}
 <router-outlet />
 <app-toaster />

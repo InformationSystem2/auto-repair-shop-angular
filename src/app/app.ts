@@ -14,8 +14,13 @@ export class App {
   private readonly _uiService = inject(UIService);
   private readonly _authService = inject(AuthService);
   protected readonly title = signal('auto-repair-shop-angular');
+  protected readonly isOffline = signal(!navigator.onLine);
 
   constructor() {
+    // Escucha el estado de la conexión a internet
+    window.addEventListener('online', () => this.isOffline.set(false));
+    window.addEventListener('offline', () => this.isOffline.set(true));
+
     // Si el usuario ya está autenticado al cargar, registrar token push
     if (this._authService.isAuthenticated()) {
       this._authService.registerPushToken();
