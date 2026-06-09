@@ -20,7 +20,7 @@ export const authGuard: CanActivateFn = () => {
  */
 export const roleGuard =
   (...requiredRoles: string[]): CanActivateFn =>
-  () => {
+  (route, state) => {
     const auth = inject(AuthService);
     const router = inject(Router);
 
@@ -30,8 +30,42 @@ export const roleGuard =
 
     // Redirect to their own dashboard if authenticated but unauthorized
     const firstRole = auth.roles()[0]?.name;
-    if (firstRole === 'admin') return router.createUrlTree(['/app/admin/dashboard']);
-    if (firstRole === 'workshop_owner') return router.createUrlTree(['/app/workshop/dashboard']);
-    if (firstRole === 'technician') return router.createUrlTree(['/app/technician/dashboard']);
+    const targetUrl = state.url;
+    if (firstRole === 'admin' && !targetUrl.includes('/admin/dashboard')) {
+      return router.createUrlTree(['/app/admin/dashboard']);
+    }
+    if (firstRole === 'workshop_owner' && !targetUrl.includes('/workshop/dashboard')) {
+      return router.createUrlTree(['/app/workshop/dashboard']);
+    }
+    if (firstRole === 'technician') {
+      // Los técnicos usan la app móvil, no la web
+    }
+    return router.createUrlTree(['/login']);
+  };
+
+/**
+ * Factory guard: user must have at least one of the specified permission actions.
+ * Usage: canActivate: [permissionGuard('user:read')]
+ */
+export const permissionGuard =
+  (...requiredPermissions: string[]): CanActivateFn =>
+  (route, state) => {
+    const auth = inject(AuthService);
+    const router = inject(Router);
+
+    if (!auth.isAuthenticated()) return router.createUrlTree(['/login']);
+
+    if (auth.hasPermission(...requiredPermissions)) return true;
+
+    // Redirect to their own dashboard if authenticated but unauthorized
+    const firstRole = auth.roles()[0]?.name;
+    const targetUrl = state.url;
+    if (firstRole === 'admin' && !targetUrl.includes('/admin/dashboard')) {
+      return router.createUrlTree(['/app/admin/dashboard']);
+    }
+    if (firstRole === 'workshop_owner' && !targetUrl.includes('/workshop/dashboard')) {
+      return router.createUrlTree(['/app/workshop/dashboard']);
+    }
+    // Los técnicos usan la app móvil, no la web
     return router.createUrlTree(['/login']);
   };

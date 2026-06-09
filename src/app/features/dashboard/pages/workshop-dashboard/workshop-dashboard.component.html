@@ -56,6 +56,57 @@
         colorClass="bg-cyan-500"/>
     </div>
 
+    <!-- KPI Cards (Secondary: Performance, SLA & Ranking) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 auto-rows-fr mt-4">
+      <app-stat-card
+        [label]="i18n.translate('dashboard.admin.avg_assignment')"
+        [value]="avgAssignment().toFixed(1) + ' min'"
+        colorClass="bg-amber-500"/>
+      <app-stat-card
+        [label]="i18n.translate('dashboard.admin.avg_arrival')"
+        [value]="avgArrival().toFixed(1) + ' min'"
+        colorClass="bg-rose-500"/>
+      <app-stat-card
+        [label]="i18n.translate('dashboard.admin.cancelled_cases')"
+        [value]="cancelledCount() + ' (' + cancelledPct().toFixed(1) + '%)'"
+        colorClass="bg-red-500"/>
+      <app-stat-card
+        [label]="i18n.translate('dashboard.admin.sla_compliance')"
+        [value]="onTimePct().toFixed(1) + '%'"
+        colorClass="bg-teal-500"/>
+      <app-stat-card
+        [label]="i18n.translate('dashboard.workshop.efficiency_rank')"
+        [value]="'#' + workshopRank()"
+        colorClass="bg-yellow-500"/>
+    </div>
+
+    <!-- Zonas con Más Incidencias para el Taller -->
+    <div class="grid grid-cols-1 gap-4 mt-4">
+      <div class="ds-card p-6">
+        <h2 class="text-sm font-bold mb-4" style="color:var(--ds-text)">
+          📍 {{ i18n.translate('dashboard.workshop.zones_coverage') }}
+        </h2>
+        @if (!incidentsByZone().length) {
+          <p class="text-xs text-center py-6 font-medium" style="color:var(--ds-subtext)">
+            {{ i18n.translate('dashboard.workshop.no_coverage_data') }}
+          </p>
+        }
+        @if (incidentsByZone().length) {
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+            @for (z of incidentsByZone(); track z.zone; let idx = $index) {
+              <div class="ds-surface p-4 flex flex-col justify-between">
+                <span class="text-xs font-bold" style="color:var(--ds-text)">{{ z.zone }}</span>
+                <span class="text-2xl font-black mt-2" style="color:var(--ds-blue)">{{ z.count }} <span class="text-xs font-normal text-muted-foreground">{{ i18n.translate('dashboard.workshop.services') }}</span></span>
+                <div class="h-1.5 rounded-full w-full mt-2" style="background:var(--ds-surface0)">
+                  <div class="h-1.5 rounded-full" style="background:var(--ds-blue)" [style.width.%]="(z.count / incidentsByZone()[0].count) * 100"></div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
     <!-- Technician bars + Availability donut -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
@@ -152,30 +203,45 @@
           ${{ fmt(data()?.gross_revenue ?? 0) }}
         </span>
       </div>
-      <svg viewBox="0 0 600 165" class="w-full h-36" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="wkRevGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="var(--ds-mauve)" stop-opacity="0.3"/>
-            <stop offset="100%" stop-color="var(--ds-mauve)" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        @for (y of [20, 55, 90, 125]; track y) {
-          <line x1="0" [attr.y1]="y" x2="600" [attr.y2]="y"
-                stroke="var(--ds-border-sub)" stroke-width="0.8"/>
+      <div class="relative">
+        <svg viewBox="0 0 600 165" class="w-full h-36" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="wkRevGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--ds-mauve)" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="var(--ds-mauve)" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          @for (y of [20, 55, 90, 125]; track y) {
+            <line x1="0" [attr.y1]="y" x2="600" [attr.y2]="y"
+                  stroke="var(--ds-border-sub)" stroke-width="0.8"/>
+          }
+          @if (revenueArea()) {
+            <path [attr.d]="revenueArea()" fill="url(#wkRevGrad)"/>
+            <polyline [attr.points]="revenuePoints()" fill="none"
+                      stroke="var(--ds-mauve)" stroke-width="2.5"
+                      stroke-linejoin="round" stroke-linecap="round"/>
+          }
+          @for (d of interactiveRevenueData(); track $index) {
+            <circle [attr.cx]="d.cx" [attr.cy]="d.cy" r="5"
+                    class="cursor-pointer transition-all duration-150 hover:r-7"
+                    fill="var(--ds-mauve)" stroke="var(--ds-card)" stroke-width="2"
+                    (mouseenter)="hoveredPoint.set({ value: d.revenue, label: d.day, x: d.cx, y: d.cy })"
+                    (mouseleave)="hoveredPoint.set(null)"/>
+          }
+        </svg>
+
+        <!-- Tooltip overlay -->
+        @if (hoveredPoint(); as tp) {
+          <div class="absolute bg-neutral-900 text-white text-[10px] font-bold py-1 px-2.5 rounded shadow-lg pointer-events-none transition-all duration-150 -translate-x-1/2 -translate-y-full"
+               [style.left.%]="(tp.x / 600) * 100"
+               [style.top.px]="tp.y - 12">
+            <p class="leading-none text-neutral-300">{{ tp.label }}</p>
+            <p class="leading-none mt-1 text-sm text-white">${{ fmt(tp.value) }}</p>
+          </div>
         }
-        @if (revenueArea()) {
-          <path [attr.d]="revenueArea()" fill="url(#wkRevGrad)"/>
-          <polyline [attr.points]="revenuePoints()" fill="none"
-                    stroke="var(--ds-mauve)" stroke-width="2.5"
-                    stroke-linejoin="round" stroke-linecap="round"/>
-        }
-        @for (pt of revenueDataPts(); track $index) {
-          <circle [attr.cx]="pt[0]" [attr.cy]="pt[1]" r="4"
-                  fill="var(--ds-mauve)" stroke="var(--ds-card)" stroke-width="2"/>
-        }
-      </svg>
+      </div>
       <div class="flex justify-between mt-1">
-        @for (d of weekDays(); track d) {
+        @for (d of weekDays(); track $index) {
           <span class="text-[10px] font-semibold" style="color:var(--ds-overlay0)">{{ d }}</span>
         }
       </div>

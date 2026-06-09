@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy, computed } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
 import { StatCardComponent } from '@dashboard/components/stat-card/stat-card.component';
@@ -50,14 +50,20 @@ export class AdminDashboardComponent {
     Object.values(this.data()?.incident_distribution ?? {}).reduce((a, b) => a + b, 0)
   );
 
+  // Interactive Signals
+  readonly activeCategory = signal<{ label: string; count: number; percent: number; color?: string } | null>(null);
+  readonly hoveredPoint = signal<{ value: number; label: string; x: number; y: number } | null>(null);
+
   readonly incidentSegments = computed(() => {
     const dist = this.data()?.incident_distribution ?? {};
     const total = Object.values(dist).reduce((a, b) => a + b, 0);
-    if (total === 0) return [{ label: 'Sin datos', percent: 100, color: 'var(--ds-surface0)' }];
+    if (total === 0) return [{ key: 'uncertain', label: 'Sin datos', percent: 100, color: 'var(--ds-surface0)', count: 0 }];
     return Object.entries(dist).map(([cat, count], idx) => ({
+      key: cat,
       label: CAT_LABELS[cat] ?? cat,
       percent: Math.round((count / total) * 100),
       color: CAT_COLORS[cat] ?? FALLBACK_COLORS[idx % FALLBACK_COLORS.length],
+      count: count
     }));
   });
 
@@ -80,6 +86,38 @@ export class AdminDashboardComponent {
     })
   );
 
+  readonly growthChartData = computed(() => {
+    const list = this.data()?.monthly_growth ?? [];
+    if (!list.length) return [];
+    
+    const workshopsVals = list.map(m => m.workshops);
+    const clientsVals = list.map(m => m.clients);
+    
+    const maxWorkshops = Math.max(...workshopsVals, 1);
+    const maxClients = Math.max(...clientsVals, 1);
+    const n = list.length;
+    const step = n > 1 ? 600 / (n - 1) : 0;
+    
+    const months = list.map(m => {
+      const [, mo] = m.month.split('-');
+      const names = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+      return names[(parseInt(mo) - 1)] ?? mo;
+    });
+
+    return list.map((item, i) => {
+      const cx = Math.round(i * step);
+      return {
+        month: months[i],
+        workshopVal: item.workshops,
+        workshopCx: cx,
+        workshopCy: Math.round(180 - (item.workshops / maxWorkshops) * 155),
+        clientVal: item.clients,
+        clientCx: cx,
+        clientCy: Math.round(180 - (item.clients / maxClients) * 155)
+      };
+    });
+  });
+
   readonly workshopGrowthPts = computed(() =>
     this._toSvgPoints((this.data()?.monthly_growth ?? []).map(m => m.workshops))
   );
@@ -91,6 +129,14 @@ export class AdminDashboardComponent {
 
   readonly pendingWorkshops  = computed(() => this.data()?.pending_workshops ?? []);
   readonly cancelledServices = computed(() => this.data()?.cancelled_services ?? []);
+
+  readonly avgAssignment = computed(() => this.data()?.avg_assignment_min ?? 0);
+  readonly avgArrival = computed(() => this.data()?.avg_arrival_min ?? 0);
+  readonly efficientWorkshops = computed(() => this.data()?.efficient_workshops ?? []);
+  readonly incidentsByZone = computed(() => this.data()?.incidents_by_zone ?? []);
+  readonly cancelledCount = computed(() => this.data()?.cancelled_count ?? 0);
+  readonly cancelledPct = computed(() => this.data()?.cancelled_pct ?? 0);
+  readonly onTimePct = computed(() => this.data()?.on_time_completed_pct ?? 0);
 
   readonly revenueTrend = computed(() => this._trendLabel(this.data()?.revenue_trend_pct ?? 0));
   readonly profitTrend  = computed(() => this._trendLabel(this.data()?.profit_trend_pct ?? 0));

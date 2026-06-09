@@ -3,7 +3,7 @@ import { RegisterWorkshopPageComponent } from './pages/register-workshop-page/re
 import { WorkshopsPageComponent } from './pages/workshops-page/workshops-page.component';
 import { WorkshopTechniciansPageComponent } from './pages/workshop-technicians-page/workshop-technicians-page.component';
 import { RequestsPageComponent } from './pages/requests-page/requests-page';
-import { roleGuard } from '@core/auth/auth.guard';
+import { permissionGuard } from '@core/auth/auth.guard';
 import { MainLayoutComponent } from '@layout/main-layout/main-layout.component';
 
 export const MODULE_WORKSHOPS_ROUTES: Routes = [
@@ -21,32 +21,32 @@ export const MODULE_WORKSHOPS_ROUTES: Routes = [
       {
         path: 'workshops',
         component: WorkshopsPageComponent,
-        canActivate: [roleGuard('admin')]
+        canActivate: [permissionGuard('workshops:read')]
       },
       {
         path: 'workshops/:id',
         loadComponent: () => import('./pages/workshop-management-page/workshop-management-page.component').then(m => m.WorkshopManagementPageComponent),
-        canActivate: [roleGuard('admin')]
+        canActivate: [permissionGuard('workshops:read')]
       },
       {
         path: 'specialties',
         loadComponent: () => import('./pages/specialties-page/specialties-page.component').then(m => m.SpecialtiesPageComponent),
-        canActivate: [roleGuard('admin')]
+        canActivate: [permissionGuard('specialties:create')]
       },
       {
         path: 'workshop-profile',
         loadComponent: () => import('./pages/workshop-management-page/workshop-management-page.component').then(m => m.WorkshopManagementPageComponent),
-        canActivate: [roleGuard('workshop_owner')]
+        canActivate: [permissionGuard('workshops:update')]
       },
       {
         path: 'technicians',
         component: WorkshopTechniciansPageComponent,
-        canActivate: [roleGuard('workshop_owner')]
+        canActivate: [permissionGuard('technicians:create')]
       },
       {
         path: 'requests',
         component: RequestsPageComponent,
-        canActivate: [roleGuard('workshop_owner')]
+        canActivate: [permissionGuard('incidents:update')]
       }
     ]
   }

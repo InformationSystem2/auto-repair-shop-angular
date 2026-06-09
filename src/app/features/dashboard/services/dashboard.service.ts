@@ -17,6 +17,13 @@ export interface AdminDashboardData {
   profit_trend_pct: number;
   users_trend_pct: number;
   ai_trend_pct: number;
+  avg_assignment_min: number;
+  avg_arrival_min: number;
+  efficient_workshops: { id: string; name: string; rating_avg: number; activity_points: number; completed_services: number }[];
+  incidents_by_zone: { zone: string; count: number }[];
+  cancelled_count: number;
+  cancelled_pct: number;
+  on_time_completed_pct: number;
 }
 
 export interface WorkshopDashboardData {
@@ -30,6 +37,14 @@ export interface WorkshopDashboardData {
   emergency_inbox: { id: string; client_name: string; ai_category: string | null; ai_priority: string | null; incident_lat: number | null; incident_lng: number | null; created_at: string }[];
   technician_locations: { id: string; name: string; is_available: boolean; latitude: number | null; longitude: number | null }[];
   recent_ratings: { id: string; client_name: string; score: number; response_time_score: number | null; quality_score: number | null; comment: string | null; created_at: string }[];
+  avg_assignment_min: number;
+  avg_arrival_min: number;
+  incident_distribution: Record<string, number>;
+  workshop_rank: number;
+  incidents_by_zone: { zone: string; count: number }[];
+  cancelled_count: number;
+  cancelled_pct: number;
+  on_time_completed_pct: number;
 }
 
 export interface TechnicianDashboardData {

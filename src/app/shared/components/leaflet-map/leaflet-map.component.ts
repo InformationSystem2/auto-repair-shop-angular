@@ -25,6 +25,7 @@ export class LeafletMapComponent implements OnChanges, AfterViewInit {
   private workshopMarker: L.Marker | undefined;
   private incidentMarker: L.Marker | undefined;
   private technicianMarker: L.Marker | undefined;
+  private routeLine: L.Polyline | undefined;
 
   private readonly workshopIcon = L.icon({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -96,6 +97,42 @@ export class LeafletMapComponent implements OnChanges, AfterViewInit {
         this.technicianMarker = L.marker([this.technicianLat, this.technicianLng], { icon: this.technicianIcon })
           .addTo(this.map)
           .bindPopup('<b>🔧 Técnico en ruta</b>');
+      }
+    }
+
+    // Draw routing polyline between Technician (or Workshop as fallback) and Client
+    const originLat = this.technicianLat || this.workshopLat;
+    const originLng = this.technicianLng || this.workshopLng;
+
+    if (originLat && originLng && this.incidentLat && this.incidentLng) {
+      const url = `https://router.project-osrm.org/route/v1/driving/${originLng},${originLat};${this.incidentLng},${this.incidentLat}?overview=full&geometries=geojson`;
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          if (!this.map) return;
+          if (data.routes && data.routes.length > 0) {
+            const coords = data.routes[0].geometry.coordinates as [number, number][];
+            // OSRM returns coordinates as [lng, lat]
+            const latLngs = coords.map(c => L.latLng(c[1], c[0]));
+
+            if (this.routeLine) {
+              this.routeLine.setLatLngs(latLngs);
+            } else {
+              this.routeLine = L.polyline(latLngs, {
+                color: '#3B82F6',
+                weight: 5,
+                opacity: 0.8,
+                lineCap: 'round',
+                lineJoin: 'round'
+              }).addTo(this.map);
+            }
+          }
+        })
+        .catch(err => console.error('Error fetching route from OSRM:', err));
+    } else {
+      if (this.routeLine && this.map) {
+        this.routeLine.remove();
+        this.routeLine = undefined;
       }
     }
 

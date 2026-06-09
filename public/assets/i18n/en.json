@@ -187,6 +187,18 @@
       "verif_rate": "Verif. Rate",
       "revenue_efficiency": "Rev. Efficiency",
       "recent_cancellations": "Cancellations",
+      "avg_assignment": "Avg. Assignment Time",
+      "avg_arrival": "Avg. Arrival Time",
+      "cancelled_cases": "Cancelled Cases",
+      "sla_compliance": "SLA Compliance (On Time)",
+      "efficient_workshops": "Most Efficient Workshops",
+      "incidents_by_zone": "Zones with More Incidents",
+      "top_5": "Top 5",
+      "no_efficiency_data": "No efficiency data available",
+      "no_zones_data": "No registered zone data",
+      "rating": "Rating",
+      "activity_points": "Activity Points",
+      "completed": "Completed",
       "zones": {
         "west": "West",
         "center": "Center",
@@ -241,7 +253,11 @@
       "time_label": "Time",
       "quality_label": "Quality",
       "show_comments": "Show comments",
-      "hide_comments": "Hide comments"
+      "hide_comments": "Hide comments",
+      "efficiency_rank": "Efficiency Rank",
+      "zones_coverage": "Coverage Zones / Attended Incidents",
+      "no_coverage_data": "No incidents registered in specific zones yet",
+      "services": "services"
     },
     "technician": {
       "title": "Technician Panel",
@@ -366,7 +382,31 @@
       "row_num": "No.",
       "no_results": "No data found for the selected filters.",
       "empty_state": "Report Preview",
-      "empty_state_desc": "Select a report type and desired fields to see a preview here."
+      "empty_state_desc": "Select a report type and desired fields to see a preview here.",
+      "sum": "Sum",
+      "avg": "Average",
+      "subtotals": "Summary / Subtotals",
+      "view_table": "Table",
+      "view_chart": "Quick Chart",
+      "chart_metric": "Metric (Y-Axis)",
+      "chart_label": "Label (X-Axis)",
+      "no_chart_fields": "No numeric fields available to plot",
+      "program_report": "Schedule Report",
+      "schedule_modal": {
+        "title": "Schedule Report Delivery",
+        "frequency": "Frequency",
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "hour": "Delivery Hour",
+        "email": "Destination Email",
+        "format": "Report Format",
+        "active_schedules": "Active Schedules",
+        "no_schedules": "No schedules configured yet.",
+        "save": "Save Schedule",
+        "saving": "Saving...",
+        "close": "Close"
+      }
     },
     "types": {
       "incidents": "Incidents",
@@ -396,7 +436,14 @@
       "save_error": "Error saving the template.",
       "template_not_found": "Template not found.",
       "preview_select": "Select a report type and at least one field to preview.",
-      "preview_error": "Error running the report."
+      "preview_error": "Error running the report.",
+      "save_template_first": "You must save the report template before scheduling delivery.",
+      "email_required": "Please enter a valid email address.",
+      "schedule_saved": "Delivery schedule saved successfully.",
+      "schedule_save_error": "Error saving the schedule.",
+      "schedule_deleted": "Schedule deleted successfully.",
+      "schedule_delete_error": "Error deleting the schedule.",
+      "load_schedules_error": "Error loading delivery schedules."
     },
     "operators": {
       "eq": "Equals",

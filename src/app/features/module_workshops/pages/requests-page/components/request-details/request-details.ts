@@ -59,6 +59,12 @@ export class RequestDetailsComponent implements OnChanges, OnDestroy {
     const offerChanged = changes['selectedOffer'];
     const tabChanged = changes['activeTab'];
 
+    if (offerChanged && this.selectedOffer) {
+      // Calculate dynamic ETA: distance_km * 1.5 min per km, minimum 5 minutes
+      const distance = this.selectedOffer.distance_km || 0;
+      this.estimatedArrivalMin = Math.max(5, Math.round(distance * 1.5));
+    }
+
     if (offerChanged || tabChanged) {
       if (this.activeTab === 'active' && this.selectedOffer) {
         const incidentId = this.selectedOffer.incident_id;

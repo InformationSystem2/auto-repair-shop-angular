@@ -8,10 +8,18 @@ export interface LoginResponse {
   roles: RoleRef[];
 }
 
+/** Minimal permission reference */
+export interface PermissionRef {
+  id: number;
+  name: string;
+  action: string;
+}
+
 /** Minimal role reference included in login response */
 export interface RoleRef {
   id: number;
   name: string;
+  permissions?: PermissionRef[];
 }
 
 /** Session stored in memory via Signals */
@@ -20,4 +28,5 @@ export interface AuthSession {
   userId: string;
   userName: string;
   roles: RoleRef[];
+  permissions: string[]; // List of permission actions extracted from JWT payload or roles
 }
