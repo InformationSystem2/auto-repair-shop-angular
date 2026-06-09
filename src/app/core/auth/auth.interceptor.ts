@@ -7,6 +7,10 @@ import { AuthService } from './auth.service';
  * authenticated. Skips the login endpoint itself to avoid circular issues.
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  if (req.url.startsWith('/assets/')) {
+    return next(req);
+  }
+
   const auth = inject(AuthService);
   const token = auth.getToken();
 
