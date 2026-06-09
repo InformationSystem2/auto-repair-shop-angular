@@ -37,8 +37,8 @@ export const roleGuard =
     if (firstRole === 'workshop_owner' && !targetUrl.includes('/workshop/dashboard')) {
       return router.createUrlTree(['/app/workshop/dashboard']);
     }
-    if (firstRole === 'technician' && !targetUrl.includes('/technician/dashboard')) {
-      return router.createUrlTree(['/app/technician/dashboard']);
+    if (firstRole === 'technician') {
+      // Los técnicos usan la app móvil, no la web
     }
     return router.createUrlTree(['/login']);
   };
@@ -66,8 +66,6 @@ export const permissionGuard =
     if (firstRole === 'workshop_owner' && !targetUrl.includes('/workshop/dashboard')) {
       return router.createUrlTree(['/app/workshop/dashboard']);
     }
-    if (firstRole === 'technician' && !targetUrl.includes('/technician/dashboard')) {
-      return router.createUrlTree(['/app/technician/dashboard']);
-    }
+    // Los técnicos usan la app móvil, no la web
     return router.createUrlTree(['/login']);
   };

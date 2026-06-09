@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
 import { WorkshopDashboardComponent } from './pages/workshop-dashboard/workshop-dashboard.component';
-import { TechnicianDashboardComponent } from './pages/technician-dashboard/technician-dashboard.component';
 import { permissionGuard } from '../../core/auth/auth.guard';
 import { MainLayoutComponent } from '@layout/main-layout/main-layout.component';
 
@@ -19,11 +18,6 @@ export const DASHBOARD_ROUTES: Routes = [
         path: 'workshop/dashboard',
         component: WorkshopDashboardComponent,
         canActivate: [permissionGuard('workshops:update')]
-      },
-      {
-        path: 'technician/dashboard',
-        component: TechnicianDashboardComponent,
-        canActivate: [permissionGuard('technicians:read')]
       }
     ]
   }
