@@ -1,31 +1,39 @@
-<div class="fixed inset-0 z-[80] bg-black/60 backdrop-blur-sm transition-all animate-in fade-in duration-300" (click)="close.emit()"></div>
+<div class="fixed inset-0 z-80 bg-black/60 backdrop-blur-sm transition-all animate-in fade-in duration-300"
+     (click)="close.emit()"></div>
 
-<div class="fixed left-1/2 top-1/2 z-[90] w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 -translate-y-1/2 animate-in zoom-in-95 duration-300">
+<div
+  class="fixed left-1/2 top-1/2 z-90 w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 -translate-y-1/2 animate-in zoom-in-95 duration-300">
   <div class="ds-card overflow-hidden shadow-2xl shadow-black/50">
     <!-- Top accent line -->
-    <div class="h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-80"></div>
+    <div class="h-1 bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-80"></div>
 
     <!-- Header -->
     <div class="px-8 pt-8 pb-6" style="border-bottom:1px solid var(--ds-border)">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-4">
-          <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+          <div
+            class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
           <div>
             <h2 class="text-xl font-black tracking-tight" style="color:var(--ds-text)">
               {{ editingUser() ? i18n.translate('users.edit_user') : i18n.translate('users.new_user') }}
             </h2>
-            <p class="text-[10px] font-bold uppercase tracking-widest mt-0.5 opacity-50" style="color:var(--ds-subtext)">
+            <p class="text-[10px] font-bold uppercase tracking-widest mt-0.5 opacity-50"
+               style="color:var(--ds-subtext)">
               {{ editingUser() ? i18n.translate('users.edit_subtitle') : i18n.translate('users.new_subtitle') }}
             </p>
           </div>
         </div>
-        <button (click)="close.emit()" class="p-2 rounded-full transition-colors opacity-40 hover:opacity-100" style="hover:background:var(--ds-mantle)">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+        <button (click)="close.emit()" class="p-2 rounded-full transition-colors opacity-40 hover:opacity-100"
+                style="background: var(--ds-mantle)">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.5">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
           </svg>
         </button>
       </div>
@@ -38,13 +46,15 @@
           <label class="text-[0.65rem] font-black uppercase tracking-widest ml-1" style="color:var(--ds-subtext)">
             {{ i18n.translate('users.form.first_name') }}
           </label>
-          <input formControlName="name" type="text" class="ds-input" [placeholder]="i18n.translate('users.form.first_name')" />
+          <input formControlName="name" type="text" class="ds-input"
+                 [placeholder]="i18n.translate('users.form.first_name')" />
         </div>
         <div class="space-y-2">
           <label class="text-[0.65rem] font-black uppercase tracking-widest ml-1" style="color:var(--ds-subtext)">
             {{ i18n.translate('users.form.last_name') }}
           </label>
-          <input formControlName="last_name" type="text" class="ds-input" [placeholder]="i18n.translate('users.form.last_name')" />
+          <input formControlName="last_name" type="text" class="ds-input"
+                 [placeholder]="i18n.translate('users.form.last_name')" />
         </div>
       </div>
 
@@ -52,7 +62,8 @@
         <label class="text-[0.65rem] font-black uppercase tracking-widest ml-1" style="color:var(--ds-subtext)">
           {{ i18n.translate('users.form.email') }}
         </label>
-        <input formControlName="email" type="email" class="ds-input" placeholder="email@example.com" [attr.readonly]="editingUser() ? true : null" [class.opacity-50]="editingUser()" />
+        <input formControlName="email" type="email" class="ds-input" placeholder="email@example.com"
+               [attr.readonly]="editingUser() ? true : null" [class.opacity-50]="editingUser()" />
       </div>
 
       <div class="grid grid-cols-2 gap-4">
@@ -73,7 +84,8 @@
       <!-- Roles Section -->
       @if (!isWorkshopOwner()) {
         <div class="pt-2">
-          <label class="text-[0.65rem] font-black uppercase tracking-widest ml-1 block mb-3" style="color:var(--ds-subtext)">
+          <label class="text-[0.65rem] font-black uppercase tracking-widest ml-1 block mb-3"
+                 style="color:var(--ds-subtext)">
             {{ i18n.translate('users.assigned_roles') }}
           </label>
           <div class="ds-surface p-4 flex flex-wrap gap-3">
@@ -81,12 +93,14 @@
               <label class="flex items-center gap-2 cursor-pointer group" (click)="toggleRole(role.id)">
                 <div class="ds-checkbox-box" [ngClass]="{ 'checked': selectedRoleIds().includes(role.id) }">
                   @if (selectedRoleIds().includes(role.id)) {
-                    <svg class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5">
+                    <svg class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                         stroke-width="3.5">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   }
                 </div>
-                <span class="text-xs font-bold transition-colors" [style.color]="selectedRoleIds().includes(role.id) ? 'var(--ds-text)' : 'var(--ds-subtext)'">
+                <span class="text-xs font-bold transition-colors"
+                      [style.color]="selectedRoleIds().includes(role.id) ? 'var(--ds-text)' : 'var(--ds-subtext)'">
                   {{ role.name }}
                 </span>
               </label>
@@ -98,10 +112,12 @@
       @if (editingUser()) {
         <div class="ds-surface p-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <div class="w-1.5 h-1.5 rounded-full" [class]="form.get('is_active')?.value ? 'bg-emerald-500' : 'bg-rose-500'"></div>
+            <div class="w-1.5 h-1.5 rounded-full"
+                 [class]="form.get('is_active')?.value ? 'bg-emerald-500' : 'bg-rose-500'"></div>
             <div>
               <p class="text-xs font-bold" style="color:var(--ds-text)">{{ i18n.translate('users.status_label') }}</p>
-              <p class="text-[10px] opacity-40 font-bold uppercase tracking-tighter" style="color:var(--ds-subtext)">{{ i18n.translate('users.status_desc') }}</p>
+              <p class="text-[10px] opacity-40 font-bold uppercase tracking-tighter"
+                 style="color:var(--ds-subtext)">{{ i18n.translate('users.status_desc') }}</p>
             </div>
           </div>
           <app-switch formControlName="is_active" />
@@ -113,9 +129,10 @@
         <button type="button" (click)="close.emit()" class="ds-btn-ghost flex-1 h-12">
           {{ i18n.translate('common.cancel') }}
         </button>
-        <button type="submit" [disabled]="saving()" class="ds-btn-primary flex-[1.5] h-12 flex items-center justify-center gap-2">
+        <button type="submit" [disabled]="saving()"
+                class="ds-btn-primary flex-[1.5] h-12 flex items-center justify-center gap-2">
           @if (saving()) {
-            <div class="ds-spinner !w-4 !h-4"></div>
+            <div class="ds-spinner w-4! h-4!"></div>
           } @else {
             <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />

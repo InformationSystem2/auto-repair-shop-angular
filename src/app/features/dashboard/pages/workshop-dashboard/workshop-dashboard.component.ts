@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy, computed } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
 import { DecimalPipe } from '@angular/common';
@@ -13,7 +13,7 @@ import { WorkshopReviewsComponent } from './components/workshop-reviews.componen
   standalone: true,
   imports: [StatCardComponent, DecimalPipe, WorkshopReviewsComponent],
   templateUrl: './workshop-dashboard.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class WorkshopDashboardComponent {
   readonly auth = inject(AuthService);
@@ -56,6 +56,9 @@ export class WorkshopDashboardComponent {
   );
   readonly totalTechs = computed(() => (this.data()?.technician_locations ?? []).length);
 
+  readonly hoveredPoint = signal<{ value: number; label: string; x: number; y: number } | null>(null);
+  readonly activeCategory = signal<{ label: string; count: number; percent: number } | null>(null);
+
   // ── Revenue SVG ──────────────────────────────────────────────────────────
   readonly weekDays = computed(() =>
     (this.data()?.daily_revenue ?? []).map(d => d.day)
@@ -64,6 +67,19 @@ export class WorkshopDashboardComponent {
     this._toSvgPoints((this.data()?.daily_revenue ?? []).map(d => d.revenue))
   );
   readonly revenueArea = computed(() => this._toArea(this.revenuePoints()));
+  readonly interactiveRevenueData = computed(() => {
+    const list = this.data()?.daily_revenue ?? [];
+    if (!list.length) return [];
+    const vals = list.map(d => d.revenue);
+    const max = Math.max(...vals, 1);
+    const step = vals.length > 1 ? 600 / (vals.length - 1) : 0;
+    return list.map((d, i) => ({
+      day: d.day,
+      revenue: d.revenue,
+      cx: Math.round(i * step),
+      cy: Math.round(155 - (d.revenue / max) * 130)
+    }));
+  });
   readonly revenueDataPts = computed((): [number, number][] => {
     const vals = (this.data()?.daily_revenue ?? []).map(d => d.revenue);
     if (!vals.length) return [];
@@ -77,6 +93,14 @@ export class WorkshopDashboardComponent {
 
   // ── Emergency inbox ──────────────────────────────────────────────────────
   readonly inbox = computed(() => this.data()?.emergency_inbox ?? []);
+
+  readonly avgAssignment = computed(() => this.data()?.avg_assignment_min ?? 0);
+  readonly avgArrival = computed(() => this.data()?.avg_arrival_min ?? 0);
+  readonly workshopRank = computed(() => this.data()?.workshop_rank ?? 0);
+  readonly incidentsByZone = computed(() => this.data()?.incidents_by_zone ?? []);
+  readonly cancelledCount = computed(() => this.data()?.cancelled_count ?? 0);
+  readonly cancelledPct = computed(() => this.data()?.cancelled_pct ?? 0);
+  readonly onTimePct = computed(() => this.data()?.on_time_completed_pct ?? 0);
 
   // ── Live technician blips ────────────────────────────────────────────────
   readonly techLocations = computed(() => this.data()?.technician_locations ?? []);
