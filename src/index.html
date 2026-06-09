@@ -6,6 +6,16 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="manifest" href="manifest.json">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/offline-sw.js')
+          .then(reg => console.log('[ServiceWorker] Registrado con éxito:', reg.scope))
+          .catch(err => console.warn('[ServiceWorker] Falló el registro:', err));
+      });
+    }
+  </script>
 </head>
 <body>
   <app-root></app-root>
