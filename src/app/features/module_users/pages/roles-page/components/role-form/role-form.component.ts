@@ -38,6 +38,12 @@ export class RoleFormComponent implements OnInit {
     return !!control && control.hasError(errorName) && (control.touched || control.dirty);
   }
 
+  getActionLabel(action: string): string {
+    if (!action) return '';
+    const parts = action.split(':');
+    return (parts.length > 1 ? parts[1] : action).toUpperCase();
+  }
+
   ngOnInit(): void {
     const role = this.editingRole();
     if (role) {
