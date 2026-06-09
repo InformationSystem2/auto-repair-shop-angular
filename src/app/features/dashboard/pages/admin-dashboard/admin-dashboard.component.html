@@ -57,8 +57,103 @@
         [trend]="aiTrend()"/>
     </div>
 
+    <!-- KPI Cards (Secondary: Performance and SLA) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr mt-4">
+      <app-stat-card
+        [label]="i18n.translate('dashboard.admin.avg_assignment')"
+        [value]="avgAssignment().toFixed(1) + ' min'"
+        colorClass="bg-amber-500"/>
+      <app-stat-card
+        [label]="i18n.translate('dashboard.admin.avg_arrival')"
+        [value]="avgArrival().toFixed(1) + ' min'"
+        colorClass="bg-rose-500"/>
+      <app-stat-card
+        [label]="i18n.translate('dashboard.admin.cancelled_cases')"
+        [value]="cancelledCount() + ' (' + cancelledPct().toFixed(1) + '%)'"
+        colorClass="bg-red-500"/>
+      <app-stat-card
+        [label]="i18n.translate('dashboard.admin.sla_compliance')"
+        [value]="onTimePct().toFixed(1) + '%'"
+        colorClass="bg-teal-500"/>
+    </div>
+
+    <!-- Efficiency & Zones Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-4">
+      <!-- Talleres Más Eficientes -->
+      <div class="ds-card overflow-hidden">
+        <div class="px-5 py-4 flex items-center justify-between" style="border-bottom:1px solid var(--ds-border)">
+          <h2 class="text-sm font-bold" style="color:var(--ds-text)">
+            ⭐ {{ i18n.translate('dashboard.admin.efficient_workshops') }}
+          </h2>
+          <span class="text-[10px] uppercase font-bold tracking-wider" style="color:var(--ds-subtext)">{{ i18n.translate('dashboard.admin.top_5') }}</span>
+        </div>
+        @if (!efficientWorkshops().length) {
+          <p class="text-xs text-center py-8 font-medium" style="color:var(--ds-subtext)">
+            {{ i18n.translate('dashboard.admin.no_efficiency_data') }}
+          </p>
+        }
+        @if (efficientWorkshops().length) {
+          <table class="w-full">
+            <thead>
+              <tr>
+                <th class="ds-th">{{ i18n.translate('dashboard.admin.col_workshop') }}</th>
+                <th class="ds-th">{{ i18n.translate('dashboard.admin.rating') }}</th>
+                <th class="ds-th">{{ i18n.translate('dashboard.admin.activity_points') }}</th>
+                <th class="ds-th">{{ i18n.translate('dashboard.admin.completed') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (w of efficientWorkshops(); track w.id) {
+                <tr class="ds-tr">
+                  <td class="ds-td font-semibold text-xs" style="color:var(--ds-text)">{{ w.name }}</td>
+                  <td class="ds-td text-xs text-amber-500 font-bold">{{ w.rating_avg.toFixed(1) }} ★</td>
+                  <td class="ds-td">
+                    <span class="ds-badge" [class]="w.activity_points >= 50 ? 'ds-badge-green' : 'ds-badge-yellow'">
+                      {{ w.activity_points }} pts
+                    </span>
+                  </td>
+                  <td class="ds-td text-xs font-semibold" style="color:var(--ds-text)">{{ w.completed_services }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+
+      <!-- Zonas con Más Incidencias -->
+      <div class="ds-card overflow-hidden p-6 flex flex-col justify-between">
+        <div>
+          <h2 class="text-sm font-bold mb-4" style="color:var(--ds-text)">
+            📍 {{ i18n.translate('dashboard.admin.incidents_by_zone') }}
+          </h2>
+          @if (!incidentsByZone().length) {
+            <p class="text-xs text-center py-8 font-medium" style="color:var(--ds-subtext)">
+              {{ i18n.translate('dashboard.admin.no_zones_data') }}
+            </p>
+          }
+          @if (incidentsByZone().length) {
+            <div class="space-y-4">
+              @for (z of incidentsByZone(); track z.zone; let idx = $index) {
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="text-xs font-semibold" style="color:var(--ds-text)">{{ z.zone }}</span>
+                    <span class="text-xs font-bold" style="color:var(--ds-subtext)">{{ z.count }} {{ i18n.translate('dashboard.admin.incident_count_label') }}</span>
+                  </div>
+                  <div class="h-2 rounded-full overflow-hidden" style="background:var(--ds-mantle)">
+                    <div class="h-full rounded-full transition-all duration-700"
+                         style="background:linear-gradient(to right, var(--ds-blue), var(--ds-peach))"
+                         [style.width.%]="(z.count / incidentsByZone()[0].count) * 100"></div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
     <!-- Platform Health + Donut -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-4">
 
       <!-- Platform Health Panel -->
       <div class="lg:col-span-2 ds-card p-7 flex flex-col gap-6">
@@ -178,17 +273,27 @@
             <!-- Donut hole -->
             <div class="absolute inset-0 m-auto w-[60%] h-[60%] rounded-full flex flex-col items-center justify-center"
                  style="background:var(--ds-card)">
-              <span class="text-xl font-black leading-none" style="color:var(--ds-text)">{{ totalIncidents() }}</span>
-              <span class="text-[9px] font-bold uppercase tracking-wider mt-0.5" style="color:var(--ds-subtext)">
-                {{ i18n.translate('dashboard.admin.incident_count_label') }}
-              </span>
+              @if (activeCategory(); as active) {
+                <span class="text-xl font-black leading-none" [style.color]="active.color">{{ active.count }}</span>
+                <span class="text-[9px] font-bold uppercase tracking-wider mt-0.5" style="color:var(--ds-subtext)">
+                  {{ active.label }}
+                </span>
+                <span class="text-[9px] font-medium mt-0.5" style="color:var(--ds-overlay0)">{{ active.percent }}%</span>
+              } @else {
+                <span class="text-xl font-black leading-none" style="color:var(--ds-text)">{{ totalIncidents() }}</span>
+                <span class="text-[9px] font-bold uppercase tracking-wider mt-0.5" style="color:var(--ds-subtext)">
+                  {{ i18n.translate('dashboard.admin.incident_count_label') }}
+                </span>
+              }
             </div>
           </div>
         </div>
         <!-- Legend -->
-        <div class="space-y-2 mt-3">
+        <div class="space-y-1 mt-3 max-h-48 overflow-y-auto pr-1">
           @for (seg of incidentSegments(); track seg.label) {
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between p-1 rounded transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer"
+                 (mouseenter)="activeCategory.set({ label: seg.label, count: seg.count, percent: seg.percent, color: seg.color })"
+                 (mouseleave)="activeCategory.set(null)">
               <div class="flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" [style.background]="seg.color"></span>
                 <span class="text-xs font-medium" style="color:var(--ds-text)">{{ seg.label }}</span>
@@ -222,34 +327,61 @@
           </span>
         </div>
       </div>
-      <svg viewBox="0 0 600 195" class="w-full h-40" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="adminWkGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="var(--ds-blue)"  stop-opacity="0.25"/>
-            <stop offset="100%" stop-color="var(--ds-blue)" stop-opacity="0"/>
-          </linearGradient>
-          <linearGradient id="adminClGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="var(--ds-teal)"  stop-opacity="0.2"/>
-            <stop offset="100%" stop-color="var(--ds-teal)" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        @for (y of [20,60,100,140,180]; track y) {
-          <line x1="0" [attr.y1]="y" x2="600" [attr.y2]="y"
-                stroke="var(--ds-border-sub)" stroke-width="0.8"/>
+      <div class="relative">
+        <svg viewBox="0 0 600 195" class="w-full h-40" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="adminWkGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--ds-blue)"  stop-opacity="0.25"/>
+              <stop offset="100%" stop-color="var(--ds-blue)" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="adminClGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--ds-teal)"  stop-opacity="0.2"/>
+              <stop offset="100%" stop-color="var(--ds-teal)" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          @for (y of [20,60,100,140,180]; track y) {
+            <line x1="0" [attr.y1]="y" x2="600" [attr.y2]="y"
+                  stroke="var(--ds-border-sub)" stroke-width="0.8"/>
+          }
+          @if (workshopArea()) {
+            <path [attr.d]="workshopArea()" fill="url(#adminWkGrad)"/>
+            <polyline [attr.points]="workshopGrowthPts()" fill="none"
+                      stroke="var(--ds-blue)" stroke-width="2.5"
+                      stroke-linejoin="round" stroke-linecap="round"/>
+          }
+          @if (clientArea()) {
+            <path [attr.d]="clientArea()" fill="url(#adminClGrad)"/>
+            <polyline [attr.points]="clientGrowthPts()" fill="none"
+                      stroke="var(--ds-teal)" stroke-width="2.5"
+                      stroke-linejoin="round" stroke-linecap="round"/>
+          }
+          
+          <!-- Interactive hoverable circles -->
+          @for (d of growthChartData(); track $index) {
+            <circle [attr.cx]="d.workshopCx" [attr.cy]="d.workshopCy" r="5"
+                    class="cursor-pointer transition-all duration-150 hover:r-7"
+                    fill="var(--ds-blue)" stroke="var(--ds-card)" stroke-width="2"
+                    (mouseenter)="hoveredPoint.set({ value: d.workshopVal, label: i18n.translate('dashboard.admin.growth_workshops') + ' (' + d.month + ')', x: d.workshopCx, y: d.workshopCy })"
+                    (mouseleave)="hoveredPoint.set(null)"/>
+            
+            <circle [attr.cx]="d.clientCx" [attr.cy]="d.clientCy" r="5"
+                    class="cursor-pointer transition-all duration-150 hover:r-7"
+                    fill="var(--ds-teal)" stroke="var(--ds-card)" stroke-width="2"
+                    (mouseenter)="hoveredPoint.set({ value: d.clientVal, label: i18n.translate('dashboard.admin.growth_clients') + ' (' + d.month + ')', x: d.clientCx, y: d.clientCy })"
+                    (mouseleave)="hoveredPoint.set(null)"/>
+          }
+        </svg>
+
+        <!-- Tooltip overlay -->
+        @if (hoveredPoint(); as tp) {
+          <div class="absolute bg-neutral-900 text-white text-[10px] font-bold py-1 px-2.5 rounded shadow-lg pointer-events-none transition-all duration-150 -translate-x-1/2 -translate-y-full"
+               [style.left.%]="(tp.x / 600) * 100"
+               [style.top.px]="tp.y - 12">
+            <p class="leading-none text-neutral-300">{{ tp.label }}</p>
+            <p class="leading-none mt-1 text-sm text-white">{{ tp.value }}</p>
+          </div>
         }
-        @if (workshopArea()) {
-          <path [attr.d]="workshopArea()" fill="url(#adminWkGrad)"/>
-          <polyline [attr.points]="workshopGrowthPts()" fill="none"
-                    stroke="var(--ds-blue)" stroke-width="2.5"
-                    stroke-linejoin="round" stroke-linecap="round"/>
-        }
-        @if (clientArea()) {
-          <path [attr.d]="clientArea()" fill="url(#adminClGrad)"/>
-          <polyline [attr.points]="clientGrowthPts()" fill="none"
-                    stroke="var(--ds-teal)" stroke-width="2.5"
-                    stroke-linejoin="round" stroke-linecap="round"/>
-        }
-      </svg>
+      </div>
       <div class="flex justify-between mt-1">
         @for (m of growthMonths(); track m) {
           <span class="text-[10px] font-semibold" style="color:var(--ds-overlay0)">{{ m }}</span>
