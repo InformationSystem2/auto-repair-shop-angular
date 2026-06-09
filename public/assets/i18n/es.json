@@ -187,6 +187,18 @@
       "verif_rate": "Tasa de Verif.",
       "revenue_efficiency": "Eficiencia Ingr.",
       "recent_cancellations": "Cancelaciones",
+      "avg_assignment": "Tiempo Promedio Asignación",
+      "avg_arrival": "Tiempo Promedio Llegada",
+      "cancelled_cases": "Casos Cancelados",
+      "sla_compliance": "Cumplimiento SLA (A tiempo)",
+      "efficient_workshops": "Talleres Más Eficientes",
+      "incidents_by_zone": "Zonas con Más Incidencias",
+      "top_5": "Top 5",
+      "no_efficiency_data": "Sin datos de eficiencia disponibles",
+      "no_zones_data": "Sin datos de zonas registrados",
+      "rating": "Calificación",
+      "activity_points": "Puntos Actividad",
+      "completed": "Atendidos",
       "zones": {
         "west": "Oeste",
         "center": "Centro",
@@ -241,7 +253,11 @@
       "time_label": "Tiempo",
       "quality_label": "Calidad",
       "show_comments": "Ver comentarios",
-      "hide_comments": "Ocultar comentarios"
+      "hide_comments": "Ocultar comentarios",
+      "efficiency_rank": "Ranking de Eficiencia",
+      "zones_coverage": "Zonas de Mayor Cobertura / Incidencias Atendidas",
+      "no_coverage_data": "Aún no se registran incidentes atendidos en zonas específicas",
+      "services": "servicios"
     },
     "technician": {
       "title": "Panel del Técnico",
@@ -366,7 +382,31 @@
       "row_num": "Nº",
       "no_results": "No se encontraron datos para los filtros seleccionados.",
       "empty_state": "Previsualización del Reporte",
-      "empty_state_desc": "Selecciona un tipo de reporte y los campos deseados para ver una vista previa aquí."
+      "empty_state_desc": "Selecciona un tipo de reporte y los campos deseados para ver una vista previa aquí.",
+      "sum": "Suma",
+      "avg": "Promedio",
+      "subtotals": "Resumen / Subtotales",
+      "view_table": "Tabla",
+      "view_chart": "Gráfico Rápido",
+      "chart_metric": "Métrica (Eje Y)",
+      "chart_label": "Etiqueta (Eje X)",
+      "no_chart_fields": "No hay campos numéricos para graficar",
+      "program_report": "Programar Reporte",
+      "schedule_modal": {
+        "title": "Programar Envío de Reporte",
+        "frequency": "Frecuencia",
+        "daily": "Diario",
+        "weekly": "Semanal",
+        "monthly": "Mensual",
+        "hour": "Hora de Envío",
+        "email": "Correo Electrónico Destino",
+        "format": "Formato del Reporte",
+        "active_schedules": "Programaciones Activas",
+        "no_schedules": "Aún no hay envíos programados.",
+        "save": "Guardar Programación",
+        "saving": "Guardando...",
+        "close": "Cerrar"
+      }
     },
     "types": {
       "incidents": "Incidentes",
@@ -396,7 +436,14 @@
       "save_error": "Error al guardar la plantilla.",
       "template_not_found": "Plantilla no encontrada.",
       "preview_select": "Selecciona un tipo de reporte y al menos un campo para previsualizar.",
-      "preview_error": "Error al ejecutar el reporte."
+      "preview_error": "Error al ejecutar el reporte.",
+      "save_template_first": "Debes guardar la plantilla del reporte antes de programar los envíos.",
+      "email_required": "Por favor ingresa un correo electrónico válido.",
+      "schedule_saved": "Envío programado guardado correctamente.",
+      "schedule_save_error": "Error al guardar la programación.",
+      "schedule_deleted": "Programación eliminada correctamente.",
+      "schedule_delete_error": "Error al eliminar la programación.",
+      "load_schedules_error": "Error al cargar las programaciones."
     },
     "operators": {
       "eq": "Igual a",
