@@ -1,6 +1,8 @@
 export interface FieldDefinition {
   key: string;
   label: string;
+  type: string;
+  options?: { value: string; label: string }[];
 }
 
 export interface ReportTypeDefinition {
@@ -101,3 +103,23 @@ export const FILTER_OPERATORS = [
   { key: 'is_null',     labelKey: 'reports.operators.is_null' },
   { key: 'is_not_null', labelKey: 'reports.operators.is_not_null' },
 ];
+
+export interface ScheduledReport {
+  id: string;
+  template_id: string;
+  frequency: string;
+  hour: string;
+  email: string;
+  format: string;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface ScheduledReportCreate {
+  frequency: string;
+  hour: string;
+  email: string;
+  format: string;
+  is_active: boolean;
+}
+

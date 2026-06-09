@@ -72,11 +72,91 @@ export class ReportBuilderComponent implements OnInit {
   readonly saving = signal(false);
   readonly exporting = signal<string | null>(null);
 
+  // ── Enhanced Features State ───────────────────────────────────────────────
+  readonly reportViewMode = signal<'table' | 'chart'>('table');
+  readonly chartField = signal<string>('');
+  readonly chartLabelField = signal<string>('');
+
+  readonly showScheduleModal = signal(false);
+  readonly templateSchedules = signal<any[]>([]);
+  readonly scheduleFrequency = signal('daily');
+  readonly scheduleHour = signal('08:00');
+  readonly scheduleEmail = signal('');
+  readonly scheduleFormat = signal('pdf');
+  readonly loadingSchedules = signal(false);
+
+  // ── AI/Prompt state ──────────────────────────────────────────────────────
+  readonly promptText = signal('');
+  readonly promptLoading = signal(false);
+  readonly isRecording = signal(false);
+  private mediaRecorder: any = null;
+  private audioChunks: Blob[] = [];
+
   // ── Derived ──────────────────────────────────────────────────────────────
+
   readonly availableFields = computed<FieldDefinition[]>(() => {
     const type = this.selectedReportType();
     const cat = this.catalog();
     return cat.find((c) => c.key === type)?.fields ?? [];
+  });
+
+  readonly hasNumericColumns = computed(() => {
+    return this.selectedFields().some(key => this.getFieldType(key) === 'NUMBER');
+  });
+
+  readonly numericColumnSummaries = computed(() => {
+    const rows = this.result()?.rows ?? [];
+    const columns = this.selectedFields();
+    const summaries: Record<string, { sum: number; avg: number }> = {};
+    
+    for (const col of columns) {
+      if (this.getFieldType(col) === 'NUMBER') {
+        let sum = 0;
+        let count = 0;
+        for (const row of rows) {
+          const val = Number(row[col]);
+          if (!isNaN(val)) {
+            sum += val;
+            count++;
+          }
+        }
+        summaries[col] = {
+          sum,
+          avg: count > 0 ? sum / count : 0
+        };
+      }
+    }
+    return summaries;
+  });
+
+  readonly numericFields = computed(() => {
+    return this.selectedFields().filter(key => this.getFieldType(key) === 'NUMBER');
+  });
+
+  readonly labelFields = computed(() => {
+    return this.selectedFields().filter(key => this.getFieldType(key) !== 'NUMBER');
+  });
+
+  readonly chartData = computed(() => {
+    const rows = this.result()?.rows ?? [];
+    const valCol = this.chartField();
+    const lblCol = this.chartLabelField();
+    if (!valCol || !lblCol) return [];
+
+    return rows.map(row => {
+      const val = Number(row[valCol]);
+      return {
+        label: String(row[lblCol] ?? ''),
+        value: isNaN(val) ? 0 : val
+      };
+    });
+  });
+
+  readonly maxChartValue = computed(() => {
+    const data = this.chartData();
+    if (!data.length) return 1;
+    const max = Math.max(...data.map(d => d.value));
+    return max > 0 ? max : 1;
   });
 
   readonly EXPORT_FORMATS = EXPORT_FORMATS;
@@ -169,6 +249,47 @@ export class ReportBuilderComponent implements OnInit {
     return operator !== 'is_null' && operator !== 'is_not_null';
   }
 
+  getFieldType(fieldKey: string): string {
+    const field = this.availableFields().find((f) => f.key === fieldKey);
+    return field ? field.type : 'STRING';
+  }
+
+  getFieldOptions(fieldKey: string): { value: string; label: string }[] | null {
+    const field = this.availableFields().find((f) => f.key === fieldKey);
+    return field && field.type === 'ENUM' && field.options ? field.options : null;
+  }
+
+  getOperatorsForField(fieldKey: string): { key: string; labelKey: string }[] {
+    const field = this.availableFields().find((f) => f.key === fieldKey);
+    if (!field) return this.FILTER_OPERATORS;
+
+    const generalOps = [
+      { key: 'eq',          labelKey: 'reports.operators.eq' },
+      { key: 'ne',          labelKey: 'reports.operators.ne' },
+      { key: 'is_null',     labelKey: 'reports.operators.is_null' },
+      { key: 'is_not_null', labelKey: 'reports.operators.is_not_null' }
+    ];
+
+    if (field.type === 'STRING') {
+      return [
+        { key: 'like',        labelKey: 'reports.operators.like' },
+        ...generalOps
+      ];
+    }
+
+    if (field.type === 'NUMBER' || field.type === 'DATE') {
+      return [
+        ...generalOps,
+        { key: 'gt',          labelKey: 'reports.operators.gt' },
+        { key: 'gte',         labelKey: 'reports.operators.gte' },
+        { key: 'lt',          labelKey: 'reports.operators.lt' },
+        { key: 'lte',         labelKey: 'reports.operators.lte' }
+      ];
+    }
+
+    return generalOps;
+  }
+
   // ── Preview ───────────────────────────────────────────────────────────────
   previewReport(): void {
     if (!this.selectedReportType() || !this.selectedFields().length) {
@@ -181,6 +302,14 @@ export class ReportBuilderComponent implements OnInit {
       next: (res) => {
         this.result.set(res);
         this.loading.set(false);
+        const numCols = this.numericFields();
+        const lblCols = this.labelFields();
+        if (numCols.length && !this.chartField()) {
+          this.chartField.set(numCols[0]);
+        }
+        if (lblCols.length && !this.chartLabelField()) {
+          this.chartLabelField.set(lblCols[0]);
+        }
       },
       error: (err) => {
         this.toast.error(this.i18n.translate('reports.toast.preview_error'), err?.error?.detail);
@@ -306,6 +435,104 @@ export class ReportBuilderComponent implements OnInit {
     });
   }
 
+  // ── AI Prompt & Voice Reports ─────────────────────────────────────────────
+  runPromptReport(textPrompt?: string): void {
+    const promptVal = textPrompt || this.promptText().trim();
+    if (!promptVal) {
+      this.toast.warning('El prompt no puede estar vacío');
+      return;
+    }
+
+    this.promptLoading.set(true);
+    this.reportsService.runReportByPrompt(promptVal).subscribe({
+      next: (res) => {
+        this.selectedReportType.set(res.query.report_type);
+        this.selectedFields.set([...res.query.selected_fields]);
+        this.filters.set(res.query.filters.map((f) => ({ field: f.field, operator: f.operator, value: f.value })));
+        this.sortField.set(res.query.sort_field ?? '');
+        this.sortOrder.set((res.query.sort_order as 'asc' | 'desc') ?? 'asc');
+        if (res.query.limit) {
+          this.pageLimit.set(res.query.limit);
+        }
+        if (res.query.offset !== undefined) {
+          this.pageOffset.set(res.query.offset);
+        }
+        this.result.set(res.result);
+        this.promptLoading.set(false);
+        this.toast.success('Reporte generado por IA con éxito');
+      },
+      error: (err) => {
+        this.toast.error('Error al procesar el prompt de IA', err?.error?.detail);
+        this.promptLoading.set(false);
+      }
+    });
+  }
+
+  toggleRecording(): void {
+    if (this.isRecording()) {
+      this.stopRecording();
+    } else {
+      this.startRecording();
+    }
+  }
+
+  private startRecording(): void {
+    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+      this.audioChunks = [];
+      this.mediaRecorder = new MediaRecorder(stream);
+      this.mediaRecorder.ondataavailable = (event: any) => {
+        if (event.data.size > 0) {
+          this.audioChunks.push(event.data);
+        }
+      };
+      this.mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
+        const audioFile = new File([audioBlob], 'report_command.webm', { type: 'audio/webm' });
+        
+        // Detener micrófono
+        stream.getTracks().forEach(track => track.stop());
+
+        this.promptLoading.set(true);
+        this.reportsService.runReportByAudio(audioFile).subscribe({
+          next: (res) => {
+            this.promptText.set(res.transcript || '');
+            this.selectedReportType.set(res.query.report_type);
+            this.selectedFields.set([...res.query.selected_fields]);
+            this.filters.set(res.query.filters.map((f) => ({ field: f.field, operator: f.operator, value: f.value })));
+            this.sortField.set(res.query.sort_field ?? '');
+            this.sortOrder.set((res.query.sort_order as 'asc' | 'desc') ?? 'asc');
+            if (res.query.limit) {
+              this.pageLimit.set(res.query.limit);
+            }
+            if (res.query.offset !== undefined) {
+              this.pageOffset.set(res.query.offset);
+            }
+            this.result.set(res.result);
+            this.promptLoading.set(false);
+            this.toast.success('Audio transcrito y reporte generado por IA');
+          },
+          error: (err) => {
+            this.toast.error('Error al procesar el audio de IA', err?.error?.detail);
+            this.promptLoading.set(false);
+          }
+        });
+      };
+
+      this.mediaRecorder.start();
+      this.isRecording.set(true);
+      this.toast.info('Grabando audio...');
+    }).catch(() => {
+      this.toast.error('No se pudo acceder al micrófono');
+    });
+  }
+
+  private stopRecording(): void {
+    if (this.mediaRecorder && this.isRecording()) {
+      this.mediaRecorder.stop();
+      this.isRecording.set(false);
+    }
+  }
+
   // ── Clear ─────────────────────────────────────────────────────────────────
   clearAll(): void {
     this.selectedReportType.set('');
@@ -363,5 +590,72 @@ export class ReportBuilderComponent implements OnInit {
     if (value === null || value === undefined) return '—';
     if (typeof value === 'boolean') return value ? this.i18n.translate('common.yes') : this.i18n.translate('common.no');
     return String(value);
+  }
+
+  loadSchedules(): void {
+    const id = this.templateId();
+    if (!id) return;
+    this.loadingSchedules.set(true);
+    this.reportsService.getSchedules(id).subscribe({
+      next: (schedules) => {
+        this.templateSchedules.set(schedules);
+        this.loadingSchedules.set(false);
+      },
+      error: () => {
+        this.toast.error(this.i18n.translate('reports.toast.load_schedules_error'));
+        this.loadingSchedules.set(false);
+      }
+    });
+  }
+
+  openScheduleModal(): void {
+    const id = this.templateId();
+    if (!id) {
+      this.toast.warning(this.i18n.translate('reports.toast.save_template_first'));
+      return;
+    }
+    this.scheduleFrequency.set('daily');
+    this.scheduleHour.set('08:00');
+    this.scheduleEmail.set('');
+    this.scheduleFormat.set('pdf');
+    this.showScheduleModal.set(true);
+    this.loadSchedules();
+  }
+
+  saveSchedule(): void {
+    const id = this.templateId();
+    if (!id) return;
+    if (!this.scheduleEmail().trim()) {
+      this.toast.warning(this.i18n.translate('reports.toast.email_required'));
+      return;
+    }
+    const payload = {
+      frequency: this.scheduleFrequency(),
+      hour: this.scheduleHour(),
+      email: this.scheduleEmail().trim(),
+      format: this.scheduleFormat(),
+      is_active: true
+    };
+    this.reportsService.createSchedule(id, payload).subscribe({
+      next: () => {
+        this.toast.success(this.i18n.translate('reports.toast.schedule_saved'));
+        this.loadSchedules();
+      },
+      error: (err) => {
+        this.toast.error(this.i18n.translate('reports.toast.schedule_save_error'), err?.error?.detail);
+      }
+    });
+  }
+
+  deleteSchedule(scheduleId: string): void {
+    this.reportsService.deleteSchedule(scheduleId).subscribe({
+      next: () => {
+        this.toast.success(this.i18n.translate('reports.toast.schedule_deleted'));
+        this.loadSchedules();
+      },
+      error: () => {
+        this.toast.error(this.i18n.translate('reports.toast.schedule_delete_error'));
+      }
+    });
   }
 }

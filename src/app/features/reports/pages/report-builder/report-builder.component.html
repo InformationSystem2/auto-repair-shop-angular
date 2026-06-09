@@ -26,6 +26,94 @@
     <!-- ──────────────── LEFT PANEL ──────────────── -->
     <aside class="space-y-4">
 
+      <!-- Prompt & Voice AI Assistant -->
+      <div class="bg-gradient-to-r from-indigo-50/50 to-purple-50/50 dark:from-indigo-950/20 dark:to-purple-950/20 border border-indigo-100 dark:border-indigo-900 rounded-2xl p-4 space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-extrabold text-indigo-700 dark:text-indigo-400 uppercase tracking-wider flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+            </svg>
+            Asistente de IA (Voz y Texto)
+          </h2>
+          @if (isRecording()) {
+            <span class="flex h-2.5 w-2.5 relative">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+            </span>
+          }
+        </div>
+        
+        <p class="text-slate-500 dark:text-slate-400 text-[10px] leading-normal">
+          Pide un reporte hablando o escribiendo. Ejemplo: "Reporte de incidentes con descripción, estado y prioridad donde prioridad sea ALTA"
+        </p>
+
+        <div class="flex items-center gap-2">
+          <div class="relative flex-1">
+            <textarea
+              [ngModel]="promptText()"
+              (ngModelChange)="promptText.set($event)"
+              placeholder="Escribe tu solicitud aquí..."
+              (keydown.enter)="$event.preventDefault(); runPromptReport()"
+              [disabled]="promptLoading()"
+              rows="3"
+              class="w-full pl-3 pr-8 py-2 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition resize-none"
+            ></textarea>
+            @if (promptText()) {
+              <button 
+                (click)="promptText.set('')"
+                class="absolute right-2 top-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </button>
+            }
+          </div>
+          
+          <button
+            type="button"
+            (click)="toggleRecording()"
+            [disabled]="promptLoading()"
+            [class.bg-red-500]="isRecording()"
+            [class.hover:bg-red-600]="isRecording()"
+            [class.text-white]="isRecording()"
+            [class.animate-pulse]="isRecording()"
+            [class.bg-slate-100]="!isRecording()"
+            [class.dark:bg-slate-800]="!isRecording()"
+            [class.text-slate-700]="!isRecording()"
+            [class.dark:text-slate-300]="!isRecording()"
+            [class.hover:bg-slate-200]="!isRecording()"
+            [class.dark:hover:bg-slate-700]="!isRecording()"
+            class="p-2 rounded-lg transition relative flex items-center justify-center"
+            title="Grabar comando de voz"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+            </svg>
+          </button>
+        </div>
+
+        <button
+          type="button"
+          (click)="runPromptReport()"
+          [disabled]="promptLoading() || !promptText().trim()"
+          class="w-full flex items-center justify-center gap-1.5 py-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition text-xs font-bold shadow-sm"
+        >
+          @if (promptLoading()) {
+            <svg class="w-3.5 h-3.5 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            Procesando...
+          } @else {
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            Generar Reporte
+          }
+        </button>
+      </div>
+
       <!-- Template metadata -->
       <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-3">
         <h2 class="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
@@ -198,20 +286,58 @@
                   (ngModelChange)="updateFilter($index, { operator: $event })"
                   class="w-full px-2 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
                 >
-                  @for (op of FILTER_OPERATORS; track op.key) {
+                  @for (op of getOperatorsForField(filter.field); track op.key) {
                     <option [value]="op.key">{{ i18n.translate(op.labelKey) }}</option>
                   }
                 </select>
 
                 <!-- Value input -->
                 @if (operatorNeedsValue(filter.operator)) {
-                  <input
-                    type="text"
-                    [ngModel]="filter.value"
-                    (ngModelChange)="updateFilter($index, { value: $event })"
-                    [placeholder]="i18n.translate('reports.builder.filter_value_placeholder')"
-                    class="w-full px-2 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                  />
+                  @if (getFieldOptions(filter.field)) {
+                    <select
+                      [ngModel]="filter.value"
+                      (ngModelChange)="updateFilter($index, { value: $event })"
+                      class="w-full px-2 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    >
+                      <option value="">-- {{ i18n.translate('common.select') || 'Seleccionar' }} --</option>
+                      @for (opt of getFieldOptions(filter.field); track opt.value) {
+                        <option [value]="opt.value">{{ opt.label }}</option>
+                      }
+                    </select>
+                  } @else if (getFieldType(filter.field) === 'BOOLEAN') {
+                    <select
+                      [ngModel]="filter.value"
+                      (ngModelChange)="updateFilter($index, { value: $event })"
+                      class="w-full px-2 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    >
+                      <option value="">-- {{ i18n.translate('common.select') || 'Seleccionar' }} --</option>
+                      <option value="true">{{ i18n.translate('common.yes') || 'Sí' }}</option>
+                      <option value="false">{{ i18n.translate('common.no') || 'No' }}</option>
+                    </select>
+                  } @else if (getFieldType(filter.field) === 'DATE') {
+                    <input
+                      type="date"
+                      [ngModel]="filter.value"
+                      (ngModelChange)="updateFilter($index, { value: $event })"
+                      class="w-full px-2 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    />
+                  } @else if (getFieldType(filter.field) === 'NUMBER') {
+                    <input
+                      type="number"
+                      [ngModel]="filter.value"
+                      (ngModelChange)="updateFilter($index, { value: $event })"
+                      placeholder="0"
+                      class="w-full px-2 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    />
+                  } @else {
+                    <input
+                      type="text"
+                      [ngModel]="filter.value"
+                      (ngModelChange)="updateFilter($index, { value: $event })"
+                      [placeholder]="i18n.translate('reports.builder.filter_value_placeholder')"
+                      class="w-full px-2 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    />
+                  }
                 }
 
                 <!-- Remove filter -->
@@ -299,6 +425,18 @@
             {{ i18n.translate('reports.builder.save_template') }}
           }
         </button>
+        @if (templateId()) {
+          <button
+            (click)="openScheduleModal()"
+            type="button"
+            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-750 text-white text-sm font-semibold shadow-md shadow-violet-200 dark:shadow-none transition-all duration-200 active:scale-95"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {{ i18n.translate('reports.builder.program_report') }}
+          </button>
+        }
         <button
           (click)="clearAll()"
           class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-semibold transition-colors"
@@ -377,6 +515,34 @@
               </span>
             </div>
 
+            <!-- Table / Chart mode toggles -->
+            @if (hasNumericColumns()) {
+              <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg text-xs">
+                <button
+                  type="button"
+                  (click)="reportViewMode.set('table')"
+                  [class.bg-white]="reportViewMode() === 'table'"
+                  [class.dark:bg-slate-700]="reportViewMode() === 'table'"
+                  [class.text-indigo-600]="reportViewMode() === 'table'"
+                  [class.font-semibold]="reportViewMode() === 'table'"
+                  class="px-3 py-1 rounded-md text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition-all"
+                >
+                  {{ i18n.translate('reports.builder.view_table') }}
+                </button>
+                <button
+                  type="button"
+                  (click)="reportViewMode.set('chart')"
+                  [class.bg-white]="reportViewMode() === 'chart'"
+                  [class.dark:bg-slate-700]="reportViewMode() === 'chart'"
+                  [class.text-indigo-600]="reportViewMode() === 'chart'"
+                  [class.font-semibold]="reportViewMode() === 'chart'"
+                  class="px-3 py-1 rounded-md text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition-all"
+                >
+                  {{ i18n.translate('reports.builder.view_chart') }}
+                </button>
+              </div>
+            }
+
             <div class="flex items-center gap-3">
               <!-- Limit selector -->
               <select
@@ -417,40 +583,189 @@
             </div>
           </div>
 
-          <!-- Scrollable table -->
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-              <thead class="bg-slate-50 dark:bg-slate-800/60">
-                <tr>
-                  <th class="w-10 px-3 py-2.5 text-center text-xs font-bold text-slate-400 dark:text-slate-500">{{ i18n.translate('reports.builder.row_num') }}</th>
-                  @for (col of result()!.columns; track col) {
-                    <th class="px-3 py-2.5 text-left text-xs font-bold text-slate-600 dark:text-slate-300 whitespace-nowrap">
-                      {{ fieldI18nLabel(col, result()!.column_labels[col] || col) }}
-                    </th>
-                  }
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                @for (row of result()!.rows; track $index) {
-                  <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                    <td class="px-3 py-2 text-center text-xs text-slate-400 dark:text-slate-500">
-                      {{ pageOffset() + $index + 1 }}
-                    </td>
+          @if (reportViewMode() === 'table') {
+            <!-- Scrollable table -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead class="bg-slate-50 dark:bg-slate-800/60">
+                  <tr>
+                    <th class="w-10 px-3 py-2.5 text-center text-xs font-bold text-slate-400 dark:text-slate-500">{{ i18n.translate('reports.builder.row_num') }}</th>
                     @for (col of result()!.columns; track col) {
-                      <td class="px-3 py-2 text-slate-700 dark:text-slate-300 whitespace-nowrap text-xs max-w-[200px] truncate">
-                        {{ formatCellValue(row[col]) }}
-                      </td>
+                      <th class="px-3 py-2.5 text-left text-xs font-bold text-slate-600 dark:text-slate-300 whitespace-nowrap">
+                        {{ fieldI18nLabel(col, result()!.column_labels[col] || col) }}
+                      </th>
                     }
                   </tr>
-                }
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                  @for (row of result()!.rows; track $index) {
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                      <td class="px-3 py-2 text-center text-xs text-slate-400 dark:text-slate-500">
+                        {{ pageOffset() + $index + 1 }}
+                      </td>
+                      @for (col of result()!.columns; track col) {
+                        <td class="px-3 py-2 text-slate-700 dark:text-slate-300 whitespace-nowrap text-xs max-w-[200px] truncate">
+                          {{ formatCellValue(row[col]) }}
+                        </td>
+                      }
+                    </tr>
+                  }
+                </tbody>
 
-          <!-- No rows in this page -->
-          @if (result()!.rows.length === 0) {
-            <div class="py-12 text-center">
-              <p class="text-slate-400 dark:text-slate-500 text-sm">{{ i18n.translate('reports.builder.no_results') }}</p>
+                <!-- Summary / Subtotals Footer -->
+                @if (hasNumericColumns()) {
+                  <tfoot class="bg-slate-50/80 dark:bg-slate-800/40 border-t border-slate-200 dark:border-slate-800 font-semibold">
+                    <!-- Sum Row -->
+                    <tr class="border-t border-slate-200 dark:border-slate-800">
+                      <td class="px-3 py-2.5 text-center text-xs text-slate-500 dark:text-slate-400 font-bold">
+                        {{ i18n.translate('reports.builder.sum') }}
+                      </td>
+                      @for (col of result()!.columns; track col) {
+                        <td class="px-3 py-2.5 text-slate-800 dark:text-slate-200 whitespace-nowrap text-xs font-bold">
+                          @if (getFieldType(col) === 'NUMBER') {
+                            {{ numericColumnSummaries()[col].sum | number:'1.0-2' }}
+                          } @else {
+                            —
+                          }
+                        </td>
+                      }
+                    </tr>
+                    <!-- Avg Row -->
+                    <tr class="border-t border-slate-100 dark:border-slate-800/60">
+                      <td class="px-3 py-2.5 text-center text-xs text-slate-500 dark:text-slate-400 font-bold">
+                        {{ i18n.translate('reports.builder.avg') }}
+                      </td>
+                      @for (col of result()!.columns; track col) {
+                        <td class="px-3 py-2.5 text-slate-800 dark:text-slate-200 whitespace-nowrap text-xs font-bold">
+                          @if (getFieldType(col) === 'NUMBER') {
+                            {{ numericColumnSummaries()[col].avg | number:'1.0-2' }}
+                          } @else {
+                            —
+                          }
+                        </td>
+                      }
+                    </tr>
+                  </tfoot>
+                }
+              </table>
+            </div>
+
+            <!-- No rows in this page -->
+            @if (result()!.rows.length === 0) {
+              <div class="py-12 text-center">
+                <p class="text-slate-400 dark:text-slate-500 text-sm">{{ i18n.translate('reports.builder.no_results') }}</p>
+              </div>
+            }
+          } @else {
+            <!-- Chart view -->
+            <div class="p-6 bg-slate-50 dark:bg-slate-900/50 flex flex-col gap-6">
+              <!-- Select axis fields -->
+              <div class="flex flex-wrap items-center gap-6 text-xs">
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">{{ i18n.translate('reports.builder.chart_metric') }}</label>
+                  <select
+                    [ngModel]="chartField()"
+                    (ngModelChange)="chartField.set($event)"
+                    class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-750 dark:text-slate-350 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  >
+                    @for (col of numericFields(); track col) {
+                      <option [value]="col">{{ fieldI18nLabel(col, col) }}</option>
+                    }
+                  </select>
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">{{ i18n.translate('reports.builder.chart_label') }}</label>
+                  <select
+                    [ngModel]="chartLabelField()"
+                    (ngModelChange)="chartLabelField.set($event)"
+                    class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-750 dark:text-slate-350 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  >
+                    @for (col of labelFields(); track col) {
+                      <option [value]="col">{{ fieldI18nLabel(col, col) }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+
+              <!-- Bar Chart SVG -->
+              @if (chartData().length) {
+                <div class="flex flex-col gap-4">
+                  <div class="w-full bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 flex flex-col items-center">
+                    <svg viewBox="0 0 600 300" class="w-full max-w-4xl h-80">
+                      <!-- Definitions for Gradients -->
+                      <defs>
+                        <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stop-color="#6366f1" />
+                          <stop offset="100%" stop-color="#3b82f6" />
+                        </linearGradient>
+                      </defs>
+
+                      <!-- Grid Lines -->
+                      <line x1="50" y1="50" x2="550" y2="50" stroke="#e2e8f0" class="dark:stroke-slate-800/50" stroke-dasharray="4" />
+                      <line x1="50" y1="125" x2="550" y2="125" stroke="#e2e8f0" class="dark:stroke-slate-800/50" stroke-dasharray="4" />
+                      <line x1="50" y1="200" x2="550" y2="200" stroke="#e2e8f0" class="dark:stroke-slate-800/50" stroke-dasharray="4" />
+                      
+                      <!-- Axes -->
+                      <line x1="50" y1="250" x2="550" y2="250" stroke="#94a3b8" class="dark:stroke-slate-700" stroke-width="2" />
+                      <line x1="50" y1="50" x2="50" y2="250" stroke="#94a3b8" class="dark:stroke-slate-700" stroke-width="2" />
+
+                      <!-- Y-Axis Labels -->
+                      <text x="40" y="55" text-anchor="end" class="text-[10px] fill-slate-400 dark:fill-slate-500 font-semibold font-mono">{{ maxChartValue() | number:'1.0-0' }}</text>
+                      <text x="40" y="130" text-anchor="end" class="text-[10px] fill-slate-400 dark:fill-slate-500 font-semibold font-mono">{{ (maxChartValue() / 2) | number:'1.0-0' }}</text>
+                      <text x="40" y="255" text-anchor="end" class="text-[10px] fill-slate-400 dark:fill-slate-500 font-semibold font-mono">0</text>
+
+                      <!-- Bars and Labels -->
+                      @for (item of chartData().slice(0, 12); track $index) {
+                        @let width = 28;
+                        @let gap = (500 - (chartData().slice(0, 12).length * width)) / (chartData().slice(0, 12).length + 1);
+                        @let x = 50 + gap + $index * (width + gap);
+                        @let barHeight = (item.value / maxChartValue()) * 200;
+                        @let y = 250 - barHeight;
+
+                        <!-- Bar with Hover Tooltip simulation & Gradient -->
+                        <rect
+                          [attr.x]="x"
+                          [attr.y]="y"
+                          [attr.width]="width"
+                          [attr.height]="barHeight"
+                          fill="url(#barGradient)"
+                          rx="4"
+                          class="transition-all duration-300 hover:opacity-80 cursor-pointer"
+                        >
+                          <title>{{ item.label }}: {{ item.value | number:'1.0-2' }}</title>
+                        </rect>
+
+                        <!-- Bar Value Label -->
+                        @if (barHeight > 15) {
+                          <text
+                            [attr.x]="x + width / 2"
+                            [attr.y]="y - 6"
+                            text-anchor="middle"
+                            class="text-[9px] font-bold fill-indigo-650 dark:fill-indigo-400"
+                          >
+                            {{ item.value | number:'1.0-1' }}
+                          </text>
+                        }
+
+                        <!-- X-Axis Labels -->
+                        <text
+                          [attr.x]="x + width / 2"
+                          y="268"
+                          text-anchor="middle"
+                          class="text-[9px] fill-slate-500 dark:fill-slate-400 font-semibold max-w-[45px] truncate"
+                        >
+                          {{ item.label | slice:0:8 }}
+                        </text>
+                      }
+                    </svg>
+                  </div>
+                </div>
+              } @else {
+                <div class="py-12 text-center">
+                  <p class="text-slate-400 dark:text-slate-500 text-sm">{{ i18n.translate('reports.builder.no_results') }}</p>
+                </div>
+              }
             </div>
           }
         </div>
@@ -478,3 +793,152 @@
 
   </div>
 </div>
+
+<!-- Scheduling Modal -->
+@if (showScheduleModal()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl w-full max-w-lg overflow-hidden transition-all scale-100 flex flex-col max-h-[90vh]">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800">
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+          <svg class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          {{ i18n.translate('reports.builder.schedule_modal.title') }}
+        </h3>
+        <button
+          type="button"
+          (click)="showScheduleModal.set(false)"
+          class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="px-6 py-4 space-y-4 overflow-y-auto">
+        <!-- New schedule form -->
+        <div class="space-y-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-850/50 border border-slate-100 dark:border-slate-800/80">
+          
+          <div class="grid grid-cols-2 gap-3">
+            <!-- Frequency -->
+            <div class="flex flex-col gap-1">
+              <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{{ i18n.translate('reports.builder.schedule_modal.frequency') }}</label>
+              <select
+                [ngModel]="scheduleFrequency()"
+                (ngModelChange)="scheduleFrequency.set($event)"
+                class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              >
+                <option value="daily">{{ i18n.translate('reports.builder.schedule_modal.daily') }}</option>
+                <option value="weekly">{{ i18n.translate('reports.builder.schedule_modal.weekly') }}</option>
+                <option value="monthly">{{ i18n.translate('reports.builder.schedule_modal.monthly') }}</option>
+              </select>
+            </div>
+
+            <!-- Hour -->
+            <div class="flex flex-col gap-1">
+              <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{{ i18n.translate('reports.builder.schedule_modal.hour') }}</label>
+              <input
+                type="text"
+                [ngModel]="scheduleHour()"
+                (ngModelChange)="scheduleHour.set($event)"
+                placeholder="08:00"
+                class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="flex flex-col gap-1">
+            <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{{ i18n.translate('reports.builder.schedule_modal.email') }}</label>
+            <input
+              type="email"
+              [ngModel]="scheduleEmail()"
+              (ngModelChange)="scheduleEmail.set($event)"
+              placeholder="correo@ejemplo.com"
+              class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            />
+          </div>
+
+          <!-- Format -->
+          <div class="flex flex-col gap-1">
+            <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{{ i18n.translate('reports.builder.schedule_modal.format') }}</label>
+            <select
+              [ngModel]="scheduleFormat()"
+              (ngModelChange)="scheduleFormat.set($event)"
+              class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            >
+              <option value="pdf">PDF</option>
+              <option value="excel">Excel</option>
+              <option value="csv">CSV</option>
+            </select>
+          </div>
+
+          <!-- Action -->
+          <button
+            type="button"
+            (click)="saveSchedule()"
+            class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold transition-colors"
+          >
+            {{ i18n.translate('reports.builder.schedule_modal.save') }}
+          </button>
+        </div>
+
+        <!-- Active schedules list -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            {{ i18n.translate('reports.builder.schedule_modal.active_schedules') }}
+          </h4>
+          
+          @if (loadingSchedules()) {
+            <p class="text-xs text-slate-400">...</p>
+          } @else if (templateSchedules().length === 0) {
+            <p class="text-xs text-slate-400 dark:text-slate-500 py-2 italic">
+              {{ i18n.translate('reports.builder.schedule_modal.no_schedules') }}
+            </p>
+          } @else {
+            <div class="divide-y divide-slate-100 dark:divide-slate-800 max-h-48 overflow-y-auto">
+              @for (sched of templateSchedules(); track sched.id) {
+                <div class="flex items-center justify-between py-2 text-xs">
+                  <div>
+                    <span class="font-bold text-slate-700 dark:text-slate-300 capitalize">
+                      {{ sched.frequency }} ({{ sched.hour }})
+                    </span>
+                    <p class="text-[10px] text-slate-450 dark:text-slate-505">
+                      {{ sched.email }} • <span class="uppercase font-semibold text-indigo-500">{{ sched.format }}</span>
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    (click)="deleteSchedule(sched.id)"
+                    class="p-1 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
+                  >
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 flex justify-end">
+        <button
+          type="button"
+          (click)="showScheduleModal.set(false)"
+          class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold transition-colors"
+        >
+          {{ i18n.translate('reports.builder.schedule_modal.close') }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+}
+

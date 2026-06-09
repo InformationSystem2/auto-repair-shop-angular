@@ -8,6 +8,8 @@ import {
   ReportResult,
   ReportTemplate,
   ReportTemplateCreate,
+  ScheduledReport,
+  ScheduledReportCreate,
 } from '../models/report.models';
 
 @Injectable({ providedIn: 'root' })
@@ -46,4 +48,28 @@ export class ReportsService {
   deleteTemplate(id: string): Observable<void> {
     return this.http.delete<void>(`${this.base}/templates/${id}`);
   }
+
+  runReportByPrompt(prompt: string): Observable<{ query: ReportRunRequest, result: ReportResult }> {
+    return this.http.post<{ query: ReportRunRequest, result: ReportResult }>(`${this.base}/prompt`, { prompt });
+  }
+
+  runReportByAudio(file: File): Observable<{ transcript: string, query: ReportRunRequest, result: ReportResult }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ transcript: string, query: ReportRunRequest, result: ReportResult }>(`${this.base}/audio`, formData);
+  }
+
+  getSchedules(templateId: string): Observable<ScheduledReport[]> {
+    return this.http.get<ScheduledReport[]>(`${this.base}/templates/${templateId}/schedules`);
+  }
+
+  createSchedule(templateId: string, data: ScheduledReportCreate): Observable<ScheduledReport> {
+    return this.http.post<ScheduledReport>(`${this.base}/templates/${templateId}/schedules`, data);
+  }
+
+  deleteSchedule(scheduleId: string): Observable<void> {
+    return this.http.delete<void>(`${this.base}/schedules/${scheduleId}`);
+  }
 }
+
+
