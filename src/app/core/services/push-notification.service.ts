@@ -1,12 +1,15 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, Injector } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { initializeApp, getApps } from 'firebase/app';
 import { getMessaging, getToken, onMessage, Messaging } from 'firebase/messaging';
 import { environment } from '@env/environment';
+import { NotificationCenterService } from '@core/services/notification-center.service';
 
 @Injectable({ providedIn: 'root' })
 export class PushNotificationService {
   private readonly http = inject(HttpClient);
+  // Inyección lazy para evitar el ciclo AuthService → Push → Center → AuthService
+  private readonly injector = inject(Injector);
   private messaging: Messaging | null = null;
 
   async initialize(): Promise<void> {
@@ -62,6 +65,9 @@ export class PushNotificationService {
       if (Notification.permission === 'granted') {
         new Notification(title, { body, icon: '/favicon.ico' });
       }
+      // Refrescar el centro in-app para que el nuevo aviso aparezca al instante.
+      // Se resuelve de forma lazy para no crear dependencia circular.
+      this.injector.get(NotificationCenterService).refresh();
       console.log('[Push] Mensaje en primer plano:', title, body);
     });
   }
