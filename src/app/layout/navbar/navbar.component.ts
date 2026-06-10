@@ -4,12 +4,13 @@ import { AuthService } from '@core/auth/auth.service';
 import { UIService } from '@core/services/ui.service';
 import { TranslationService } from '@core/services/translation.service';
 import { NotificationService } from '@core/services/notification.service';
+import { NotificationsBellComponent } from '@features/notifications/components/notifications-bell/notifications-bell.component';
 import { RoleRef } from '@security/models/auth.model';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, NotificationsBellComponent],
   templateUrl: './navbar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
