@@ -6,6 +6,7 @@ import { DASHBOARD_ROUTES } from '@features/dashboard/dashboard.routes';
 import { MODULE_WORKSHOPS_ROUTES } from '@features/module_workshops/module-workshops.routes';
 import { REPORTS_ROUTES } from '@features/reports/reports.routes';
 import { NOTIFICATIONS_ROUTES } from '@features/notifications/notifications.routes';
+import { AUDIT_ROUTES } from '@features/audit/audit.routes';
 import { authGuard } from '@core/auth/auth.guard';
 
 export const routes: Routes = [
@@ -19,6 +20,7 @@ export const routes: Routes = [
   ...DASHBOARD_ROUTES,
   ...REPORTS_ROUTES,
   ...NOTIFICATIONS_ROUTES,
+  ...AUDIT_ROUTES,
 
   // Fallback map
   { path: '**', redirectTo: '/login' }
