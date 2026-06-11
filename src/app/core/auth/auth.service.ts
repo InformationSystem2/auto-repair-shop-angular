@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
-import { AuthSession, LoginResponse } from '@security/models/auth.model';
+import { AuthSession, LoginResponse, SendCodeResponse } from '@security/models/auth.model';
 import { User } from '@users/models/user.model';
 import { PushNotificationService } from '@core/services/push-notification.service';
 
@@ -110,6 +110,27 @@ export class AuthService {
 
   hasPermission(...permissionActions: string[]): boolean {
     return this.permissions().some((p) => permissionActions.includes(p));
+  }
+
+  forgotPassword(email: string): Observable<SendCodeResponse> {
+    return this.http.post<SendCodeResponse>(
+      `${environment.apiUrl}/auth/public/forgot-password`,
+      { email }
+    );
+  }
+
+  resetPassword(email: string, code: string, newPassword: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(
+      `${environment.apiUrl}/auth/public/reset-password`,
+      { email, code, new_password: newPassword }
+    );
+  }
+
+  sendVerificationCode(email: string): Observable<SendCodeResponse> {
+    return this.http.post<SendCodeResponse>(
+      `${environment.apiUrl}/auth/public/send-verification-code`,
+      { email }
+    );
   }
 
   // ── Persistence ───────────────────────────────────────────────────────────

@@ -30,3 +30,22 @@ export interface AuthSession {
   roles: RoleRef[];
   permissions: string[]; // List of permission actions extracted from JWT payload or roles
 }
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface VerifyRecoveryCodeRequest {
+  email: string;
+  code: string;
+  new_password: string;
+}
+
+export interface SendCodeRequest {
+  email: string;
+}
+
+export interface SendCodeResponse {
+  message: string;
+  code?: string | null;
+}
