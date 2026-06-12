@@ -42,4 +42,23 @@ export class AuditDetailModalComponent {
       this.onClose();
     }
   }
+
+  hasIntegrityHash(): boolean {
+    const h = this.log().integrity_hash;
+    return !!(h && h.length > 0);
+  }
+
+  truncatedHash(): string {
+    const h = this.log().integrity_hash;
+    if (!h) return '';
+    return h.length > 16 ? h.substring(0, 16) + '...' : h;
+  }
+
+  responseStatusClass(): string {
+    const s = this.log().response_status ?? 200;
+    if (s >= 500) return 'bg-rose-500';
+    if (s >= 400) return 'bg-amber-500';
+    if (s >= 200 && s < 300) return 'bg-emerald-500';
+    return 'bg-slate-500';
+  }
 }

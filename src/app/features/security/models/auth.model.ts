@@ -49,3 +49,13 @@ export interface SendCodeResponse {
   message: string;
   code?: string | null;
 }
+
+export interface VerifyCodeRequest {
+  email: string;
+  code: string;
+}
+
+export interface VerifyCodeResponse {
+  valid: boolean;
+  message: string;
+}

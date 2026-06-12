@@ -34,6 +34,67 @@
 
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-10">
         
+        <!-- Email Verification Section -->
+        <div class="p-6 rounded-2xl border border-indigo-200 dark:border-indigo-800/50 bg-indigo-50/30 dark:bg-indigo-500/5">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-8 h-8 rounded-xl bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center">
+              <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+            </div>
+            <div>
+              <h3 class="font-black text-slate-800 dark:text-white uppercase tracking-wider text-[0.65rem]">Verificación de Email</h3>
+              <p class="text-[0.6rem] text-slate-400 mt-0.5 uppercase font-bold tracking-tight">Código de verificación</p>
+            </div>
+          </div>
+          
+          <div class="flex flex-col md:flex-row gap-3">
+            <div class="flex-1">
+              <input formControlName="email" type="email" placeholder="tu@email.com"
+                     class="h-11 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 px-4 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold outline-none"
+                     [class.opacity-50]="codeSent()" />
+            </div>
+            <button type="button" (click)="sendVerificationCode()"
+                    [disabled]="codeSent() || sendingCode()"
+                    class="h-11 px-6 rounded-2xl font-black uppercase tracking-widest text-xs transition-all"
+                    [class.bg-indigo-500]="!codeSent()"
+                    [class.text-white]="!codeSent()"
+                    [class.hover:bg-indigo-600]="!codeSent()"
+                    [class.shadow-lg]="!codeSent()"
+                    [class.shadow-indigo-500/20]="!codeSent()"
+                    [class.bg-slate-200]="codeSent()"
+                    [class.text-slate-400]="codeSent()"
+                    [class.dark:bg-slate-800]="codeSent()"
+                    [class.cursor-not-allowed]="codeSent()">
+              @if (sendingCode()) {
+                <span class="flex items-center gap-2">
+                  <div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Enviando...
+                </span>
+              } @else if (codeSent()) {
+                Código Enviado
+              } @else {
+                Enviar Código
+              }
+            </button>
+          </div>
+          
+          @if (devCode()) {
+            <div class="mt-3 p-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20">
+              <p class="text-amber-700 dark:text-amber-400 text-xs font-bold text-center font-mono">
+                DEV: {{ devCode() }}
+              </p>
+            </div>
+          }
+          
+          @if (codeSent()) {
+            <div class="mt-4">
+              <input formControlName="code" type="text" placeholder="Código de 6 dígitos"
+                     maxlength="6"
+                     class="h-11 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 px-4 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold outline-none font-mono text-center tracking-widest" />
+              <p *ngIf="form.get('code')?.touched && form.get('code')?.invalid" class="text-rose-500 text-[0.6rem] font-black pl-1 mt-1">Ingresa el código de 6 dígitos</p>
+            </div>
+          }
+        </div>
+
         <!-- Main Form Content -->
         <div class="relative z-10">
           <app-registration-form [form]="form"></app-registration-form>

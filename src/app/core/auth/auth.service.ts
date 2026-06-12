@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
-import { AuthSession, LoginResponse, SendCodeResponse } from '@security/models/auth.model';
+import { AuthSession, LoginResponse, SendCodeResponse, VerifyCodeRequest, VerifyCodeResponse } from '@security/models/auth.model';
 import { User } from '@users/models/user.model';
 import { PushNotificationService } from '@core/services/push-notification.service';
 
@@ -130,6 +130,13 @@ export class AuthService {
     return this.http.post<SendCodeResponse>(
       `${environment.apiUrl}/auth/public/send-verification-code`,
       { email }
+    );
+  }
+
+  verifyCode(email: string, code: string): Observable<VerifyCodeResponse> {
+    return this.http.post<VerifyCodeResponse>(
+      `${environment.apiUrl}/auth/public/verify-code`,
+      { email, code }
     );
   }
 

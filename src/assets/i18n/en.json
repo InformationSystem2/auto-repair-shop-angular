@@ -54,6 +54,13 @@
     "request_body": "Request Body",
     "changes_before": "Before",
     "changes_after": "After",
-    "no_data": "No data"
+    "no_data": "No data",
+    "resource_name": "Resource Name",
+    "request_method": "Method",
+    "request_path": "Path",
+    "response_status": "HTTP Status",
+    "integrity_hash": "Integrity Hash",
+    "integrity_valid": "Valid",
+    "integrity_invalid": "Compromised"
   }
 }

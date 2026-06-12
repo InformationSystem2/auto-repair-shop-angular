@@ -38,6 +38,12 @@
               <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">ID</span>
               <p class="font-mono text-sm px-2 py-0.5 rounded border w-fit" style="border-color:var(--ds-overlay0)">{{ log().resource_id?.substring(0,8) || 'N/A' }}</p>
             </div>
+            @if (log().resource_name) {
+            <div class="space-y-1.5 col-span-2">
+              <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.resource_name') }}</span>
+              <p class="font-bold text-sm leading-tight break-all">{{ log().resource_name }}</p>
+            </div>
+            }
             <div class="space-y-1.5 col-span-2">
               <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.col_date') }}</span>
               <div class="space-y-1">
@@ -98,7 +104,9 @@
               </div>
               <div class="space-y-1.5">
                 <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.workshop') }}</span>
-                <p class="font-bold text-sm leading-tight">{{ log().workshop_id ? 'ID: ' + log().workshop_id?.substring(0,8) : 'Sistema Central' }}</p>
+                <p class="font-mono text-xs break-all" style="color:var(--ds-subtext)">
+                  {{ log().workshop_id ? log().workshop_id : 'Sistema Central' }}
+                </p>
               </div>
             </div>
             <div class="col-span-2 space-y-2">
@@ -115,8 +123,9 @@
         <div class="col-span-1 md:col-span-2 flex flex-col gap-5 rounded-xl border p-6" style="border-color:var(--ds-overlay0); background-color:var(--ds-mantle)">
           <div class="flex items-center gap-2">
             <div class="h-4 w-1 rounded-full" style="background-color:var(--ds-blue)"></div>
-            <h3 class="text-xs font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">HTTP Info</h3>
+            <h3 class="text-xs font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">HTTP &amp; Ejecución</h3>
           </div>
+
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <div class="space-y-1.5">
               <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">Latencia</span>
@@ -128,6 +137,13 @@
               </p>
             </div>
             <div class="space-y-1.5">
+              <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.response_status') }}</span>
+              <span class="inline-flex items-center rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white"
+                    [class]="responseStatusClass()">
+                {{ log().response_status ?? '---' }}
+              </span>
+            </div>
+            <div class="space-y-1.5">
               <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">Severidad</span>
               <span class="inline-flex items-center rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white"
                     [class.bg-red-500]="log().severity === 'CRITICAL'"
@@ -136,21 +152,65 @@
                 {{ log().severity || 'INFO' }}
               </span>
             </div>
-            <div class="space-y-1.5 lg:col-span-2">
-              <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">Sesion ID</span>
-              <p class="font-mono text-xs px-3 py-1 rounded border w-full truncate" style="border-color:var(--ds-overlay0)">
-                {{ log().session_id || 'No Session' }}
+            <div class="space-y-1.5">
+              <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">Sesión</span>
+              <p class="font-mono text-xs truncate" style="color:var(--ds-subtext)">
+                {{ log().session_id || 'N/A' }}
               </p>
             </div>
-            @if (log().error_message) {
-              <div class="space-y-1.5 sm:col-span-2 lg:col-span-4 mt-2">
-                <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-rose-500">Error</span>
-                <p class="font-mono text-xs text-rose-600 bg-rose-50/50 dark:bg-rose-950/20 p-4 rounded-lg border border-rose-200 dark:border-rose-900/50 w-full break-words">
-                  {{ log().error_message }}
-                </p>
-              </div>
-            }
           </div>
+
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div class="space-y-1.5">
+              <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.request_method') }}</span>
+              <span class="inline-flex items-center rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white"
+                    [class.bg-emerald-500]="log().request_method === 'GET'"
+                    [class.bg-blue-500]="log().request_method === 'POST'"
+                    [class.bg-amber-500]="log().request_method === 'PUT' || log().request_method === 'PATCH'"
+                    [class.bg-rose-500]="log().request_method === 'DELETE'"
+                    [class.bg-slate-500]="!log().request_method">
+                {{ log().request_method || 'ASPECT' }}
+              </span>
+            </div>
+            <div class="space-y-1.5">
+              <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.request_path') }}</span>
+              <p class="font-mono text-xs break-all" style="color:var(--ds-subtext)">
+                {{ log().request_path || '---' }}
+              </p>
+            </div>
+          </div>
+
+          @if (log().error_message) {
+            <div class="space-y-1.5">
+              <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-rose-500">Error</span>
+              <p class="font-mono text-xs text-rose-600 bg-rose-50/50 dark:bg-rose-950/20 p-4 rounded-lg border border-rose-200 dark:border-rose-900/50 w-full break-words">
+                {{ log().error_message }}
+              </p>
+            </div>
+          }
+
+          @if (hasIntegrityHash()) {
+            <div class="space-y-1.5">
+              <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">
+                {{ i18n.translate('audit.integrity_hash') }}
+              </span>
+              <div class="flex items-center gap-3 flex-wrap">
+                <p class="font-mono text-xs px-3 py-1 rounded border" style="border-color:var(--ds-overlay0)" [title]="log().integrity_hash">
+                  {{ truncatedHash() }}
+                </p>
+                <span class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white"
+                      [class.bg-emerald-500]="log().valid"
+                      [class.bg-rose-500]="!log().valid">
+                  @if (log().valid) {
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                  } @else {
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                  }
+                  {{ log().valid ? i18n.translate('audit.integrity_valid') : i18n.translate('audit.integrity_invalid') }}
+                </span>
+              </div>
+            </div>
+          }
         </div>
 
         <!-- Changes Section -->
