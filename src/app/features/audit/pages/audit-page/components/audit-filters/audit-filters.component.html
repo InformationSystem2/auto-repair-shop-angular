@@ -1,0 +1,105 @@
+<div class="flex flex-col gap-4 ds-card rounded-2xl p-5 overflow-hidden transition-all duration-300">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex items-center gap-3">
+      <div class="h-8 w-1.5 rounded-full" style="background-color:var(--ds-blue)"></div>
+      <h2 class="text-xl font-bold tracking-tight" style="color:var(--ds-text)">{{ i18n.translate('audit.master_registry') }}</h2>
+      @if (auditState.hasActiveFilters()) {
+        <span class="flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest animate-pulse border"
+              style="color:var(--ds-text); background-color:var(--ds-surface0); border-color:var(--ds-overlay0)">
+          <span class="h-1.5 w-1.5 rounded-full" style="background-color:var(--ds-blue)"></span>
+          {{ i18n.translate('audit.active_filters') }}
+        </span>
+      }
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2">
+      <button
+        (click)="auditState.toggleFilters()"
+        [class]="auditState.showFilters() ? 'ds-btn-primary' : 'ds-btn-secondary'">
+        <svg class="w-4 h-4 mr-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+        {{ i18n.translate('audit.advanced_filters') }}
+      </button>
+
+      @if (auditState.hasActiveFilters() || auditState.showFilters()) {
+        <button
+          class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-xl transition-colors"
+          style="color:var(--ds-subtext)"
+          (click)="onClear()">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          {{ i18n.translate('audit.clear') }}
+        </button>
+      }
+
+      <button
+        class="ds-btn-secondary"
+        [disabled]="exporting()"
+        (click)="onExportCsv()">
+        <svg class="w-4 h-4 mr-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        {{ exporting() ? i18n.translate('audit.exporting') : 'CSV' }}
+      </button>
+    </div>
+  </div>
+
+  @if (auditState.showFilters()) {
+    <div class="grid grid-cols-1 gap-5 pt-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 animate-in fade-in zoom-in-95 duration-300">
+      <div class="space-y-1.5">
+        <label class="text-[10px] font-bold uppercase tracking-widest px-1" style="color:var(--ds-subtext)">{{ i18n.translate('audit.workshop') }}</label>
+        <input type="text" placeholder="Workshop ID..."
+          [ngModel]="auditState.filters().workshop_id ?? ''"
+          (ngModelChange)="onFilterChange({ workshop_id: $event || undefined })"
+          class="w-full rounded-xl border px-4 py-2.5 text-sm transition-all focus:outline-none focus:ring-4"
+          style="background-color:var(--ds-mantle); color:var(--ds-text); border-color:var(--ds-overlay0); --tw-ring-color:var(--ds-blue)" />
+      </div>
+
+      <div class="space-y-1.5">
+        <label class="text-[10px] font-bold uppercase tracking-widest px-1" style="color:var(--ds-subtext)">{{ i18n.translate('audit.entity') }}</label>
+        <input type="text" placeholder="Ej: WORKSHOPS..."
+          [ngModel]="auditState.filters().resource_type ?? ''"
+          (ngModelChange)="onFilterChange({ resource_type: $event })"
+          class="w-full rounded-xl border px-4 py-2.5 text-sm transition-all focus:outline-none focus:ring-4"
+          style="background-color:var(--ds-mantle); color:var(--ds-text); border-color:var(--ds-overlay0)" />
+      </div>
+
+      <div class="space-y-1.5">
+        <label class="text-[10px] font-bold uppercase tracking-widest px-1" style="color:var(--ds-subtext)">{{ i18n.translate('audit.operation') }}</label>
+        <select
+          [ngModel]="auditState.filters().action_type ?? ''"
+          (ngModelChange)="onFilterChange({ action_type: $event })"
+          class="w-full rounded-xl border px-4 py-2.5 text-sm transition-all focus:outline-none focus:ring-4 appearance-none"
+          style="background-color:var(--ds-mantle); color:var(--ds-text); border-color:var(--ds-overlay0)">
+          <option value="">{{ i18n.translate('audit.all') }}</option>
+          @for (op of actionTypes; track op) {
+            <option [value]="op">{{ op }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="space-y-1.5">
+        <label class="text-[10px] font-bold uppercase tracking-widest px-1" style="color:var(--ds-subtext)">{{ i18n.translate('audit.user') }}</label>
+        <input type="text" placeholder="Username o Email..."
+          [ngModel]="auditState.filters().user_identifier ?? ''"
+          (ngModelChange)="onFilterChange({ user_identifier: $event || undefined })"
+          class="w-full rounded-xl border px-4 py-2.5 text-sm transition-all focus:outline-none focus:ring-4"
+          style="background-color:var(--ds-mantle); color:var(--ds-text); border-color:var(--ds-overlay0)" />
+      </div>
+
+      <div class="space-y-1.5">
+        <label class="text-[10px] font-bold uppercase tracking-widest px-1" style="color:var(--ds-subtext)">{{ i18n.translate('audit.from') }}</label>
+        <input type="date"
+          [ngModel]="auditState.filters().date_from ?? ''"
+          (ngModelChange)="onFilterChange({ date_from: $event || undefined })"
+          class="w-full rounded-xl border px-4 py-2.5 text-sm transition-all focus:outline-none focus:ring-4"
+          style="background-color:var(--ds-mantle); color:var(--ds-text); border-color:var(--ds-overlay0)" />
+      </div>
+
+      <div class="space-y-1.5">
+        <label class="text-[10px] font-bold uppercase tracking-widest px-1" style="color:var(--ds-subtext)">{{ i18n.translate('audit.to') }}</label>
+        <input type="date"
+          [ngModel]="auditState.filters().date_to ?? ''"
+          (ngModelChange)="onFilterChange({ date_to: $event || undefined })"
+          class="w-full rounded-xl border px-4 py-2.5 text-sm transition-all focus:outline-none focus:ring-4"
+          style="background-color:var(--ds-mantle); color:var(--ds-text); border-color:var(--ds-overlay0)" />
+      </div>
+    </div>
+  }
+</div>

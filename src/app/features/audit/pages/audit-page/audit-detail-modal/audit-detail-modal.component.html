@@ -1,0 +1,272 @@
+<div class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-300" (click)="onBackdropClick($event)">
+  <div class="absolute inset-0 bg-black/40 dark:bg-black/80 backdrop-blur-sm transition-opacity"></div>
+
+  <div class="relative flex h-full max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl sm:h-auto animate-in zoom-in-95 duration-300"
+       style="background-color:var(--ds-bg); color:var(--ds-text); border:1px solid var(--ds-overlay0)">
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b px-6 py-5" style="border-color:var(--ds-overlay0)">
+      <div class="flex items-center gap-4">
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl text-white" style="background-image:linear-gradient(to bottom right, var(--ds-blue), var(--ds-mauve))">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold tracking-tight">{{ i18n.translate('audit.modal_title') }}</h2>
+          <p class="text-xs font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">ID: {{ log().id }}</p>
+        </div>
+      </div>
+      <button (click)="onClose()" class="rounded-full p-2 transition-all cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800" style="color:var(--ds-subtext)">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <!-- Metadata -->
+        <div class="flex flex-col gap-5 rounded-xl border p-6" style="border-color:var(--ds-overlay0); background-color:var(--ds-mantle)">
+          <div class="flex items-center gap-2">
+            <div class="h-4 w-1 rounded-full" style="background-color:var(--ds-blue)"></div>
+            <h3 class="text-xs font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.context') }}</h3>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6">
+            <div class="space-y-1.5">
+              <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.entity') }}</span>
+              <p class="font-bold uppercase tracking-tight">{{ log().resource_type }}</p>
+            </div>
+            <div class="space-y-1.5">
+              <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">ID</span>
+              <p class="font-mono text-sm px-2 py-0.5 rounded border w-fit" style="border-color:var(--ds-overlay0)">{{ log().resource_id?.substring(0,8) || 'N/A' }}</p>
+            </div>
+            @if (log().resource_name) {
+            <div class="space-y-1.5 col-span-2">
+              <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.resource_name') }}</span>
+              <p class="font-bold text-sm leading-tight break-all">{{ log().resource_name }}</p>
+            </div>
+            }
+            <div class="space-y-1.5 col-span-2">
+              <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.col_date') }}</span>
+              <div class="space-y-1">
+                <p class="font-medium text-sm">
+                  <span class="text-[9px] font-bold uppercase tracking-widest mr-1" style="color:var(--ds-subtext)">{{ i18n.translate('audit.server') }}:</span>
+                  {{ formatDate(log().created_at, 'date') }} @ {{ formatDate(log().created_at, 'time') }}
+                </p>
+                @if (log().client_time) {
+                <p class="font-medium text-sm">
+                  <span class="text-[9px] font-bold uppercase tracking-widest mr-1" style="color:var(--ds-subtext)">{{ i18n.translate('audit.client') }}:</span>
+                  {{ formatDate(log().client_time!, 'date') }} @ {{ formatDate(log().client_time!, 'time') }}
+                </p>
+                }
+              </div>
+            </div>
+            <div class="space-y-1.5">
+              <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.operation') }}</span>
+              <span class="inline-flex items-center rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white"
+                    [class.bg-emerald-500]="log().action_type === 'CREATE'"
+                    [class.bg-blue-500]="log().action_type === 'UPDATE' || log().action_type === 'LOGIN' || log().action_type === 'LOGOUT'"
+                    [class.bg-rose-600]="log().action_type === 'DELETE'"
+                    [class.bg-slate-600]="log().action_type === 'READ'">
+                {{ log().action_type }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Details -->
+        <div class="flex flex-col gap-5 rounded-xl border p-6" style="border-color:var(--ds-overlay0); background-color:var(--ds-mantle)">
+          <div class="flex items-center gap-2">
+            <div class="h-4 w-1 rounded-full" style="background-color:var(--ds-blue)"></div>
+            <h3 class="text-xs font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.actor') }}</h3>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6">
+            <div class="space-y-1.5 col-span-2 sm:col-span-1">
+              <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.user') }}</span>
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-8 rounded-full text-white flex items-center justify-center text-xs font-bold" style="background-color:var(--ds-blue)">
+                  {{ (log().user_name || 'S').charAt(0).toUpperCase() }}
+                </div>
+                <div class="flex flex-col">
+                  <p class="font-bold text-sm leading-tight">{{ log().user_name || 'Sistema' }}</p>
+                  @if (log().user_email) {
+                    <p class="text-[10px] font-medium" style="color:var(--ds-subtext)">{{ log().user_email }}</p>
+                  }
+                  @if (log().user_id) {
+                    <p class="text-[9px] font-mono mt-0.5" style="color:var(--ds-subtext)">ID: {{ log().user_id }}</p>
+                  }
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col gap-6 col-span-2 sm:col-span-1">
+              <div class="space-y-1.5">
+                <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">IP</span>
+                <p class="font-mono text-sm">{{ log().ip_address || 'N/A' }}</p>
+              </div>
+              <div class="space-y-1.5">
+                <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.workshop') }}</span>
+                <p class="font-mono text-xs break-all" style="color:var(--ds-subtext)">
+                  {{ log().workshop_id ? log().workshop_id : 'Sistema Central' }}
+                </p>
+              </div>
+            </div>
+            <div class="col-span-2 space-y-2">
+              <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">User Agent</span>
+              <p class="break-words text-[10px] font-medium p-3 rounded-lg border leading-relaxed italic"
+                 style="border-color:var(--ds-overlay0); background-color:var(--ds-surface0)">
+                {{ log().user_agent || 'N/A' }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metrics -->
+        <div class="col-span-1 md:col-span-2 flex flex-col gap-5 rounded-xl border p-6" style="border-color:var(--ds-overlay0); background-color:var(--ds-mantle)">
+          <div class="flex items-center gap-2">
+            <div class="h-4 w-1 rounded-full" style="background-color:var(--ds-blue)"></div>
+            <h3 class="text-xs font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">HTTP &amp; Ejecución</h3>
+          </div>
+
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="space-y-1.5">
+              <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">Latencia</span>
+              <p class="font-mono text-sm font-bold"
+                 [class.text-amber-500]="(log().execution_time_ms ?? 0) > 1000"
+                 [class.text-red-500]="(log().execution_time_ms ?? 0) > 3000"
+                 [class.text-emerald-500]="(log().execution_time_ms ?? 0) <= 1000">
+                {{ log().execution_time_ms ? log().execution_time_ms + ' ms' : '---' }}
+              </p>
+            </div>
+            <div class="space-y-1.5">
+              <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.response_status') }}</span>
+              <span class="inline-flex items-center rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white"
+                    [class]="responseStatusClass()">
+                {{ log().response_status ?? '---' }}
+              </span>
+            </div>
+            <div class="space-y-1.5">
+              <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">Severidad</span>
+              <span class="inline-flex items-center rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white"
+                    [class.bg-red-500]="log().severity === 'CRITICAL'"
+                    [class.bg-amber-500]="log().severity === 'WARNING'"
+                    [class.bg-slate-500]="!log().severity || log().severity === 'INFO'">
+                {{ log().severity || 'INFO' }}
+              </span>
+            </div>
+            <div class="space-y-1.5">
+              <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">Sesión</span>
+              <p class="font-mono text-xs truncate" style="color:var(--ds-subtext)">
+                {{ log().session_id || 'N/A' }}
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div class="space-y-1.5">
+              <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.request_method') }}</span>
+              <span class="inline-flex items-center rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white"
+                    [class.bg-emerald-500]="log().request_method === 'GET'"
+                    [class.bg-blue-500]="log().request_method === 'POST'"
+                    [class.bg-amber-500]="log().request_method === 'PUT' || log().request_method === 'PATCH'"
+                    [class.bg-rose-500]="log().request_method === 'DELETE'"
+                    [class.bg-slate-500]="!log().request_method">
+                {{ log().request_method || 'ASPECT' }}
+              </span>
+            </div>
+            <div class="space-y-1.5">
+              <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.request_path') }}</span>
+              <p class="font-mono text-xs break-all" style="color:var(--ds-subtext)">
+                {{ log().request_path || '---' }}
+              </p>
+            </div>
+          </div>
+
+          @if (log().error_message) {
+            <div class="space-y-1.5">
+              <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-rose-500">Error</span>
+              <p class="font-mono text-xs text-rose-600 bg-rose-50/50 dark:bg-rose-950/20 p-4 rounded-lg border border-rose-200 dark:border-rose-900/50 w-full break-words">
+                {{ log().error_message }}
+              </p>
+            </div>
+          }
+
+          @if (hasIntegrityHash()) {
+            <div class="space-y-1.5">
+              <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">
+                {{ i18n.translate('audit.integrity_hash') }}
+              </span>
+              <div class="flex items-center gap-3 flex-wrap">
+                <p class="font-mono text-xs px-3 py-1 rounded border" style="border-color:var(--ds-overlay0)" [title]="log().integrity_hash">
+                  {{ truncatedHash() }}
+                </p>
+                <span class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white"
+                      [class.bg-emerald-500]="log().valid"
+                      [class.bg-rose-500]="!log().valid">
+                  @if (log().valid) {
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                  } @else {
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                  }
+                  {{ log().valid ? i18n.translate('audit.integrity_valid') : i18n.translate('audit.integrity_invalid') }}
+                </span>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Changes Section -->
+        <div class="col-span-1 md:col-span-2 space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="h-px flex-1 bg-gradient-to-r from-transparent to-slate-200 dark:to-slate-700"></div>
+            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] px-2" style="color:var(--ds-subtext)">
+              {{ log().action_type === 'UPDATE' ? i18n.translate('audit.changes') : i18n.translate('audit.request_body') }}
+            </h3>
+            <div class="h-px flex-1 bg-gradient-to-r to-transparent from-slate-200 dark:from-slate-700"></div>
+          </div>
+
+          <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <div class="flex flex-col rounded-xl border overflow-hidden" style="border-color:var(--ds-overlay0)">
+              <div class="border-b px-5 py-3 flex items-center justify-between" style="border-color:var(--ds-overlay0); background-color:var(--ds-mantle)">
+                <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.changes_before') }}</span>
+                <div class="h-2 w-2 rounded-full bg-rose-400"></div>
+              </div>
+              <div class="p-5 overflow-auto max-h-[350px] custom-scrollbar">
+                @if (log().changes_before && formatJson(log().changes_before) !== '{}') {
+                  <pre class="font-mono text-xs leading-relaxed" style="color:var(--ds-subtext)">{{ formatJson(log().changes_before) }}</pre>
+                } @else {
+                  <div class="flex flex-col items-center justify-center p-12 border-2 border-dashed rounded-xl"
+                       style="border-color:var(--ds-overlay0); background-color:var(--ds-mantle)">
+                    <span class="text-xs font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.no_data') }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div class="flex flex-col rounded-xl border overflow-hidden" style="border-color:var(--ds-overlay0)">
+              <div class="border-b px-5 py-3 flex items-center justify-between" style="border-color:var(--ds-overlay0); background-color:var(--ds-mantle)">
+                <span class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.changes_after') }}</span>
+                <div class="h-2 w-2 rounded-full bg-emerald-400"></div>
+              </div>
+              <div class="p-5 overflow-auto max-h-[350px] custom-scrollbar">
+                @if ((log().changes_after || log().request_body) && formatJson(log().changes_after || log().request_body) !== '{}') {
+                  <pre class="font-mono text-xs leading-relaxed" style="color:var(--ds-subtext)">{{ formatJson(log().changes_after || log().request_body) }}</pre>
+                } @else {
+                  <div class="flex flex-col items-center justify-center p-12 border-2 border-dashed rounded-xl"
+                       style="border-color:var(--ds-overlay0); background-color:var(--ds-mantle)">
+                    <span class="text-xs font-bold uppercase tracking-widest" style="color:var(--ds-subtext)">{{ i18n.translate('audit.no_data') }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="flex items-center justify-end border-t px-8 py-5" style="border-color:var(--ds-overlay0); background-color:var(--ds-mantle)">
+      <button class="ds-btn-secondary px-8" (click)="onClose()">
+        {{ i18n.translate('audit.close') }}
+      </button>
+    </div>
+  </div>
+</div>
