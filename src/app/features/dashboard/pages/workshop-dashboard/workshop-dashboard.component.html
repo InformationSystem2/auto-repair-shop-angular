@@ -40,11 +40,11 @@
         colorClass="bg-emerald-500"/>
       <app-stat-card
         [label]="i18n.translate('dashboard.workshop.gross_revenue')"
-        [value]="'$' + fmt(data()?.gross_revenue ?? 0)"
+        [value]="'BS ' + fmt(data()?.gross_revenue ?? 0, 2)"
         colorClass="bg-indigo-500"/>
       <app-stat-card
         [label]="i18n.translate('dashboard.workshop.commission_due')"
-        [value]="'$' + fmt(data()?.commission_due ?? 0)"
+        [value]="'BS ' + fmt(data()?.commission_due ?? 0, 2)"
         colorClass="bg-amber-500"/>
       <app-stat-card
         [label]="i18n.translate('dashboard.workshop.avg_rating')"
@@ -136,7 +136,7 @@
                 </div>
                 <div class="flex items-center gap-4 text-xs">
                   <span class="font-bold" style="color:var(--ds-blue)">{{ tech.incidents_completed }} inc.</span>
-                  <span class="font-bold" style="color:var(--ds-green)">${{ fmt(tech.revenue) }}</span>
+                  <span class="font-bold" style="color:var(--ds-green)">BS {{ fmt(tech.revenue, 2) }}</span>
                 </div>
               </div>
               <div class="h-2 rounded-full overflow-hidden" style="background:var(--ds-mantle)">
@@ -200,7 +200,7 @@
           {{ i18n.translate('dashboard.workshop.daily_revenue_title') }}
         </h2>
         <span class="text-2xl font-black" style="color:var(--ds-blue)">
-          ${{ fmt(data()?.gross_revenue ?? 0) }}
+          BS {{ fmt(data()?.gross_revenue ?? 0, 2) }}
         </span>
       </div>
       <div class="relative">
@@ -236,7 +236,7 @@
                [style.left.%]="(tp.x / 600) * 100"
                [style.top.px]="tp.y - 12">
             <p class="leading-none text-neutral-300">{{ tp.label }}</p>
-            <p class="leading-none mt-1 text-sm text-white">${{ fmt(tp.value) }}</p>
+            <p class="leading-none mt-1 text-sm text-white">BS {{ fmt(tp.value, 2) }}</p>
           </div>
         }
       </div>

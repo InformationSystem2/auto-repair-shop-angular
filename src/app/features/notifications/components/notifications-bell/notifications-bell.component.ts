@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { NotificationCenterService } from '@core/services/notification-center.service';
 import { AppNotification } from '@core/models/notification.model';
@@ -13,6 +13,7 @@ import { AppNotification } from '@core/models/notification.model';
 })
 export class NotificationsBellComponent {
   readonly center = inject(NotificationCenterService);
+  readonly router = inject(Router);
   readonly isOpen = signal(false);
 
   /** Solo las más recientes para el dropdown; el historial completo va en la página. */
@@ -30,6 +31,8 @@ export class NotificationsBellComponent {
 
   onItemClick(n: AppNotification): void {
     if (!n.is_read) this.center.markAsRead(n.id);
+    this.close();
+    this.router.navigate(['/app/requests']);
   }
 
   markAll(event: Event): void {
