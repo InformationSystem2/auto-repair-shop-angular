@@ -6,8 +6,7 @@
 
 | Recurso | Enlace |
 |---|---|
-| Documento de Reportes e IA (PDF) | [`docs/ai_reports_implementation.md`](../auto-repair-shop-fastapi/docs/ai_reports_implementation.md) |
-| Repositorio público | https://github.com/evert-aov/SI2-ARS-frontend |
+| Repositorio público | https://github.com/InformationSystem2/auto-repair-shop-angular |
 
 ---
 
@@ -164,22 +163,14 @@ Para el asistente de voz en reportes, la captura de audio se realiza exclusivame
 | **Control por Endpoint (`/taller/{id}`)** | No (Muestra la pantalla completa o nada) | Baja | Baja |
 | **Control a nivel de Atributo (ARS)** | **Sí** (Oculta precios, auditorías, diagnósticos) | **Alta** (Granularidad según rol) | Media (Renderizado condicional) |
 
----
-
-## Documentación Técnica
-
-- [`docs/ai_reports_implementation.md`](../auto-repair-shop-fastapi/docs/ai_reports_implementation.md) — Análisis arquitectónico de la implementación del generador de reportes por lenguaje natural.
-
----
-
 ## Equipo
 
-| Integrante | Rol |
-|---|---|
-| **Evert Rodríguez Araúz** | Backend Developer / Arquitecto de Software |
-| *[Integrante 2]* | *[Rol]* |
-| *[Integrante 3]* | *[Rol]* |
+| Integrante |
+|---|
+| **Evert Rodríguez Araúz** | 
+| **Rojas Rivero Douglas Ismael** |
 
 ---
-
 *Proyecto desarrollado para la materia de Sistemas de Información II — UAGRM*
+
+---
