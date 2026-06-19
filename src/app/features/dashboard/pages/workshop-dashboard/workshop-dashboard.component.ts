@@ -116,8 +116,11 @@ export class WorkshopDashboardComponent {
   );
 
   // ── Formatters ──────────────────────────────────────────────────────────
-  fmt(n: number): string {
-    return n.toLocaleString('es-BO', { maximumFractionDigits: 0 });
+  fmt(n: number, decimals: number = 0): string {
+    return n.toLocaleString('en-US', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    });
   }
 
   fmtTime(iso: string): string {

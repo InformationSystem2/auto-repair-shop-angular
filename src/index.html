@@ -10,7 +10,7 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/offline-sw.js')
+        navigator.serviceWorker.register('/firebase-messaging-sw.js')
           .then(reg => console.log('[ServiceWorker] Registrado con éxito:', reg.scope))
           .catch(err => console.warn('[ServiceWorker] Falló el registro:', err));
       });

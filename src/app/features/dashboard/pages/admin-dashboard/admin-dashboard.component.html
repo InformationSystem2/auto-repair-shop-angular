@@ -37,12 +37,12 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr">
       <app-stat-card
         [label]="i18n.translate('dashboard.admin.total_revenue')"
-        [value]="'$' + fmt(data()?.total_revenue ?? 0)"
+        [value]="'BS ' + fmt(data()?.total_revenue ?? 0, 2)"
         colorClass="bg-emerald-500"
         [trend]="revenueTrend()"/>
       <app-stat-card
         [label]="i18n.translate('dashboard.admin.platform_profit')"
-        [value]="'$' + fmt(data()?.platform_profit ?? 0)"
+        [value]="'BS ' + fmt(data()?.platform_profit ?? 0, 2)"
         colorClass="bg-indigo-500"
         [trend]="profitTrend()"/>
       <app-stat-card
@@ -436,7 +436,7 @@
           <h2 class="text-sm font-bold" style="color:var(--ds-text)">
             {{ i18n.translate('dashboard.admin.cancelled_services_title') }}
           </h2>
-          <span class="ds-badge ds-badge-red">{{ cancelledServices().length }} {{ i18n.translate('common.cancelled_plural') | lowercase }}</span>
+          <span class="ds-badge ds-badge-red">{{ cancelledCount() }} {{ i18n.translate('common.cancelled_plural') | lowercase }}</span>
         </div>
         @if (!cancelledServices().length) {
           <p class="text-xs text-center py-8 font-medium" style="color:var(--ds-subtext)">
